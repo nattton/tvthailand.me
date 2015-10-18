@@ -1,0 +1,27 @@
+<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+  <h1 class="page-header">{[{ .show.Title }]}</h1>
+  <div id="video-player-section" class="z-index-layer-2 watch-page">
+    <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
+      <div class="video-player-root">
+        <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+          <div id="player"></div>
+          <div ng-bind-html="iframeVideo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row placeholders">
+  {[{ range $index, $episode := .episodes }]}
+    <div class="col-xs-12 col-sm-3 placeholder">
+      <div class="thumbnail">
+      <a href="/watch/{[{ $episode.ID }]}" >
+      <img src="{[{ $episode.Thumbnail }]}" class="img-responsive" alt="{[{ $episode.Title }]}">
+      </a>
+      <div class="caption"><h4>{[{ $episode.Title }]}</h4></div>
+      </div>
+    </div>
+  {[{ end }]}
+  </div>
+<div class="table-responsive">
+</div>
+</div>

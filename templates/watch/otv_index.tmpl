@@ -1,0 +1,43 @@
+<div ng-controller="VideoCtrl" ng-init="watch('{[{ .watchID }]}', {[{ .playIndex }]});">
+  <div class="video-player-root">
+    <div class="row">
+    <div id="video-player-section" class="z-index-layer-2 watch-page">
+      <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+      <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
+        <div class="video-player-root">
+          <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+            <div class="otv-iframe" ng-bind-html="iframeVideo"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+    </div>
+    <div class="row video-meta">
+      <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
+        <div class="row video-meta">
+          <a href="{{ show_url }}"><span class="show-title" ng-bind="show_title"></span></a>
+          <div  class="episode-detail" ng-bind="episode_detail"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation ng-hide-add-active">
+    <div class="row placeholders">
+      <div class="col-xs-12 col-sm-3 placeholder" ng-repeat="part_item in data.episode_detail.part_items track by $index">
+        <div class="thumbnail">
+            <a href="/watch_otv/{{data.episode_detail.episode_id}}/{{$index}}">
+              <img ng-src="{{ part_item.cover }}" class="img-responsive" alt="{{ part_item.name_th }}">
+            </a>
+        </div>
+        <div class=""><h4 ng-bind="part_item.name_th"></h4></div>
+        </div>
+      </div>
+    </div>
+  <div class="table-responsive">
+  </div>
+  </div>
+</div>
+<script type="text/javascript" src="/static/js/watch_otv.js">
+
+</script>

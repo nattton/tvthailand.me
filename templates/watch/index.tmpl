@@ -1,0 +1,48 @@
+<div ng-controller="VideoCtrl" ng-init="watch('{[{ .episode.HashID }]}', {[{ .playIndex }]});">
+  <div class="video-player-root">
+    <div class="row">
+    <div id="video-player-section" class="z-index-layer-2 watch-page">
+      <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+      <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
+        <div class="video-player-root">
+          <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+            <div id="player"></div>
+            <div ng-bind-html="iframeVideo"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+    </div>
+    <div class="row video-meta">
+      <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
+        <div class="row video-meta">
+          <a href="{{ show_url }}"><span class="show-title" ng-bind="show_title">{[{ .show.Title }]}</span></a>
+          <span  class="episode-title" ng-bind="episode_title">{[{ .episode.Title }]}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation ng-hide-add-active" ng-show="episode">
+    <div class="row placeholders">
+      <div class="col-xs-12 col-sm-3 placeholder" ng-repeat="playlist in episode.Playlists track by $index" ng-init="password = 'Password : ' + playlist.password;">
+        <div class="thumbnail">
+          {[{ if .episode.IsURL }]}
+          <a href="{{playlist.sources[0].file}}" target="_blank" >
+            <img ng-src="{{ playlist.image }}" class="img-responsive" alt="{{ playlist.title }}">
+          </a>
+          {[{ else }]}
+            <a href="/watch/{[{.episode.ID}]}/{{$index}}">
+              <img ng-src="{{ playlist.image }}" class="img-responsive" alt="{{ playlist.title }}">
+            </a>
+          {[{ end}]}
+          </div>
+        <div class=""><h4 ng-bind="playlist.title"></h4><p ng-show="playlist.password" ng-bind="password"></p> </div>
+        </div>
+      </div>
+    </div>
+  <div class="table-responsive">
+  </div>
+  </div>
+</div>
+<script type="text/javascript" src="/static/js/watch.js"></script>

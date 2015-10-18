@@ -1,0 +1,145 @@
+package data
+
+import (
+	"github.com/jinzhu/gorm"
+	"strconv"
+	"strings"
+	"time"
+)
+
+type Episode struct {
+	ID        int `gorm:"primary_key"`
+	HashID    string
+	ShowID    int
+	Ep        int
+	Title     string
+	Video     string
+	SrcType   int
+	Date      time.Time
+	ViewCount int
+	Parts     string
+	Password  string
+	Thumbnail string
+	Playlists []Playlist `sql:"-"`
+
+	IsURL bool `sql:"-"`
+
+	CreatedAt time.Time  `json:"-"`
+	UpdatedAt time.Time  `json:"-"`
+	DeletedAt *time.Time `json:"-"`
+}
+
+type Video struct {
+	ID        string
+	Thumbnail string
+	URL       string
+}
+
+type Playlist struct {
+	Title    string   `json:"title"`
+	Image    string   `json:"image"`
+	Sources  []Source `json:"sources"`
+	Password string   `json:"password"`
+}
+
+type Source struct {
+	File string `json:"file"`
+}
+
+func EncryptEpisode(db *gorm.DB) {
+	var episodes []Episode
+	db.Where("hash_id = ?", "").Order("id desc").Find(&episodes)
+	for _, episode := range episodes {
+		episode.HashID = Encrypt(strconv.Itoa(episode.ID))
+		CreatThumbnail(&episode)
+		db.Save(&episode)
+	}
+}
+
+func CreatThumbnail(episode *Episode) {
+	videos := strings.Split(strings.Trim(episode.Video, ","), ",")
+	var videoID string
+	if len(videos) > 0 {
+		videoID = videos[0]
+	}
+	switch episode.SrcType {
+	case 0:
+		episode.Thumbnail = "https://i.ytimg.com/vi/" + videoID + "/0.jpg"
+	case 1:
+		episode.Thumbnail = "http://www.dailymotion.com/thumbnail/video/" + videoID
+	case 13, 14, 15:
+		episode.Thumbnail = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+	default:
+		episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
+	}
+}
+
+func GetEpisodes(db *gorm.DB, id int) (episodes []Episode) {
+	db.Where("banned = 0 AND show_id = ?", id).Order("ep desc, id desc").Limit(40).Find(&episodes)
+	for index := range episodes {
+		episodes[index].Title = GetEpisodeTitle(episodes[index])
+	}
+	return
+}
+
+func GetEpisode(db *gorm.DB, id int) (episode Episode, err error) {
+	err = db.First(&episode, id).Error
+	episode.Title = GetEpisodeTitle(episode)
+	switch episode.SrcType {
+	case 0, 1:
+	case 11, 12, 13, 14, 15:
+		episode.IsURL = true
+	}
+	return
+}
+
+func GetVideoList(db *gorm.DB, hashID string) (episode Episode, err error) {
+	db.Where("hash_id = ?", hashID).First(&episode)
+	episode.Title = GetEpisodeTitle(episode)
+	videos := strings.Split(strings.Trim(episode.Video, ","), ",")
+	lengthVideo := len(videos)
+	for i := range videos {
+		playlist := Playlist{}
+		if episode.Ep < 20000000 {
+			playlist.Title = episode.Title
+		} else {
+			playlist.Title = "วันที่ " + episode.Date.Format(DateLongFMT)
+		}
+
+		if lengthVideo > 1 {
+			playlist.Title = playlist.Title + " Part " + strconv.Itoa(i+1) + "/" + strconv.Itoa(lengthVideo)
+		}
+		videoID := videos[i]
+		source := Source{}
+		switch episode.SrcType {
+		case 0:
+			playlist.Image = "https://i.ytimg.com/vi/" + videoID + "/0.jpg"
+			source.File = "https://www.youtube.com/watch?v=" + videoID
+		case 1:
+			playlist.Image = "http://www.dailymotion.com/thumbnail/video/" + videoID
+			source.File = "http://www.dailymotion.com/embed/video/" + videoID
+		case 11, 12, 13, 14, 15:
+			episode.IsURL = true
+			playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+			playlist.Password = episode.Password
+			source.File = "http://video.mthai.com/cartoon/player/" + videoID + ".html"
+		default:
+			episode.IsURL = true
+			playlist.Image = "http://thumbnail.instardara.com/chrome.jpg"
+			episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
+			source.File = videoID
+		}
+		playlist.Sources = append(playlist.Sources, source)
+		episode.Playlists = append(episode.Playlists, playlist)
+	}
+	return
+}
+
+func GetEpisodeTitle(episode Episode) (title string) {
+	if episode.Ep < 20000000 {
+		title = " EP." + strconv.Itoa(episode.Ep)
+	} else {
+		title = " วันที่ " + episode.Date.Format(DateLongFMT)
+	}
+	return
+}

@@ -1,0 +1,122 @@
+body {
+
+}
+
+.navbar-static-top {
+  margin-bottom: 0px;
+}
+
+footer {
+  padding: 10px 0 30px;
+  text-align: center;
+  font-size: 11px;
+  z-index: 1;
+}
+
+
+.selected-text {
+  background-color: #d0ffd3;
+}
+
+.icon {
+  width: 50px;
+  height: 50px;
+}
+
+.video-player-root {
+  margin-top: -40px;
+  background: transparent url(/static/images/bg-watch-area.png) repeat;
+}
+
+#video-player-section {
+  color: #e6e6e6;
+  margin-top: 60px;
+  /*background: transparent url(/static/images/bg-player.png) 0px 15px no-repeat;*/
+}
+
+/*img {
+  width: 100%;
+}*/
+
+.video-meta {
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.thumbnail {
+  height:100%;
+}
+
+.thumbnail img {
+  max-height:134px;
+  height:134px;
+  width: 100%
+}
+
+.thumbnail .caption {
+    padding: 4px;
+    text-align:center;
+    height:54px;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 12px;
+  color: #444444;
+}
+
+.show-title {
+  font-family: "Flama",Helvetica,Arial,Verdana,sans-serif;
+  font-weight: 500;
+  font-size: 27px;
+  color: #ddd;
+  text-shadow: rgba(0,0,0,0.75) 0px 1px;
+  vertical-align: top;
+  line-height: 32px;
+}
+
+.episode-title {
+  font-family: "Flama",Helvetica,Arial,Verdana,sans-serif;
+  font-weight: 200;
+  line-height: 32px;
+  font-size: 27px;
+  color: #aaa;
+  vertical-align: top;
+  text-shadow: rgba(0,0,0,0.75) 0px 1px;
+  display: block;
+}
+
+.episode-detail {
+  font-family: "Flama",Helvetica,Arial,Verdana,sans-serif;
+  font-weight: 200;
+  line-height: 32px;
+  font-size: 16px;
+  color: #aaa;
+  vertical-align: top;
+  display: block;
+}
+
+/*Sets the visual listbar width to 400 px and realigns it above the icon. */
+ .jw-skin-seven .jw-overlay .jw-playlist-container {
+ 	width:400px;
+ 	left:-20%;
+ }
+
+/* overrides the player settings for how tall the visualplaylist can be. 195px is the about right for a player that is 270px tall, including the controlbar height, and menus. */
+.jwplayer .jw-playlist {
+min-height: none;
+max-height: none;
+height: 195px;
+
+ }
+
+/* Makes it so the list items are left aligned in the visualplaylist */
+ .jwplayer .jw-playlist .jw-option {
+	padding: 0 15px;
+	margin: auto;
+	text-align: left;
+}
+
+.otv-iframe {
+}
