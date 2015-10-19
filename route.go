@@ -35,9 +35,18 @@ func encryptHandler(db gorm.DB, r render.Render) {
 	})
 }
 
+func popularHandler(db gorm.DB, r render.Render) {
+	shows, _ := data.GetShowByPopular(&db)
+	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
+		"Title":  "Popular",
+		"header": "Popular",
+		"shows":  shows,
+	})
+}
+
 func categoryHandler(db gorm.DB, r render.Render) {
 	categories, _ := data.GetCategories(&db)
-	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+	r.HTML(http.StatusOK, "category/list", map[string]interface{}{
 		"header":     "หมวด",
 		"categories": categories,
 	})
@@ -48,7 +57,7 @@ func categoryShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	category, _ := data.GetCategory(&db, titlize)
 	shows, _ := data.GetShowByCategory(&db, category.ID)
 	populars, _ := data.GetShowByCategoryPopular(&db, category.ID)
-	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
 		"Title":    category.Title,
 		"header":   category.Title,
 		"shows":    shows,
@@ -60,7 +69,7 @@ func channelShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	id := params["id"]
 	channel, _ := data.GetChannel(&db, id)
 	shows, _ := data.GetShowByChannel(&db, id)
-	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
 		"Title":  channel.Title,
 		"header": channel.Title,
 		"shows":  shows,
@@ -81,7 +90,7 @@ func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *
 		title = "Search"
 		header = "กรุณาพิมพชื่อเรื่องที่ต้องการค้นหา"
 	}
-	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
 		"Title":   title,
 		"keyword": keyword,
 		"header":  header,

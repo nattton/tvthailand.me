@@ -84,17 +84,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                {[{ if not .categories }]}
+                <li><a href="/popular">ยอดนิยม</a></li>
                 <li><a href="/category/thai-series">ละครไทย</a></li>
                 <li><a href="/category/sitcoms">ซิทคอม</a></li>
-                <li><a href="/category/variety">วาไรตี้</a></li>
-                <li><a href="/category/news">ข่าว</a></li>
-                <li><a href="/category/music">Music</a></li>
+                <li><a href="/category/korea-series">ซีรี่ย์เกาหลี</a></li>
                  <li><a href="/category/cartoons">การ์ตูน</a></li>
                  <li><a href="/categories">หมวดอื่นๆ</a></li>
-                 {[{ end }]}
-                 {[{ range $index, $category := .categories }]}<li><a href="/category/{[{ $category.Titleize }]}">{[{ $category.Title }]}</a></li>
-                 {[{ end }]}
                  <li><a href="/mobile_apps">Mobile Apps</a></li>
           </ul>
           <form class="navbar-form navbar-right" action="/search">

@@ -23,6 +23,22 @@ footer {
   height: 50px;
 }
 
+.icon-section {
+
+}
+
+.icon-section img {
+  margin-left: auto;
+  margin-right: auto;
+    display: block
+}
+
+.category-caption {
+  text-align: center;
+  font-size: 11px;
+  height: 40px;
+}
+
 .video-player-root {
   margin-top: -40px;
   background: transparent url(/static/images/bg-watch-area.png) repeat;
