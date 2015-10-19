@@ -34,7 +34,7 @@
         <div class="col-xs-12 col-sm-3 placeholder">
           <div class="thumbnail">
           {[{ if $.episode.IsURL }]}
-          <a href="" target="_blank" >
+          <a href="{[{ $playlist.File }]}" target="_blank" >
             <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.Title }]}">
           </a>
           {[{ else }]}

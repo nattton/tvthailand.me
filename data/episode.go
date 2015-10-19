@@ -40,6 +40,7 @@ type Playlist struct {
 	Image    string   `json:"image"`
 	Sources  []Source `json:"sources"`
 	Password string   `json:"password"`
+	File     string   `json:"-"`
 }
 
 type Source struct {
@@ -124,6 +125,7 @@ func SetVideoList(episode *Episode) {
 			episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
 			source.File = videoID
 		}
+		playlist.File = source.File
 		playlist.Sources = append(playlist.Sources, source)
 		episode.Playlists = append(episode.Playlists, playlist)
 	}
