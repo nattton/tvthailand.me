@@ -1,13 +1,13 @@
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
   <h1 class="page-header">{[{ .header }]}</h1>
   <div class="row placeholders">
-  {[{ range .categories }]}
+  {[{ range .channels }]}
     <div class="col-xs-4 col-sm-2 placeholder">
       <div class="channel-section">
-      <a href="/category/{[{ .Titleize }]}">
+      <a href="/channel/{[{ .ID }]}/{[{ urlEsc .Title }]}">
       <img src="{[{ .Thumbnail }]}" class="img-responsive" alt="{[{ .Title }]}">
       </a>
-      <div class="channel-caption"><h4>{[{ .Title }]}</h4></div>
+      <div class="channel-caption">{[{ .Title }]}</div>
       </div>
     </div>
   {[{ end }]}

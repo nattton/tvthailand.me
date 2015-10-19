@@ -21,7 +21,7 @@ type Channel struct {
 }
 
 func GetChannels(db *gorm.DB) (channels []Channel, err error) {
-	err = db.Order("order_display").Find(&channels).Error
+	err = db.Where("has_show = ?", true).Order("order_display").Find(&channels).Error
 	for i := range channels {
 		channels[i].Thumbnail = ThumbnailURLChannel + channels[i].Thumbnail
 	}

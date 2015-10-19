@@ -75,6 +75,14 @@ func GetShowByChannel(db *gorm.DB, id string) (shows []Show, err error) {
 	return
 }
 
+func GetShowByChannelPopular(db *gorm.DB, id string) (shows []Show, err error) {
+	err = db.Scopes(ShowScope).Where("channel_id = ?", id).Order("view_count desc").Limit(20).Find(&shows).Error
+	for i := range shows {
+		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+	}
+	return
+}
+
 func GetShowBySearch(db *gorm.DB, keyword string) (shows []Show) {
 	db.Scopes(ShowScope).Where("title LIKE ?", "%"+keyword+"%").Order("title asc").Limit(20).Find(&shows)
 	for i := range shows {

@@ -23,11 +23,7 @@ footer {
   height: 50px;
 }
 
-.icon-section {
-
-}
-
-.icon-section img {
+.channel-section img {
   margin-left: auto;
   margin-right: auto;
     display: block
@@ -38,6 +34,22 @@ footer {
   font-size: 11px;
   height: 40px;
 }
+
+
+.channel-section img {
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block
+}
+
+.channel-caption {
+  text-align: center;
+  font-size: 12px;
+  height: 40px;
+}
+
 
 .video-player-root {
   margin-top: -40px;
@@ -62,18 +74,19 @@ footer {
 
 .thumbnail {
   height:100%;
+  max-height: 186px;
 }
 
 .thumbnail img {
+  max-width:238px;
   max-height:134px;
-  height:134px;
   width: 100%
 }
 
 .thumbnail .caption {
     padding: 4px;
     text-align:center;
-    height:54px;
+    height:58px;
 }
 
 .title {

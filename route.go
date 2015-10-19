@@ -44,7 +44,7 @@ func popularHandler(db gorm.DB, r render.Render) {
 	})
 }
 
-func categoryHandler(db gorm.DB, r render.Render) {
+func categoriesHandler(db gorm.DB, r render.Render) {
 	categories, _ := data.GetCategories(&db)
 	r.HTML(http.StatusOK, "category/list", map[string]interface{}{
 		"header":     "หมวด",
@@ -58,21 +58,31 @@ func categoryShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	shows, _ := data.GetShowByCategory(&db, category.ID)
 	populars, _ := data.GetShowByCategoryPopular(&db, category.ID)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":    category.Title,
-		"header":   category.Title,
-		"shows":    shows,
-		"populars": populars,
+		"Title":        category.Title,
+		"header":       category.Title,
+		"shows":        shows,
+		"showPopulars": populars,
+	})
+}
+
+func channelsHandler(db gorm.DB, r render.Render) {
+	channels, _ := data.GetChannels(&db)
+	r.HTML(http.StatusOK, "channel/list", map[string]interface{}{
+		"header":   "ช่องทีวี",
+		"channels": channels,
 	})
 }
 
 func channelShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	id := params["id"]
 	channel, _ := data.GetChannel(&db, id)
-	shows, _ := data.GetShowByChannel(&db, id)
+	shows, _ := data.GetShowByChannel(&db, channel.ID)
+	populars, _ := data.GetShowByChannelPopular(&db, channel.ID)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":  channel.Title,
-		"header": channel.Title,
-		"shows":  shows,
+		"Title":        channel.Title,
+		"header":       channel.Title,
+		"shows":        shows,
+		"showPopulars": populars,
 	})
 }
 

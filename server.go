@@ -61,9 +61,9 @@ func main() {
 
 	m.Get("/", indexHandler)
 	m.Get("/popular", popularHandler)
-	m.Get("/categories", categoryHandler)
+	m.Get("/categories", categoriesHandler)
 	m.Get("/category/:titlize", categoryShowHandler)
-	// m.Get("/channel", channel)
+	m.Get("/channels", channelsHandler)
 	m.Get("/channel/:id", channelShowHandler)
 	m.Get("/channel/:id/**", channelShowHandler)
 	m.Get("/search", searchShowHandler)
