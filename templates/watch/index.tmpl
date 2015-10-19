@@ -1,4 +1,4 @@
-<div ng-controller="VideoCtrl" ng-init="watch('{[{ .episode.HashID }]}', {[{ .playIndex }]});">
+<div ng-controller="VideoCtrl" ng-init="watch('{[{ .episode.HashID }]}', {[{ .playIndex }]}); episode_title = '{[{ .playlistItem.Title }]}';">
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">
@@ -17,8 +17,8 @@
     <div class="row video-meta">
       <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
         <div class="row video-meta">
-          <a href="{{ show_url }}"><span class="show-title" ng-bind="show_title">{[{ .show.Title }]}</span></a>
-          <span  class="episode-title" ng-bind="episode_title">{[{ .episode.Title }]}</span>
+          <a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}"><span class="show-title">{[{ .show.Title }]}</span></a>
+          <span  class="episode-title" ng-bind="episode_title"></span>
         </div>
       </div>
       <div class="row">
@@ -28,22 +28,30 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation ng-hide-add-active" ng-show="episode">
+  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
     <div class="row placeholders">
-      <div class="col-xs-12 col-sm-3 placeholder" ng-repeat="playlist in episode.Playlists track by $index" ng-init="password = 'Password : ' + playlist.password;">
-        <div class="thumbnail">
-          {[{ if .episode.IsURL }]}
-          <a href="{{playlist.sources[0].file}}" target="_blank" >
-            <img ng-src="{{ playlist.image }}" class="img-responsive" alt="{{ playlist.title }}">
+        {[{ range $index, $playlist := .episode.Playlists }]}
+        <div class="col-xs-12 col-sm-3 placeholder">
+          <div class="thumbnail">
+          {[{ if $.episode.IsURL }]}
+          <a href="" target="_blank" >
+            <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.title }]}">
           </a>
           {[{ else }]}
-            <a href="/watch/{[{.episode.ID}]}/{{$index}}">
-              <img ng-src="{{ playlist.image }}" class="img-responsive" alt="{{ playlist.title }}">
+            <a href="/watch/{[{$.episode.ID}]}/{[{$index}]}/{[{ urlEsc $.episode.Title }]}">
+              <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.Title }]}">
             </a>
-          {[{ end}]}
+          {[{ end }]}
           </div>
-        <div class=""><h4 ng-bind="playlist.title"></h4><p ng-show="playlist.password" ng-bind="password"></p> </div>
+          <div>
+            <h4>{[{ $playlist.Title }]}</h4>
+            {[{ if $playlist.Password }]}
+              <p>{[{ $playlist.Password }]}</p>
+            {[{ end }]}
+          </div>
         </div>
+        {[{ end }]}
+
       </div>
     </div>
   <div class="table-responsive">

@@ -77,37 +77,32 @@ func CreatThumbnail(episode *Episode) {
 func GetEpisodes(db *gorm.DB, id int) (episodes []Episode) {
 	db.Where("banned = 0 AND show_id = ?", id).Order("ep desc, id desc").Limit(40).Find(&episodes)
 	for index := range episodes {
-		episodes[index].Title = GetEpisodeTitle(episodes[index])
+		GetEpisodeTitle(&episodes[index])
 	}
 	return
 }
 
 func GetEpisode(db *gorm.DB, id int) (episode Episode, err error) {
 	err = db.First(&episode, id).Error
-	episode.Title = GetEpisodeTitle(episode)
-	switch episode.SrcType {
-	case 0, 1:
-	case 11, 12, 13, 14, 15:
-		episode.IsURL = true
-	}
+	SetVideoList(&episode)
 	return
 }
 
 func GetVideoList(db *gorm.DB, hashID string) (episode Episode, err error) {
 	db.Where("hash_id = ?", hashID).First(&episode)
-	episode.Title = GetEpisodeTitle(episode)
+	SetVideoList(&episode)
+	return
+}
+
+func SetVideoList(episode *Episode) {
+	GetEpisodeTitle(episode)
 	videos := strings.Split(strings.Trim(episode.Video, ","), ",")
 	lengthVideo := len(videos)
 	for i := range videos {
 		playlist := Playlist{}
-		if episode.Ep < 20000000 {
-			playlist.Title = episode.Title
-		} else {
-			playlist.Title = "วันที่ " + episode.Date.Format(DateLongFMT)
-		}
-
+		playlist.Title = episode.Title
 		if lengthVideo > 1 {
-			playlist.Title = playlist.Title + " Part " + strconv.Itoa(i+1) + "/" + strconv.Itoa(lengthVideo)
+			playlist.Title += " Part " + strconv.Itoa(i+1) + "/" + strconv.Itoa(lengthVideo)
 		}
 		videoID := videos[i]
 		source := Source{}
@@ -118,7 +113,7 @@ func GetVideoList(db *gorm.DB, hashID string) (episode Episode, err error) {
 		case 1:
 			playlist.Image = "http://www.dailymotion.com/thumbnail/video/" + videoID
 			source.File = "http://www.dailymotion.com/embed/video/" + videoID
-		case 11, 12, 13, 14, 15:
+		case 13, 14, 15:
 			episode.IsURL = true
 			playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
 			playlist.Password = episode.Password
@@ -135,15 +130,18 @@ func GetVideoList(db *gorm.DB, hashID string) (episode Episode, err error) {
 	return
 }
 
-func GetEpisodeTitle(episode Episode) (title string) {
+func GetEpisodeTitle(episode *Episode) {
+	var title string
 	if episode.Ep < 20000000 {
-		title = " EP." + strconv.Itoa(episode.Ep)
+		title = "EP." + strconv.Itoa(episode.Ep)
 	} else {
-		title = " วันที่ " + episode.Date.Format(DateLongFMT)
+		title = "วันที่ " + episode.Date.Format(DateLongFMT)
 	}
 
 	if episode.Title != "" {
-		title += " - " + episode.Title
+		episode.Title = title + " - " + episode.Title
+	} else {
+		episode.Title = title
 	}
 	return
 }

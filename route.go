@@ -135,16 +135,20 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params) {
 		goOutHandler(r)
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
+	playlistItem := episode.Playlists[playIndex]
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
-		"Title":     show.Title + " | " + episode.Title,
-		"playIndex": playIndex,
-		"episode":   episode,
+		"Title":        show.Title + " | " + episode.Title,
+		"playIndex":    playIndex,
+		"episode":      episode,
+		"show":         show,
+		"playlistItem": playlistItem,
 	})
 }
 
 func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
 	ua := user_agent.New(req.UserAgent())
-	otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], ua.Mobile())
+	isMobile := ua.Mobile()
+	otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], isMobile)
 	watchID, _ := strconv.Atoi(params["watchID"])
 	playIndex, _ := strconv.Atoi(params["playIndex"])
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
@@ -155,5 +159,6 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 		"otvEpisodePlay": otvEpisodePlay,
 		"playIndex":      playIndex,
 		"watchID":        watchID,
+		"isMobile":       isMobile,
 	})
 }

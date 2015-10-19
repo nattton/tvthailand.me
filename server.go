@@ -8,6 +8,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/api/v1"
 	"html/template"
 	"log"
+	"net/url"
 	"os"
 	"reflect"
 	"strings"
@@ -44,6 +45,11 @@ func main() {
 				},
 			},
 			{
+				"urlEsc": func(a ...string) string {
+					return url.QueryEscape(strings.Join(a, "-"))
+				},
+			},
+			{
 				"toJson": func(a interface{}) string {
 					b, _ := json.Marshal(a)
 					r := strings.NewReplacer("\\", "")
@@ -64,10 +70,10 @@ func main() {
 	m.Get("/show/:id/**", showHandler)
 	m.Get("/show_otv/:id", showOtvHandler)
 	m.Get("/show_otv/:id/**", showOtvHandler)
-	m.Get("/watch/(?P<watchID>[0-9]+)", watchHandler)
 	m.Get("/watch/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchHandler)
-	m.Get("/watch_otv/(?P<watchID>[0-9]+)", watchOtvHandler)
+	m.Get("/watch/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchHandler)
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchOtvHandler)
+	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchOtvHandler)
 	m.Group("/admin", func(r martini.Router) {
 		m.Get("/encrypt", encryptHandler)
 	})
@@ -80,6 +86,9 @@ func main() {
 		r.Get("/episode/:hashID", v1.EpisodeHandler)
 		r.Get("/watch/:hashID", v1.WatchHandler)
 		m.Get("/watch_otv/(?P<watchID>[0-9]+)", v1.WatchOtvHandler)
+	})
+	m.Get("/mobile_apps", func(r render.Render) {
+		r.HTML(200, "static/mobile_apps", nil)
 	})
 	m.Get("/not_found", notFoundHandler)
 	m.NotFound(notFoundHandler)

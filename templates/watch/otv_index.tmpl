@@ -23,12 +23,14 @@
           <a href="/show_otv/{[{ .otvEpisodePlay.EpisodeDetail.EpisodeID }]}">
             <span class="show-title">{[{ .partItem.Title }]}</span>
           </a>
+          {[{ if not .isMobile }]}
           <div  class="episode-detail">{[{ .otvEpisodePlay.EpisodeDetail.Detail }]}</div>
-          <div class="row">
-          <div class="pull-right">
-              <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>
-          </div>
-          </div>
+          {[{ end }]}
+        </div>
+        <div class="row">
+        <div class="pull-right" style="padding-right:30px;">
+            <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>
+        </div>
         </div>
       </div>
     </div>
@@ -39,7 +41,7 @@
       {[{ range $index, $partItem := .otvEpisodePlay.EpisodeDetail.PartItems }]}
       <div class="col-xs-12 col-sm-3 placeholder">
         <div class="thumbnail">
-            <a href="/watch_otv/{[{$.otvEpisodePlay.EpisodeDetail.EpisodeID}]}/{[{$index}]}">
+            <a href="/watch_otv/{[{$.otvEpisodePlay.EpisodeDetail.EpisodeID}]}/{[{$index}]}/{[{ urlEsc $partItem.Title }]}">
               <img src="{[{ $partItem.Cover }]}" class="img-responsive" alt="{[{ $partItem.Title }]}">
             </a>
         </div>

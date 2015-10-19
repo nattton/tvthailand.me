@@ -14,7 +14,7 @@
   {[{ range $index, $episode := .episodes.EpisodeList }]}
     <div class="col-xs-12 col-sm-3 placeholder">
       <div class="thumbnail">
-      <a href="/watch_otv/{[{ $episode.EpisodeID }]}" >
+      <a href="/watch_otv/{[{ $episode.EpisodeID }]}/0/{[{ urlEsc $episode.NameTh $episode.Date }]}" >
       <img src="{[{ $episode.Thumbnail }]}" class="img-responsive" alt="{[{ $episode.NameTh }]}">
       </a>
       <div class="caption"><h4>{[{ $episode.NameTh }]} {[{ $episode.Date }]}</h4></div>
