@@ -69,9 +69,8 @@ func WatchHandler(db gorm.DB, r render.Render, params martini.Params) {
 	})
 }
 
-func WatchOtvHandler(w http.ResponseWriter, params martini.Params, req *http.Request) string {
+func WatchOtvHandler(r render.Render, params martini.Params, req *http.Request) {
 	ua := user_agent.New(req.UserAgent())
-	jsonString := data.GetOTVEpisodePlay(params["watchID"], ua.Mobile())
-	w.WriteHeader(200)
-	return jsonString
+	otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], ua.Mobile())
+	r.JSON(200, otvEpisodePlay)
 }

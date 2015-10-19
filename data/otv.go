@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	OTV_DOMAIN      = "http://api.otv.co.th/api/index.php/v3"
-	OTV_DEVCODE     = "53336900268229151911"
-	OTV_SECRETKEY   = "8540c45823b738220ab09764645e0c82"
-	OTV_APP_ID      = "75"
-	OTV_APP_VERSION = "1.0"
+	OtvDomain     = "http://api.otv.co.th/api/index.php/v3"
+	OtvDevCode    = "53336900268229151911"
+	OtvSecretKey  = "8540c45823b738220ab09764645e0c82"
+	OtvAppID      = "75"
+	OtvAppVersion = "1.0"
 )
 
 type OtvEpisode struct {
@@ -35,8 +35,38 @@ type OtvEpisodeList struct {
 	Date      string `json:"date"`
 }
 
+type OtvEpisodePlay struct {
+	SeasonDetail  OtvSeasonDetail  `json:"season_detail"`
+	Detail        string           `json:"detail"`
+	Title         string           `json:"name_th"`
+	Thumbnail     string           `json:"thumbnail"`
+	EpisodeDetail OtvEpisodeDetail `json:"episode_detail"`
+}
+
+type OtvSeasonDetail struct {
+	ContentSeasonID string `json:"content_season_id"`
+	Title           string `json:"name_th"`
+}
+
+type OtvEpisodeDetail struct {
+	EpisodeID string        `json:"episode_id"`
+	Detail    string        `json:"detail"`
+	Title     string        `json:"name_th"`
+	Thumbnail string        `json:"cover"`
+	Date      string        `json:"date"`
+	PartItems []OtvPartItem `json:"part_items"`
+}
+
+type OtvPartItem struct {
+	ID         string `json:"id"`
+	Title      string `json:"name_th"`
+	IframeHTML string `json:"stream_url"`
+	Cover      string `json:"cover"`
+	Thumbnail  string `json:"thumbnail"`
+}
+
 func GetOTVEpisodelist(contentID string) (otvEpisode OtvEpisode) {
-	apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OTV_DOMAIN, OTV_DEVCODE, OTV_SECRETKEY, OTV_APP_ID, OTV_APP_VERSION, contentID, 0, 50)
+	apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
 	client := &http.Client{
 		Transport: &httpcontrol.Transport{
 			RequestTimeout: time.Minute,
@@ -55,24 +85,30 @@ func GetOTVEpisodelist(contentID string) (otvEpisode OtvEpisode) {
 	err = json.Unmarshal(body, &otvEpisode)
 	if err != nil {
 		fmt.Println("JSON Parser Error : ", apiURL)
-		panic(err)
+	}
+	for index := range otvEpisode.EpisodeList {
+		Date, errT := time.Parse(DateFMT, otvEpisode.EpisodeList[index].Date)
+		if errT != nil {
+			fmt.Println(errT)
+		}
+		otvEpisode.EpisodeList[index].Date = Date.Format(DateLongFMT)
 	}
 	return
 }
 
-func GetOTVEpisodePlay(episodeID string, isMobile bool) string {
+func GetOTVEpisodePlay(episodeID string, isMobile bool) (otvEpisodePlay OtvEpisodePlay) {
 	width := "800"
 	height := "460"
 	if isMobile {
 		width = "320"
 		height = "200"
 	}
-	apiURL := fmt.Sprintf("%s/Episode/oplay", OTV_DOMAIN)
+	apiURL := fmt.Sprintf("%s/Episode/oplay", OtvDomain)
 	formVal := url.Values{
-		"dev_code":    {OTV_DEVCODE},
-		"dev_key":     {OTV_SECRETKEY},
-		"app_id":      {OTV_APP_ID},
-		"app_version": {OTV_APP_VERSION},
+		"dev_code":    {OtvDevCode},
+		"dev_key":     {OtvSecretKey},
+		"app_id":      {OtvAppID},
+		"app_version": {OtvAppVersion},
 		"ep_id":       {episodeID},
 		"width":       {width},
 		"height":      {height},
@@ -92,5 +128,10 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) string {
 	if err != nil {
 		panic(err)
 	}
-	return string(body)
+	err = json.Unmarshal(body, &otvEpisodePlay)
+	if err != nil {
+		fmt.Println("JSON Parser Error : ", apiURL)
+	}
+
+	return
 }

@@ -1,18 +1,4 @@
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
-  <h1 class="page-header">รายการล่าสุด</h1>
-  <div class="row placeholders">
-  {[{ range .showRecents }]}
-    <div class="col-xs-12 col-sm-3 placeholder">
-      <div class="thumbnail">
-      <a href="/show/{[{ .ID }]}/{[{ .Title }]}">
-      <img src="{[{ .Thumbnail }]}" class="img-responsive" alt="{[{ .Title }]}">
-      </a>
-      <div class="caption"><h4>{[{ .Title }]}</h4></div>
-      </div>
-    </div>
-    <div class="clearfix visible-xs-block"></div>
-  {[{ end }]}
-  </div>
   {[{ if .showPopulars }]}
   <h1 class="page-header">Popular</h1>
   {[{ end }]}
@@ -29,6 +15,22 @@
     <div class="clearfix visible-xs-block"></div>
   {[{ end }]}
   </div>
+
+  <h1 class="page-header">รายการล่าสุด</h1>
+  <div class="row placeholders">
+  {[{ range .showRecents }]}
+    <div class="col-xs-12 col-sm-3 placeholder">
+      <div class="thumbnail">
+      <a href="/show/{[{ .ID }]}/{[{ .Title }]}">
+      <img src="{[{ .Thumbnail }]}" class="img-responsive" alt="{[{ .Title }]}">
+      </a>
+      <div class="caption"><h4>{[{ .Title }]}</h4></div>
+      </div>
+    </div>
+    <div class="clearfix visible-xs-block"></div>
+  {[{ end }]}
+  </div>
+  
 <div class="table-responsive">
 </div>
 </div>

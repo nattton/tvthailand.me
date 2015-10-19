@@ -23,7 +23,7 @@
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>{[{ if .Title }]} {[{ .Title }]} {[{ else }]} TV Thailand {[{ end }]}</title>
+    <title id="header-title">{[{ if .Title }]} TV Thailand | {[{ .Title }]} {[{ else }]} TV Thailand | Watch Free Thailand Show {[{ end }]}</title>
 
     <!-- Bootstrap -->
     <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -54,6 +54,23 @@
       ga('send', 'pageview');
 
     </script>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '202355306578303',
+          xfbml      : true,
+          version    : 'v2.5'
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+   </script>
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -91,7 +108,6 @@
    <div class="container-fluid">
      {[{ yield }]}
    </div>
-
       <footer id="footer">
           tvthailand.me © 2015
       </footer>

@@ -4,9 +4,11 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
 	"github.com/code-mobi/tvthailand.me/data"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func indexHandler(db gorm.DB, r render.Render) {
@@ -47,6 +49,7 @@ func categoryShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	shows, _ := data.GetShowByCategory(&db, category.ID)
 	populars, _ := data.GetShowByCategoryPopular(&db, category.ID)
 	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+		"Title":    category.Title,
 		"header":   category.Title,
 		"shows":    shows,
 		"populars": populars,
@@ -58,6 +61,7 @@ func channelShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	channel, _ := data.GetChannel(&db, id)
 	shows, _ := data.GetShowByChannel(&db, id)
 	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+		"Title":  channel.Title,
 		"header": channel.Title,
 		"shows":  shows,
 	})
@@ -68,13 +72,17 @@ func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *
 	keyword := qs.Get("keyword")
 	var shows []data.Show
 	var header string
+	var title string
 	if keyword != "" {
 		shows = data.GetShowBySearch(&db, keyword)
 		header = "ผลการค้นหา : " + keyword
+		title = header
 	} else {
+		title = "Search"
 		header = "กรุณาพิมพชื่อเรื่องที่ต้องการค้นหา"
 	}
 	r.HTML(http.StatusOK, "category_channel", map[string]interface{}{
+		"Title":   title,
 		"keyword": keyword,
 		"header":  header,
 		"shows":   shows,
@@ -104,6 +112,7 @@ func showOtvHandler(db gorm.DB, r render.Render, params martini.Params) {
 func renderShow(db gorm.DB, r render.Render, show data.Show) {
 	episodes := data.GetEpisodes(&db, show.ID)
 	r.HTML(http.StatusOK, "show/index", map[string]interface{}{
+		"Title":    show.Title,
 		"show":     show,
 		"episodes": episodes,
 	})
@@ -112,6 +121,7 @@ func renderShow(db gorm.DB, r render.Render, show data.Show) {
 func renderShowOtv(db gorm.DB, r render.Render, show data.Show) {
 	episodes := data.GetOTVEpisodelist(show.OtvID)
 	r.HTML(http.StatusOK, "show/otv_index", map[string]interface{}{
+		"Title":    show.Title,
 		"show":     show,
 		"episodes": episodes,
 	})
@@ -124,17 +134,26 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params) {
 	if err != nil {
 		goOutHandler(r)
 	}
+	show, err := data.GetShow(&db, episode.ShowID)
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
+		"Title":     show.Title + " | " + episode.Title,
 		"playIndex": playIndex,
 		"episode":   episode,
 	})
 }
 
-func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params) {
+func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
+	ua := user_agent.New(req.UserAgent())
+	otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], ua.Mobile())
 	watchID, _ := strconv.Atoi(params["watchID"])
 	playIndex, _ := strconv.Atoi(params["playIndex"])
+	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
+	partItem.IframeHTML = strings.Replace(strings.Replace(partItem.IframeHTML, "&lt;", "<", -1), "&gt;", ">", -1)
 	r.HTML(http.StatusOK, "watch/otv_index", map[string]interface{}{
-		"playIndex": playIndex,
-		"watchID":   watchID,
+		"Title":          partItem.Title,
+		"partItem":       partItem,
+		"otvEpisodePlay": otvEpisodePlay,
+		"playIndex":      playIndex,
+		"watchID":        watchID,
 	})
 }

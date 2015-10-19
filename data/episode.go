@@ -141,5 +141,9 @@ func GetEpisodeTitle(episode Episode) (title string) {
 	} else {
 		title = " วันที่ " + episode.Date.Format(DateLongFMT)
 	}
+
+	if episode.Title != "" {
+		title += " - " + episode.Title
+	}
 	return
 }
