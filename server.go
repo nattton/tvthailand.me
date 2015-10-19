@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/api/v1"
-	"github.com/go-martini/martini"
-	"github.com/jinzhu/gorm"
-	"github.com/martini-contrib/render"
 	"html/template"
 	"log"
 	"os"
@@ -14,12 +14,19 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
 	db, err := gorm.Open("mysql", os.Getenv("DATABASE_DSN"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.LogMode(true)
 	defer db.Close()
+
+	if martini.Env != "production" {
+		db.LogMode(true)
+	}
 
 	m := martini.Classic()
 	m.Map(db)
@@ -76,5 +83,5 @@ func main() {
 	})
 	m.Get("/not_found", notFoundHandler)
 	m.NotFound(notFoundHandler)
-	m.Run()
+	m.RunOnAddr(":" + port)
 }

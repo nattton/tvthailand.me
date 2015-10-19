@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"strconv"
 	"strings"
 	"time"

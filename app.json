@@ -1,0 +1,12 @@
+{
+  "name": "tvthailand.me",
+  "description": "Web TV Thailand",
+  "keywords": [
+    "tv",
+    "thailand",
+    "tvthailand"
+  ],
+  "image": "heroku/go:1.5",
+  "mount_dir": "src/github.com/code-mobi/tvthailand.me",
+  "website": "http://www.tvthailand.me",
+  "repository": "http://github.com/code-mobi/tvthailand.me"

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/data"
-	"github.com/go-martini/martini"
-	"github.com/jinzhu/gorm"
-	"github.com/martini-contrib/render"
 	"net/http"
 	"strconv"
 )

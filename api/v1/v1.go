@@ -1,11 +1,11 @@
 package v1
 
 import (
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
 	"github.com/code-mobi/tvthailand.me/data"
-	"github.com/go-martini/martini"
-	"github.com/jinzhu/gorm"
-	"github.com/martini-contrib/render"
-	"github.com/mssola/user_agent"
 	"net/http"
 )
 
