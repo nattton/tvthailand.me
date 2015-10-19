@@ -136,14 +136,14 @@ func GetEpisodeTitle(episode *Episode) {
 	var title string
 	if episode.Ep < 20000000 {
 		title = "EP." + strconv.Itoa(episode.Ep)
+		if episode.Title != "" {
+			episode.Title = title + " - " + episode.Title
+		}
 	} else {
 		title = "วันที่ " + episode.Date.Format(DateLongFMT)
-	}
-
-	if episode.Title != "" {
-		episode.Title = title + " - " + episode.Title
-	} else {
-		episode.Title = title
+		if episode.Title != "" {
+			episode.Title = episode.Title + " - " + title
+		}
 	}
 	return
 }
