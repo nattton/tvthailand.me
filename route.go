@@ -12,8 +12,8 @@ import (
 )
 
 func indexHandler(db gorm.DB, r render.Render) {
-	recents, _ := data.GetShowByRecently(&db)
-	populars, _ := data.GetShowByPopular(&db)
+	recents, _ := data.GetShowByRecently(&db, 0)
+	populars, _ := data.GetShowByPopular(&db, 0)
 	r.HTML(http.StatusOK, "index", map[string]interface{}{
 		"showRecents":  recents,
 		"showPopulars": populars,
@@ -35,12 +35,23 @@ func encryptHandler(db gorm.DB, r render.Render) {
 	})
 }
 
-func popularHandler(db gorm.DB, r render.Render) {
-	shows, _ := data.GetShowByPopular(&db)
+func recentlyHandler(db gorm.DB, r render.Render) {
+	shows, _ := data.GetShowByRecently(&db, 0)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":  "Popular",
-		"header": "Popular",
-		"shows":  shows,
+		"Title":   "รายการล่าสุด",
+		"header":  "รายการล่าสุด",
+		"apiPath": "/recently/",
+		"shows":   shows,
+	})
+}
+
+func popularHandler(db gorm.DB, r render.Render) {
+	shows, _ := data.GetShowByPopular(&db, 0)
+	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
+		"Title":   "Popular",
+		"header":  "Popular",
+		"apiPath": "/popular/",
+		"shows":   shows,
 	})
 }
 
@@ -54,14 +65,14 @@ func categoriesHandler(db gorm.DB, r render.Render) {
 
 func categoryShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	titlize := params["titlize"]
+	start, _ := strconv.Atoi(params["start"])
 	category, _ := data.GetCategory(&db, titlize)
-	shows, _ := data.GetShowByCategory(&db, category.ID)
-	populars, _ := data.GetShowByCategoryPopular(&db, category.ID)
+	shows, _ := data.GetShowByCategory(&db, category.ID, start)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":        category.Title,
-		"header":       category.Title,
-		"shows":        shows,
-		"showPopulars": populars,
+		"Title":   category.Title,
+		"header":  category.Title,
+		"apiPath": "/category/" + category.ID + "/",
+		"shows":   shows,
 	})
 }
 
@@ -75,14 +86,14 @@ func channelsHandler(db gorm.DB, r render.Render) {
 
 func channelShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	id := params["id"]
+	start, _ := strconv.Atoi(params["start"])
 	channel, _ := data.GetChannel(&db, id)
-	shows, _ := data.GetShowByChannel(&db, channel.ID)
-	populars, _ := data.GetShowByChannelPopular(&db, channel.ID)
+	shows, _ := data.GetShowByChannel(&db, channel.ID, start)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":        channel.Title,
-		"header":       channel.Title,
-		"shows":        shows,
-		"showPopulars": populars,
+		"Title":   channel.Title,
+		"header":  channel.Title,
+		"apiPath": "/channel/" + channel.ID + "/",
+		"shows":   shows,
 	})
 }
 

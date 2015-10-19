@@ -7,6 +7,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
 	"github.com/code-mobi/tvthailand.me/data"
 	"net/http"
+	"strconv"
 )
 
 func CategoriesHandler(db gorm.DB, r render.Render, params martini.Params) {
@@ -15,17 +16,40 @@ func CategoriesHandler(db gorm.DB, r render.Render, params martini.Params) {
 		r.JSON(http.StatusNotFound, err)
 	}
 	r.JSON(200, map[string]interface{}{
-		"categories": categories,
+		"Categories": categories,
 	})
 }
 
-func CategoryHandler(db gorm.DB, r render.Render, params martini.Params) {
-	shows, err := data.GetShowByCategory(&db, params["id"])
+func RecentlyHandler(db gorm.DB, r render.Render, params martini.Params) {
+	start, _ := strconv.Atoi(params["start"])
+	shows, err := data.GetShowByRecently(&db, start)
 	if err != nil {
 		r.JSON(http.StatusNotFound, err)
 	}
 	r.JSON(200, map[string]interface{}{
-		"shows": shows,
+		"Shows": shows,
+	})
+}
+
+func PopularHandler(db gorm.DB, r render.Render, params martini.Params) {
+	start, _ := strconv.Atoi(params["start"])
+	shows, err := data.GetShowByPopular(&db, start)
+	if err != nil {
+		r.JSON(http.StatusNotFound, err)
+	}
+	r.JSON(200, map[string]interface{}{
+		"Shows": shows,
+	})
+}
+
+func CategoryHandler(db gorm.DB, r render.Render, params martini.Params) {
+	start, _ := strconv.Atoi(params["start"])
+	shows, err := data.GetShowByCategory(&db, params["id"], start)
+	if err != nil {
+		r.JSON(http.StatusNotFound, err)
+	}
+	r.JSON(200, map[string]interface{}{
+		"Shows": shows,
 	})
 }
 
@@ -35,17 +59,18 @@ func ChannelsHandler(db gorm.DB, r render.Render, params martini.Params) {
 		r.JSON(http.StatusNotFound, err)
 	}
 	r.JSON(200, map[string]interface{}{
-		"channels": categories,
+		"Channels": categories,
 	})
 }
 
 func ChannelHandler(db gorm.DB, r render.Render, params martini.Params) {
-	shows, err := data.GetShowByChannel(&db, params["id"])
+	start, _ := strconv.Atoi(params["start"])
+	shows, err := data.GetShowByChannel(&db, params["id"], start)
 	if err != nil {
 		r.JSON(http.StatusNotFound, err)
 	}
 	r.JSON(200, map[string]interface{}{
-		"shows": shows,
+		"Shows": shows,
 	})
 }
 
@@ -64,8 +89,8 @@ func WatchHandler(db gorm.DB, r render.Render, params martini.Params) {
 	}
 	show, _ := data.GetShow(&db, episode.ShowID)
 	r.JSON(200, map[string]interface{}{
-		"show":    show,
-		"episode": episode,
+		"Show":    show,
+		"Episode": episode,
 	})
 }
 

@@ -1,4 +1,4 @@
-tvModule.controller('VideoCtrl', function ($scope, $http, $sce) {
+app.controller('VideoCtrl', function ($scope, $http, $sce) {
   $scope.playYoutube = function(playIndex) {
     var playerInstance = jwplayer("player");
     playerInstance.setup({
@@ -20,7 +20,7 @@ tvModule.controller('VideoCtrl', function ($scope, $http, $sce) {
       $scope.iframeVideo = "Error Loading!"
     }).
     success(function(data){
-      $scope.episode = data.episode;
+      $scope.episode = data.Episode;
       switch ($scope.episode.SrcType) {
         case  0:
           $scope.playYoutube(playIndex);

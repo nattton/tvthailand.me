@@ -1,4 +1,4 @@
-tvModule.controller('VideoCtrl', function ($scope, $http, $sce, $location, $anchorScroll) {
+app.controller('VideoCtrl', function ($scope, $http, $sce, $location, $anchorScroll) {
   $scope.watch = function(id, playIndex) {
     $http.get('/api/v1/watch_otv/' + id, { params: { device: "web" }}).
     error(function(){

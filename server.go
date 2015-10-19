@@ -60,6 +60,7 @@ func main() {
 	}))
 
 	m.Get("/", indexHandler)
+	m.Get("/recently", recentlyHandler)
 	m.Get("/popular", popularHandler)
 	m.Get("/categories", categoriesHandler)
 	m.Get("/category/:titlize", categoryShowHandler)
@@ -80,10 +81,14 @@ func main() {
 	})
 
 	m.Group("/api/v1", func(r martini.Router) {
+		r.Get("/recently/:start", v1.RecentlyHandler)
+		r.Get("/popular/:start", v1.PopularHandler)
 		r.Get("/categories", v1.CategoriesHandler)
 		r.Get("/category/:id", v1.CategoryHandler)
+		r.Get("/category/:id/(?P<start>[0-9]+)", v1.CategoryHandler)
 		r.Get("/channels", v1.ChannelsHandler)
 		r.Get("/channel/:id", v1.ChannelHandler)
+		r.Get("/channel/:id/(?P<start>[0-9]+)", v1.ChannelHandler)
 		r.Get("/episode/:hashID", v1.EpisodeHandler)
 		r.Get("/watch/:hashID", v1.WatchHandler)
 		m.Get("/watch_otv/(?P<watchID>[0-9]+)", v1.WatchOtvHandler)
