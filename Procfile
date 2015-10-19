@@ -1,1 +1,1 @@
-web: ./tvthailand.me
+web: tvthailand.me
