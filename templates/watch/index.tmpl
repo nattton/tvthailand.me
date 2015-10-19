@@ -35,7 +35,7 @@
           <div class="thumbnail">
           {[{ if $.episode.IsURL }]}
           <a href="" target="_blank" >
-            <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.title }]}">
+            <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.Title }]}">
           </a>
           {[{ else }]}
             <a href="/watch/{[{$.episode.ID}]}/{[{$index}]}/{[{ urlEsc $.episode.Title }]}">
