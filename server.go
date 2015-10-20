@@ -24,10 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
-	if martini.Env != "production" {
-		db.LogMode(true)
-	}
+	db.LogMode(martini.Env != "production")
 
 	m := martini.Classic()
 	m.Map(db)
