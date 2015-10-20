@@ -75,6 +75,7 @@ func main() {
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchOtvHandler)
 	m.Group("/admin", func(r martini.Router) {
 		m.Get("/encrypt", encryptHandler)
+		m.Get("/encrypt/:episodeID", encryptHandler)
 	})
 
 	m.Group("/api/v1", func(r martini.Router) {

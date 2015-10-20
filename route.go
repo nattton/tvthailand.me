@@ -29,8 +29,9 @@ func goOutHandler(r render.Render) {
 	r.Redirect("/not_found", http.StatusMovedPermanently)
 }
 
-func encryptHandler(db gorm.DB, r render.Render) {
-	data.EncryptEpisode(&db)
+func encryptHandler(db gorm.DB, r render.Render, params martini.Params) {
+	episodeID, _ := strconv.Atoi(params["episodeID"])
+	data.EncryptEpisode(&db, episodeID)
 	r.HTML(http.StatusOK, "index", map[string]interface{}{
 		"header": "Encrypt Successfully",
 	})

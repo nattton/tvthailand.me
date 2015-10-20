@@ -47,9 +47,15 @@ type Source struct {
 	File string `json:"file"`
 }
 
-func EncryptEpisode(db *gorm.DB) {
+func EncryptEpisode(db *gorm.DB, episodeID int) {
 	var episodes []Episode
-	db.Where("hash_id = ?", "").Order("id desc").Find(&episodes)
+	if episodeID > 0 {
+		episode := Episode{}
+		db.First(&episode, episodeID)
+		episodes = append(episodes, episode)
+	} else {
+		db.Where("hash_id = ?", "").Order("id desc").Find(&episodes)
+	}
 	for _, episode := range episodes {
 		episode.HashID = Encrypt(strconv.Itoa(episode.ID))
 		CreatThumbnail(&episode)
@@ -138,11 +144,15 @@ func GetEpisodeTitle(episode *Episode) {
 		title = "EP." + strconv.Itoa(episode.Ep)
 		if episode.Title != "" {
 			episode.Title = title + " - " + episode.Title
+		} else {
+			episode.Title = title
 		}
 	} else {
 		title = "วันที่ " + episode.Date.Format(DateLongFMT)
 		if episode.Title != "" {
 			episode.Title = episode.Title + " - " + title
+		} else {
+			episode.Title = title
 		}
 	}
 	return
