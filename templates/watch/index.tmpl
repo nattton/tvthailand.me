@@ -1,6 +1,6 @@
 <script src="http://content.jwplatform.com/libraries/0FN4ytgB.js"></script>
 <script>jwplayer.key="SzJyFNDHCWFi/mon3bYLTSncw4BsmOpTYFgwrw==";</script>
-<div ng-controller="VideoCtrl" ng-init="watch('{[{ .episode.HashID }]}', {[{ .playIndex }]}); episode_title = '{[{ .playlistItem.Title }]}';">
+<div ng-controller="VideoCtrl" ng-init="isMobile = {[{ .isMobile }]};watch('{[{ .episode.HashID }]}', {[{ .playIndex }]}); episode_title = '{[{ .playlistItem.Title }]}';">
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">

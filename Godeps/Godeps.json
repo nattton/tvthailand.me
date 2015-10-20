@@ -1,10 +1,16 @@
 {
 	"ImportPath": "github.com/code-mobi/tvthailand.me",
 	"GoVersion": "go1.5",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
+		{
+			"ImportPath": "github.com/PuerkitoBio/goquery",
+			"Comment": "v0.3.2-79-gb444041",
+			"Rev": "b4440419d81240f8451a505b2f806c853bc2befc"
+		},
+		{
+			"ImportPath": "github.com/andybalholm/cascadia",
+			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
+		},
 		{
 			"ImportPath": "github.com/codegangsta/inject",
 			"Comment": "v1.0-rc1-10-g33e0aa1",
@@ -49,6 +55,10 @@
 		{
 			"ImportPath": "github.com/qor/inflection",
 			"Rev": "3272df6c21d04180007eb3349844c89a3856bc25"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "db8e4de5b2d6653f66aea53094624468caad15d2"
 		}
 	]
 }

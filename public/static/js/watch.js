@@ -9,9 +9,17 @@ app.controller('VideoCtrl', function ($scope, $http, $sce) {
       playerInstance.playlistItem(playIndex);
     });
   }
-  $scope.playDailymotion = function(playIndex) {
-    var html = '<iframe class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1" frameborder="0" width="480" height="480" src="' +
-                $scope.episode.Playlists[playIndex].sources[0].file + '" ></iframe>';
+  $scope.playEmbed = function(playIndex) {
+    if ($scope.isMobile) {
+      $scope.embedWidth = 320;
+      $scope.embedHeight = 240;
+    } else {
+      $scope.embedWidth = 800;
+      $scope.embedHeight = 460;
+    }
+    var html = '<iframe class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1" frameborder="0" width="' +
+    $scope.embedWidth + '" height="' + $scope.embedHeight +'" src="' +
+    $scope.episode.Playlists[playIndex].sources[0].file + '" allowfullscreen></iframe>';
     $scope.iframeVideo = $sce.trustAsHtml(html);
   }
   $scope.watch = function(id, playIndex) {
@@ -26,7 +34,12 @@ app.controller('VideoCtrl', function ($scope, $http, $sce) {
           $scope.playYoutube(playIndex);
           break;
         case 1:
-          $scope.playDailymotion(playIndex);
+          $scope.playEmbed(playIndex);
+          break;
+        case 14:
+          if ($scope.IsURL != true) {
+            $scope.playEmbed(playIndex);
+          }
           break;
       }
     });

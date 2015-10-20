@@ -1,0 +1,72 @@
+package data
+
+import (
+	"fmt"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/PuerkitoBio/goquery"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"html"
+	"log"
+	"strings"
+)
+
+const (
+	MThaiURL = "http://video.mthai.com/cool/player/%s.html"
+)
+
+type EmbedVideo struct {
+	ID       int
+	VideoID  string
+	EmbedURL string
+}
+
+func GetEmbedVideo(db *gorm.DB, videoID string) (embedVideo EmbedVideo) {
+	err := db.Where("video_id = ?", videoID).First(&embedVideo).Error
+	if err != nil {
+		embedURL := GetMThaiEmbedURL(videoID)
+		embedVideo = EmbedVideo{VideoID: videoID, EmbedURL: embedURL}
+		db.Create(embedVideo)
+	}
+	return
+}
+
+func InsertMThaiEmbedVideos(db *gorm.DB, showID int) {
+	var episodes []Episode
+	db.Where("src_type = ? AND show_id = ?", 14, showID).Find(&episodes)
+	for _, episode := range episodes {
+		videos := strings.Split(episode.Video, ",")
+		for _, v := range videos {
+			embedVideo := EmbedVideo{}
+			err := db.Where("video_id = ?", v).First(&embedVideo).Error
+			if err != nil {
+				embedURL := GetMThaiEmbedURL(v)
+				embedVideo = EmbedVideo{VideoID: v, EmbedURL: embedURL}
+				db.Create(embedVideo)
+			}
+		}
+	}
+}
+
+func GetMThaiEmbedURL(id string) (iframeURL string) {
+	url := fmt.Sprintf(MThaiURL, id)
+	doc, err := goquery.NewDocument(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var iframe string
+	doc.Find(".input-copy-text").Each(func(i int, s *goquery.Selection) {
+		val, _ := s.Attr("value")
+		if strings.Contains(val, "iframe") && iframe == "" {
+			iframe = val
+		}
+	})
+	iframe = html.UnescapeString(iframe)
+	reader := strings.NewReader(iframe)
+	doc, err = goquery.NewDocumentFromReader(reader)
+	doc.Find("iframe").Each(func(i int, s *goquery.Selection) {
+		val, _ := s.Attr("src")
+		if val != "" {
+			iframeURL = val
+		}
+	})
+	return
+}

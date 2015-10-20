@@ -20,13 +20,13 @@ type Episode struct {
 	Parts     string
 	Password  string
 	Thumbnail string
-	Playlists []Playlist `sql:"-"`
-
-	IsURL bool `sql:"-"`
 
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `json:"-"`
+
+	Playlists []Playlist `sql:"-"`
+	IsURL     bool       `sql:"-"`
 }
 
 type Video struct {
@@ -91,17 +91,17 @@ func GetEpisodes(db *gorm.DB, id int) (episodes []Episode) {
 
 func GetEpisode(db *gorm.DB, id int) (episode Episode, err error) {
 	err = db.First(&episode, id).Error
-	SetVideoList(&episode)
+	SetVideoList(db, &episode)
 	return
 }
 
 func GetVideoList(db *gorm.DB, hashID string) (episode Episode, err error) {
 	db.Where("hash_id = ?", hashID).First(&episode)
-	SetVideoList(&episode)
+	SetVideoList(db, &episode)
 	return
 }
 
-func SetVideoList(episode *Episode) {
+func SetVideoList(db *gorm.DB, episode *Episode) {
 	GetEpisodeTitle(episode)
 	videos := strings.Split(strings.Trim(episode.Video, ","), ",")
 	lengthVideo := len(videos)
@@ -120,11 +120,19 @@ func SetVideoList(episode *Episode) {
 		case 1:
 			playlist.Image = "http://www.dailymotion.com/thumbnail/video/" + videoID
 			source.File = "http://www.dailymotion.com/embed/video/" + videoID
-		case 13, 14, 15:
-			episode.IsURL = true
+		case 14:
+			playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+			if embedVideo := GetEmbedVideo(db, videoID); embedVideo.EmbedURL != "" {
+				source.File = embedVideo.EmbedURL
+			} else {
+				episode.IsURL = true
+				source.File = "http://video.mthai.com/cool/player/" + videoID + ".html"
+			}
+		case 13, 15:
 			playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
 			playlist.Password = episode.Password
-			source.File = "http://video.mthai.com/cartoon/player/" + videoID + ".html"
+			source.File = "http://video.mthai.com/cool/player/" + videoID + ".html"
+			episode.IsURL = true
 		default:
 			episode.IsURL = true
 			playlist.Image = "http://thumbnail.instardara.com/chrome.jpg"

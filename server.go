@@ -5,6 +5,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
+	"github.com/code-mobi/tvthailand.me/admin"
 	"github.com/code-mobi/tvthailand.me/api/v1"
 	"html/template"
 	"log"
@@ -74,8 +75,9 @@ func main() {
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchOtvHandler)
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchOtvHandler)
 	m.Group("/admin", func(r martini.Router) {
-		m.Get("/encrypt", encryptHandler)
-		m.Get("/encrypt/:episodeID", encryptHandler)
+		m.Get("/encrypt", admin.EncryptHandler)
+		m.Get("/encrypt/:episodeID", admin.EncryptHandler)
+		m.Get("/mthai_embed/(?P<showID>[0-9]+)", admin.GetEmbedMThaiHandler)
 	})
 
 	m.Group("/api/v1", func(r martini.Router) {

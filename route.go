@@ -6,9 +6,9 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
 	"github.com/code-mobi/tvthailand.me/data"
+	"html"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func indexHandler(db gorm.DB, r render.Render, req *http.Request) {
@@ -27,14 +27,6 @@ func notFoundHandler(r render.Render) {
 
 func goOutHandler(r render.Render) {
 	r.Redirect("/not_found", http.StatusMovedPermanently)
-}
-
-func encryptHandler(db gorm.DB, r render.Render, params martini.Params) {
-	episodeID, _ := strconv.Atoi(params["episodeID"])
-	data.EncryptEpisode(&db, episodeID)
-	r.HTML(http.StatusOK, "index", map[string]interface{}{
-		"header": "Encrypt Successfully",
-	})
 }
 
 func recentlyHandler(db gorm.DB, r render.Render, req *http.Request) {
@@ -173,6 +165,11 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
 		playIndex = maxIndex
 	}
+
+	if playIndex == -1 {
+		r.Redirect("/not_found", http.StatusMovedPermanently)
+	}
+
 	playlistItem := episode.Playlists[playIndex]
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
 		"Title":        show.Title + " | " + episode.Title,
@@ -193,8 +190,13 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 	if maxIndex := len(otvEpisodePlay.EpisodeDetail.PartItems) - 1; maxIndex < playIndex {
 		playIndex = maxIndex
 	}
+
+	if playIndex == -1 {
+		r.Redirect("/not_found", http.StatusMovedPermanently)
+	}
+
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
-	partItem.IframeHTML = strings.Replace(strings.Replace(partItem.IframeHTML, "&lt;", "<", -1), "&gt;", ">", -1)
+	partItem.IframeHTML = html.UnescapeString(partItem.IframeHTML)
 	r.HTML(http.StatusOK, "watch/otv_index", map[string]interface{}{
 		"Title":          partItem.Title,
 		"partItem":       partItem,
