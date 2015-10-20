@@ -1,4 +1,4 @@
-<div ng-controller="VideoCtrl" ng-init="">
+<div ng-controller="" ng-init="">
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">
@@ -20,8 +20,8 @@
     <div class="row video-meta">
       <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
         <div class="row video-meta">
-          <a href="/show_otv/{[{ .otvEpisodePlay.EpisodeDetail.EpisodeID }]}">
-            <span class="show-title">{[{ .partItem.Title }]}</span>
+          <a href="/show_otv/{[{ .otvEpisodePlay.SeasonDetail.ContentSeasonID }]}/{[{ urlEsc .otvEpisodePlay.SeasonDetail.Title }]}">
+            <span class="show-title">{[{ .otvEpisodePlay.SeasonDetail.Title }]}</span>
           </a>
           {[{ if not .isMobile }]}
           <div  class="episode-detail">{[{ .otvEpisodePlay.EpisodeDetail.Detail }]}</div>
