@@ -37,6 +37,9 @@
     <![endif]-->
 
     <link href="/static/css/base.css" rel="stylesheet">
+    {[{ if .isMobile }]}
+    <link href="/static/css/mobile.css" rel="stylesheet">
+    {[{ end }]}
     <!-- <script src="/bower_components/angular/angular.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <script src="/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js"></script>
@@ -103,8 +106,6 @@
       </div>
     </nav>
    <div class="container-fluid">
-     {[{ template "mobile_ads" . }]}
-
      {[{ yield }]}
    </div>
    {[{ template "mobile_ads" . }]}
