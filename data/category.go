@@ -23,7 +23,7 @@ type Category struct {
 var CategoriesMenu []Category
 
 func GetCategories(db *gorm.DB) (categories []Category, err error) {
-	err = db.Find(&categories).Error
+	err = db.Scopes(CategoryScope).Find(&categories).Error
 	for i := range categories {
 		categories[i].Thumbnail = ThumbnailURLCategory + categories[i].Thumbnail
 	}
@@ -37,4 +37,8 @@ func GetCategory(db *gorm.DB, titlize string) (category Category, err error) {
 	}
 	category.Thumbnail = ThumbnailURLCategory + category.Thumbnail
 	return
+}
+
+func CategoryScope(db *gorm.DB) *gorm.DB {
+	return db.Where("is_online = ?", true)
 }

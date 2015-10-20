@@ -92,5 +92,5 @@ func GetShowBySearch(db *gorm.DB, keyword string) (shows []Show) {
 }
 
 func ShowScope(db *gorm.DB) *gorm.DB {
-	return db.Where("is_online = 1 AND build_max > 1000")
+	return db.Where("is_online = ? AND build_max > ?", true, 1000)
 }
