@@ -171,12 +171,20 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 	}
 
 	playlistItem := episode.Playlists[playIndex]
+	var embedURL string
+	if !episode.IsURL {
+		switch episode.SrcType {
+		case 1, 14:
+			embedURL = playlistItem.Sources[0].File
+		}
+	}
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
 		"Title":        show.Title + " | " + episode.Title,
 		"playIndex":    playIndex,
 		"episode":      episode,
 		"show":         show,
 		"playlistItem": playlistItem,
+		"embedURL":     embedURL,
 		"isMobile":     user_agent.New(req.UserAgent()).Mobile(),
 	})
 }
