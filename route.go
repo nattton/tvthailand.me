@@ -11,12 +11,13 @@ import (
 	"strings"
 )
 
-func indexHandler(db gorm.DB, r render.Render) {
+func indexHandler(db gorm.DB, r render.Render, req *http.Request) {
 	recents, _ := data.GetShowByRecently(&db, 0)
 	populars, _ := data.GetShowByPopular(&db, 0)
 	r.HTML(http.StatusOK, "index", map[string]interface{}{
 		"showRecents":  recents,
 		"showPopulars": populars,
+		"isMobile":     user_agent.New(req.UserAgent()).Mobile(),
 	})
 }
 
@@ -35,31 +36,34 @@ func encryptHandler(db gorm.DB, r render.Render) {
 	})
 }
 
-func recentlyHandler(db gorm.DB, r render.Render) {
+func recentlyHandler(db gorm.DB, r render.Render, req *http.Request) {
 	shows, _ := data.GetShowByRecently(&db, 0)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":   "รายการล่าสุด",
-		"header":  "รายการล่าสุด",
-		"apiPath": "/recently/",
-		"shows":   shows,
+		"Title":    "รายการล่าสุด",
+		"header":   "รายการล่าสุด",
+		"apiPath":  "/recently/",
+		"shows":    shows,
+		"isMobile": user_agent.New(req.UserAgent()).Mobile(),
 	})
 }
 
-func popularHandler(db gorm.DB, r render.Render) {
+func popularHandler(db gorm.DB, r render.Render, req *http.Request) {
 	shows, _ := data.GetShowByPopular(&db, 0)
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":   "Popular",
-		"header":  "Popular",
-		"apiPath": "/popular/",
-		"shows":   shows,
+		"Title":    "Popular",
+		"header":   "Popular",
+		"apiPath":  "/popular/",
+		"shows":    shows,
+		"isMobile": user_agent.New(req.UserAgent()).Mobile(),
 	})
 }
 
-func categoriesHandler(db gorm.DB, r render.Render) {
+func categoriesHandler(db gorm.DB, r render.Render, req *http.Request) {
 	categories, _ := data.GetCategories(&db)
 	r.HTML(http.StatusOK, "category/list", map[string]interface{}{
 		"header":     "หมวด",
 		"categories": categories,
+		"isMobile":   user_agent.New(req.UserAgent()).Mobile(),
 	})
 }
 
@@ -157,7 +161,7 @@ func renderShowOtv(db gorm.DB, r render.Render, show data.Show) {
 	})
 }
 
-func watchHandler(db gorm.DB, r render.Render, params martini.Params) {
+func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
 	watchID, _ := strconv.Atoi(params["watchID"])
 	playIndex, _ := strconv.Atoi(params["playIndex"])
 	episode, err := data.GetEpisode(&db, watchID)
@@ -172,6 +176,7 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params) {
 		"episode":      episode,
 		"show":         show,
 		"playlistItem": playlistItem,
+		"isMobile":     user_agent.New(req.UserAgent()).Mobile(),
 	})
 }
 
