@@ -169,6 +169,9 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 		goOutHandler(r)
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
+	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
+		playIndex = maxIndex
+	}
 	playlistItem := episode.Playlists[playIndex]
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
 		"Title":        show.Title + " | " + episode.Title,
@@ -186,6 +189,9 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 	otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], isMobile)
 	watchID, _ := strconv.Atoi(params["watchID"])
 	playIndex, _ := strconv.Atoi(params["playIndex"])
+	if maxIndex := len(otvEpisodePlay.EpisodeDetail.PartItems) - 1; maxIndex < playIndex {
+		playIndex = maxIndex
+	}
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
 	partItem.IframeHTML = strings.Replace(strings.Replace(partItem.IframeHTML, "&lt;", "<", -1), "&gt;", ">", -1)
 	r.HTML(http.StatusOK, "watch/otv_index", map[string]interface{}{
