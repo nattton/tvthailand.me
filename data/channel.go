@@ -35,5 +35,5 @@ func GetChannel(db *gorm.DB, id string) (channel Channel, err error) {
 }
 
 func ChannelScope(db *gorm.DB) *gorm.DB {
-	return db.Where("is_online = ? AND has_show = ?", true, true)
+	return db.Where("is_online = ?", true)
 }

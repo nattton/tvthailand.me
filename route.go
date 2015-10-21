@@ -90,6 +90,7 @@ func channelShowHandler(db gorm.DB, r render.Render, params martini.Params) {
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
 		"Title":   channel.Title,
 		"header":  channel.Title,
+		"channel": channel,
 		"apiPath": "/channel/" + channel.ID + "/",
 		"shows":   shows,
 	})
@@ -179,11 +180,14 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 			embedURL = playlistItem.Sources[0].File
 		}
 	}
+
+	episodes := data.GetEpisodes(&db, show.ID)
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
 		"Title":        show.Title + " | " + episode.Title,
 		"playIndex":    playIndex,
 		"episode":      episode,
 		"show":         show,
+		"episodes":     episodes,
 		"playlistItem": playlistItem,
 		"embedURL":     embedURL,
 		"isMobile":     utils.IsMobile(req.UserAgent()),

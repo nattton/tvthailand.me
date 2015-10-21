@@ -5,6 +5,38 @@
       <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>
   </div>
   </div>
+  {[{ if .channel.URL }]}
+  <div class="row">
+    <div id="video-player-section" class="z-index-layer-2 watch-page">
+      <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+      <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
+        <div class="video-player-root">
+          <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
+            <h2 style="color:#000;">Live TV</h4>
+            <link rel="stylesheet" href="//releases.flowplayer.org/6.0.3/skin/functional.css">
+            <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+
+            <div class="player">
+               <video>
+                  <source type="application/x-mpegurl"  src="{[{ .channel.URL }]}">
+               </video>
+            </div>
+            <script>
+            $(function () {
+               $(".player").flowplayer({
+                 autoplay: true,
+                 embed: false
+               });
+            });
+            </script>
+
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+  </div>
+  {[{ end }]}
   <div ng-hide="shows.length">
   <div class="row placeholders">
   {[{ range .shows }]}
