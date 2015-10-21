@@ -7,6 +7,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/admin"
 	"github.com/code-mobi/tvthailand.me/api/v1"
+	"html"
 	"html/template"
 	"log"
 	"net/url"
@@ -40,6 +41,11 @@ func main() {
 			{
 				"last": func(x int, a interface{}) bool {
 					return x == reflect.ValueOf(a).Len()-1
+				},
+			},
+			{
+				"escStr": func(a ...string) string {
+					return html.EscapeString(strings.Join(a, "-"))
 				},
 			},
 			{

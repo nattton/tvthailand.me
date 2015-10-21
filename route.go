@@ -210,12 +210,18 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 		partItem.IframeHTML = strings.Replace(partItem.IframeHTML, "/v/", "/playlist/", 1)
 	}
 
+	otvID, _ := strconv.Atoi(otvEpisodePlay.SeasonDetail.ContentSeasonID)
+	show, _ := data.GetShowByOtv(&db, otvID)
+
+	_, episodes := data.GetOTVEpisodelist(show.OtvID)
 	r.HTML(http.StatusOK, "watch/otv_index", map[string]interface{}{
 		"Title":          partItem.Title,
 		"partItem":       partItem,
 		"otvEpisodePlay": otvEpisodePlay,
 		"playIndex":      playIndex,
 		"watchID":        watchID,
+		"show":           show,
+		"episodes":       episodes,
 		"isMobile":       isMobile,
 	})
 }

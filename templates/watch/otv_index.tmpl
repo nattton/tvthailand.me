@@ -20,7 +20,7 @@
     <div class="row video-meta">
       <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
         <div class="row video-meta">
-          <a href="/show_otv/{[{ .otvEpisodePlay.SeasonDetail.ContentSeasonID }]}/{[{ urlEsc .otvEpisodePlay.SeasonDetail.Title }]}">
+          <a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}">
             <span class="show-title">{[{ .otvEpisodePlay.SeasonDetail.Title }]}</span>
           </a>
           {[{ if not .isMobile }]}
