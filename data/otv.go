@@ -65,7 +65,7 @@ type OtvPartItem struct {
 	Thumbnail  string `json:"thumbnail"`
 }
 
-func GetOTVEpisodelist(contentID string) (otvEpisode OtvEpisode) {
+func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpisode) {
 	apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
 	client := &http.Client{
 		Transport: &httpcontrol.Transport{
@@ -78,11 +78,11 @@ func GetOTVEpisodelist(contentID string) (otvEpisode OtvEpisode) {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	responseBody, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
-	err = json.Unmarshal(body, &otvEpisode)
+	err = json.Unmarshal(responseBody, &otvEpisode)
 	if err != nil {
 		fmt.Println("JSON Parser Error : ", apiURL)
 	}
@@ -96,9 +96,9 @@ func GetOTVEpisodelist(contentID string) (otvEpisode OtvEpisode) {
 	return
 }
 
-func GetOTVEpisodePlay(episodeID string, isMobile bool) (otvEpisodePlay OtvEpisodePlay) {
+func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, otvEpisodePlay OtvEpisodePlay) {
 	width := "800"
-	height := "460"
+	height := "340"
 	if isMobile {
 		width = "320"
 		height = "200"
@@ -110,6 +110,8 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) (otvEpisodePlay OtvEpiso
 		"app_id":      {OtvAppID},
 		"app_version": {OtvAppVersion},
 		"ep_id":       {episodeID},
+		"ep_prev":     {"2"},
+		"ep_next":     {"2"},
 		"width":       {width},
 		"height":      {height},
 	}
@@ -124,11 +126,11 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) (otvEpisodePlay OtvEpiso
 		panic(err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	responseBody, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
-	err = json.Unmarshal(body, &otvEpisodePlay)
+	err = json.Unmarshal(responseBody, &otvEpisodePlay)
 	if err != nil {
 		fmt.Println("JSON Parser Error : ", apiURL)
 	}

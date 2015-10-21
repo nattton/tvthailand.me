@@ -4,11 +4,12 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
 	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func indexHandler(db gorm.DB, r render.Render, req *http.Request) {
@@ -17,7 +18,7 @@ func indexHandler(db gorm.DB, r render.Render, req *http.Request) {
 	r.HTML(http.StatusOK, "index", map[string]interface{}{
 		"showRecents":  recents,
 		"showPopulars": populars,
-		"isMobile":     user_agent.New(req.UserAgent()).Mobile(),
+		"isMobile":     utils.IsMobile(req.UserAgent()),
 	})
 }
 
@@ -36,7 +37,7 @@ func recentlyHandler(db gorm.DB, r render.Render, req *http.Request) {
 		"header":   "รายการล่าสุด",
 		"apiPath":  "/recently/",
 		"shows":    shows,
-		"isMobile": user_agent.New(req.UserAgent()).Mobile(),
+		"isMobile": utils.IsMobile(req.UserAgent()),
 	})
 }
 
@@ -47,7 +48,7 @@ func popularHandler(db gorm.DB, r render.Render, req *http.Request) {
 		"header":   "Popular",
 		"apiPath":  "/popular/",
 		"shows":    shows,
-		"isMobile": user_agent.New(req.UserAgent()).Mobile(),
+		"isMobile": utils.IsMobile(req.UserAgent()),
 	})
 }
 
@@ -56,7 +57,7 @@ func categoriesHandler(db gorm.DB, r render.Render, req *http.Request) {
 	r.HTML(http.StatusOK, "category/list", map[string]interface{}{
 		"header":     "หมวด",
 		"categories": categories,
-		"isMobile":   user_agent.New(req.UserAgent()).Mobile(),
+		"isMobile":   utils.IsMobile(req.UserAgent()),
 	})
 }
 
@@ -146,7 +147,7 @@ func renderShow(db gorm.DB, r render.Render, show data.Show) {
 }
 
 func renderShowOtv(db gorm.DB, r render.Render, show data.Show) {
-	episodes := data.GetOTVEpisodelist(show.OtvID)
+	_, episodes := data.GetOTVEpisodelist(show.OtvID)
 	r.HTML(http.StatusOK, "show/otv_index", map[string]interface{}{
 		"Title":    show.Title,
 		"show":     show,
@@ -185,14 +186,14 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 		"show":         show,
 		"playlistItem": playlistItem,
 		"embedURL":     embedURL,
-		"isMobile":     user_agent.New(req.UserAgent()).Mobile(),
+		"isMobile":     utils.IsMobile(req.UserAgent()),
 	})
 }
 
 func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
-	ua := user_agent.New(req.UserAgent())
-	isMobile := ua.Mobile()
-	otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], isMobile)
+	isMobile := utils.IsMobile(req.UserAgent())
+	_, otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], isMobile)
+
 	watchID, _ := strconv.Atoi(params["watchID"])
 	playIndex, _ := strconv.Atoi(params["playIndex"])
 	if maxIndex := len(otvEpisodePlay.EpisodeDetail.PartItems) - 1; maxIndex < playIndex {
@@ -205,6 +206,10 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
 	partItem.IframeHTML = html.UnescapeString(partItem.IframeHTML)
+	if !isMobile {
+		partItem.IframeHTML = strings.Replace(partItem.IframeHTML, "/v/", "/playlist/", 1)
+	}
+
 	r.HTML(http.StatusOK, "watch/otv_index", map[string]interface{}{
 		"Title":          partItem.Title,
 		"partItem":       partItem,
