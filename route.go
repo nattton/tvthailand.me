@@ -8,6 +8,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -121,7 +122,7 @@ func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *
 func showHandler(db gorm.DB, r render.Render, params martini.Params) {
 	showID, _ := strconv.Atoi(params["id"])
 	show, _ := data.GetShow(&db, showID)
-	if show.IsOtv {
+	if show.IsOtv && (os.Getenv("WATCH_OTV") == "1" || show.ChannelID == 3) {
 		renderShowOtv(db, r, show)
 	} else {
 		renderShow(db, r, show)

@@ -8,6 +8,8 @@ import (
 
 type Show struct {
 	ID          int `gorm:"primary_key"`
+	CategoryID  int
+	ChannelID   int
 	Title       string
 	Description string
 	Thumbnail   string
