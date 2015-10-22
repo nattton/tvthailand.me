@@ -74,6 +74,8 @@ func main() {
 	m.Get("/search", searchShowHandler)
 	m.Get("/show/:id", showHandler)
 	m.Get("/show/:id/**", showHandler)
+	m.Get("/show_tv/:id", showTvHandler)
+	m.Get("/show_tv/:id/**", showTvHandler)
 	m.Get("/show_otv/:id", showOtvHandler)
 	m.Get("/show_otv/:id/**", showOtvHandler)
 	m.Get("/watch/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchHandler)

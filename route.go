@@ -129,6 +129,12 @@ func showHandler(db gorm.DB, r render.Render, params martini.Params) {
 	}
 }
 
+func showTvHandler(db gorm.DB, r render.Render, params martini.Params) {
+	showID, _ := strconv.Atoi(params["id"])
+	show, _ := data.GetShow(&db, showID)
+	renderShow(db, r, show)
+}
+
 func showOtvHandler(db gorm.DB, r render.Render, params martini.Params) {
 	otvID, _ := strconv.Atoi(params["id"])
 	show, _ := data.GetShowByOtv(&db, otvID)
