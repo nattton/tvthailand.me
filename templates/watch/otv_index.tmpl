@@ -1,4 +1,4 @@
-<div ng-controller="" ng-init="">
+<div>
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">
@@ -6,7 +6,7 @@
       <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
         <div class="video-player-root">
           <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
-            <div class="otv-iframe" ng-bind-html="iframeVideo">
+            <div class="otv-iframe">
               <script>
               document.write({[{ .partItem.IframeHTML }]})
               </script>
@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation ng-hide-add-active">
+  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
     <div class="row placeholders">
       {[{ range $index, $partItem := .otvEpisodePlay.EpisodeDetail.PartItems }]}
       <div class="col-xs-12 col-sm-3 placeholder">
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation ng-hide-add-active">
+    <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation">
       <h1 class="page-header"><a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}">EPISODES &gt;</a></h1>
     <div class="row placeholders">
     {[{ range $index, $episode := .episodes.EpisodeList }]}
