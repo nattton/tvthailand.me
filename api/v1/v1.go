@@ -74,12 +74,21 @@ func ChannelHandler(db gorm.DB, r render.Render, params martini.Params) {
 	})
 }
 
-func EpisodeHandler(db gorm.DB, r render.Render, params martini.Params) {
-	episode, err := data.GetVideoList(&db, params["hashID"])
+func ShowHandler(db gorm.DB, r render.Render, params martini.Params) {
+	start, _ := strconv.Atoi(params["start"])
+	showID, _ := strconv.Atoi(params["show_id"])
+	show, err := data.GetShow(&db, showID)
 	if err != nil {
 		r.JSON(http.StatusNotFound, err)
 	}
-	r.JSON(200, episode)
+	episodes, err := data.GetEpisodes(&db, show.ID, start)
+	if err != nil {
+		r.JSON(http.StatusNotFound, err)
+	}
+	r.JSON(200, map[string]interface{}{
+		"Show":     show,
+		"Episodes": episodes,
+	})
 }
 
 func WatchHandler(db gorm.DB, r render.Render, params martini.Params) {

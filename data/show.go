@@ -8,19 +8,19 @@ import (
 
 type Show struct {
 	ID          int `gorm:"primary_key"`
-	CategoryID  int
-	ChannelID   int
+	CategoryID  int `json:"-"`
+	ChannelID   int `json:"-"`
 	Title       string
 	Description string
 	Thumbnail   string
 	Poster      string
-	Detail      string
+	Detail      string `json:"-"`
 	LastEpname  string
-	ViewCount   int
-	Rating      float32
-	VoteCount   int
-	IsOtv       bool
-	OtvID       string
+	ViewCount   int     `json:"-"`
+	Rating      float32 `json:"-"`
+	VoteCount   int     `json:"-"`
+	IsOtv       bool    `json:"-"`
+	OtvID       string  `json:"-"`
 
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
@@ -29,6 +29,7 @@ type Show struct {
 
 func GetShow(db *gorm.DB, id int) (show Show, err error) {
 	err = db.First(&show, id).Error
+	show.Thumbnail = ThumbnailURLTv + show.Thumbnail
 	return
 }
 

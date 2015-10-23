@@ -8,25 +8,25 @@ import (
 )
 
 type Episode struct {
-	ID        int `gorm:"primary_key"`
-	HashID    string
-	ShowID    int
-	Ep        int
+	ID        int    `gorm:"primary_key"`
+	HashID    string `json:"-"`
+	ShowID    int    `json:"-"`
+	Ep        int    `json:"-"`
 	Title     string
-	Video     string
+	Video     string `json:"-"`
 	SrcType   int
-	Date      time.Time
-	ViewCount int
-	Parts     string
-	Password  string
+	Date      time.Time `json:"-"`
+	ViewCount int       `json:"-"`
+	Parts     string    `json:"-"`
+	Password  string    `json:"-"`
 	Thumbnail string
 
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `json:"-"`
 
-	Playlists []Playlist `sql:"-"`
-	IsURL     bool       `sql:"-"`
+	Playlists []Playlist `sql:"-" json:",omitempty"`
+	IsURL     bool       `sql:"-" json:"-"`
 }
 
 type Video struct {
@@ -81,8 +81,8 @@ func CreatThumbnail(episode *Episode) {
 	}
 }
 
-func GetEpisodes(db *gorm.DB, id int) (episodes []Episode) {
-	db.Where("banned = 0 AND show_id = ?", id).Order("ep desc, id desc").Limit(40).Find(&episodes)
+func GetEpisodes(db *gorm.DB, showID int, start int) (episodes []Episode, err error) {
+	err = db.Where("banned = 0 AND show_id = ?", showID).Order("ep desc, id desc").Offset(start).Limit(20).Find(&episodes).Error
 	for index := range episodes {
 		GetEpisodeTitle(&episodes[index])
 	}

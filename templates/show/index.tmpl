@@ -1,5 +1,6 @@
-<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main" ng-controller="VideoCtrl" ng-init="showID = '{[{ .show.ID }]}';">
   <h1 class="page-header">{[{ .show.Title }]}</h1>
+  <div ng-hide="episodes.length">
   <div class="row placeholders">
   {[{ range $index, $episode := .episodes }]}
     <div class="col-xs-12 col-sm-3 placeholder">
@@ -12,6 +13,23 @@
     </div>
   {[{ end }]}
   </div>
+  </div>
+
+  <div ng-show="episodes.length">
+  <div infinite-scroll="nextPage()" infinite-scroll-disabled='busy' infinite-scroll-distance="0">
+    <div class="row placeholders">
+      <div class="col-xs-12 col-sm-3 placeholder" ng-repeat="episode in episodes">
+        <div class="thumbnail">
+        <a href="/watch/{{episode.ID}}/0/{{episode.Title|urlencode}}">
+        <img ng-src="{{episode.Thumbnail}}" class="img-responsive" alt="{{episode.Title}}" />
+        </a>
+        <div class="caption"><h4>{{episode.Title}}</h4></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
   <div class="table-responsive">
   </div>
   <div class="row">
@@ -20,3 +38,4 @@
   </div>
   </div>
 </div>
+<script src="/static/js/show.js"></script>

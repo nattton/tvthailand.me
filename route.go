@@ -146,7 +146,7 @@ func showOtvHandler(db gorm.DB, r render.Render, params martini.Params) {
 }
 
 func renderShow(db gorm.DB, r render.Render, show data.Show) {
-	episodes := data.GetEpisodes(&db, show.ID)
+	episodes, _ := data.GetEpisodes(&db, show.ID, 0)
 	r.HTML(http.StatusOK, "show/index", map[string]interface{}{
 		"Title":    show.Title,
 		"show":     show,
@@ -188,7 +188,7 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 		}
 	}
 
-	episodes := data.GetEpisodes(&db, show.ID)
+	episodes, _ := data.GetEpisodes(&db, show.ID, 0)
 	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
 		"Title":        show.Title + " | " + episode.Title,
 		"playIndex":    playIndex,
