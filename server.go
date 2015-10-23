@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/auth"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/admin"
 	"github.com/code-mobi/tvthailand.me/api/v1"
@@ -63,6 +64,10 @@ func main() {
 		},
 	}))
 
+	authAdmin := auth.BasicFunc(func(username, password string) bool {
+		return auth.SecureCompare(username, "saly") && auth.SecureCompare(password, "admin888")
+	})
+
 	m.Get("/", indexHandler)
 	m.Get("/recently", recentlyHandler)
 	m.Get("/popular", popularHandler)
@@ -83,9 +88,10 @@ func main() {
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchOtvHandler)
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchOtvHandler)
 	m.Group("/admin", func(r martini.Router) {
-		m.Get("/encrypt", admin.EncryptHandler)
-		m.Get("/encrypt/:episodeID", admin.EncryptHandler)
-		m.Get("/mthai_embed/(?P<showID>[0-9]+)", admin.GetEmbedMThaiHandler)
+		m.Get("/", authAdmin, admin.IndexHandler)
+		m.Get("/encrypt_episode", admin.EncryptEpisodeHandler)
+		m.Get("/encrypt_episode/:episodeID", authAdmin, admin.EncryptEpisodeHandler)
+		m.Get("/mthai_embed/(?P<showID>[0-9]+)", authAdmin, admin.GetEmbedMThaiHandler)
 	})
 
 	m.Group("/api/v1", func(r martini.Router) {

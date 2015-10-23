@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func EncryptHandler(db gorm.DB, r render.Render, params martini.Params) {
+func EncryptEpisodeHandler(db gorm.DB, r render.Render, params martini.Params) {
 	episodeID, _ := strconv.Atoi(params["episodeID"])
 	data.EncryptEpisode(&db, episodeID)
 	r.HTML(http.StatusOK, "index", map[string]interface{}{
@@ -23,4 +23,8 @@ func GetEmbedMThaiHandler(db gorm.DB, r render.Render, params martini.Params) {
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
 		"Title": "Embed",
 	})
+}
+
+func IndexHandler(r render.Render) {
+	r.HTML(http.StatusOK, "admin/index", nil)
 }

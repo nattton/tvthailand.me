@@ -40,6 +40,10 @@
 			"Rev": "ffe986aba3e6cfcded8b06615965941408891ef0"
 		},
 		{
+			"ImportPath": "github.com/martini-contrib/auth",
+			"Rev": "fa62c19b7ae87da370242054c8beb11af31d327f"
+		},
+		{
 			"ImportPath": "github.com/martini-contrib/render",
 			"Rev": "ec18f8345a1181146728238980606fb1d6f40e8c"
 		},
