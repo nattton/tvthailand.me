@@ -12,16 +12,18 @@ import (
 func EncryptEpisodeHandler(db gorm.DB, r render.Render, params martini.Params) {
 	episodeID, _ := strconv.Atoi(params["episodeID"])
 	data.EncryptEpisode(&db, episodeID)
-	r.HTML(http.StatusOK, "index", map[string]interface{}{
-		"header": "Encrypt Successfully",
+	flash := map[string]string{"info": "Encrypt Successfully"}
+	r.HTML(http.StatusOK, "admin/index", map[string]interface{}{
+		"flash": flash,
 	})
 }
 
-func GetEmbedMThaiHandler(db gorm.DB, r render.Render, params martini.Params) {
-	showID, _ := strconv.Atoi(params["showID"])
+func AddEmbedMThaiHandler(db gorm.DB, r render.Render, req *http.Request) {
+	showID, _ := strconv.Atoi(req.FormValue("show_id"))
 	data.InsertMThaiEmbedVideos(&db, showID)
-	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title": "Embed",
+	flash := map[string]string{"info": "Insert MThai Embed Videos Successfully"}
+	r.HTML(http.StatusOK, "admin/index", map[string]interface{}{
+		"flash": flash,
 	})
 }
 

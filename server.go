@@ -65,7 +65,7 @@ func main() {
 	}))
 
 	authAdmin := auth.BasicFunc(func(username, password string) bool {
-		return auth.SecureCompare(username, "saly") && auth.SecureCompare(password, "admin888")
+		return auth.SecureCompare(username, "saly") && auth.SecureCompare(password, "gundamadmin88")
 	})
 
 	m.Get("/", indexHandler)
@@ -88,10 +88,10 @@ func main() {
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchOtvHandler)
 	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchOtvHandler)
 	m.Group("/admin", func(r martini.Router) {
-		m.Get("/", authAdmin, admin.IndexHandler)
+		m.Get("", authAdmin, admin.IndexHandler)
 		m.Get("/encrypt_episode", admin.EncryptEpisodeHandler)
 		m.Get("/encrypt_episode/:episodeID", authAdmin, admin.EncryptEpisodeHandler)
-		m.Get("/mthai_embed/(?P<showID>[0-9]+)", authAdmin, admin.GetEmbedMThaiHandler)
+		m.Post("/mthai_embed", authAdmin, admin.AddEmbedMThaiHandler)
 	})
 
 	m.Group("/api/v1", func(r martini.Router) {

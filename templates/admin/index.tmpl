@@ -1,9 +1,20 @@
-<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main" ng-controller="VideoCtrl" ng-init="apiPath = '{[{ .apiPath }]}';">
+<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
   <h1 class="page-header">Admin</h1>
   <div class="row">
     <ul>
       <li><a href="/admin/botvideo" >Bot Video</a></li>
       <li><a href="/admin/encrypt_episode" >Encrypt Episode</a></li>
+      <li>
+        <form action="/admin/mthai_embed" method="post">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="submit">Add Embed MThai</button>
+            </span>
+            <input type="text"  id="show_id" name="show_id" class="form-control" placeholder="MThai Embed for Show ID">
+          </div><!-- /input-group -->
+        </form>
+
+      </li>
     </ul>
   </div>
 </div>

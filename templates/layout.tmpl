@@ -117,6 +117,13 @@
       </div>
     </nav>
    <div class="container-fluid">
+
+     {[{ range $key, $message := .flash }]}
+     <div class="alert alert-{[{ $key }]}" role="alert">
+       {[{ $message }]}
+     </div>
+     {[{ end }]}
+
      {[{ yield }]}
    </div>
    {[{ template "mobile_ads" . }]}
