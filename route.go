@@ -101,10 +101,12 @@ func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *
 	qs := req.URL.Query()
 	keyword := qs.Get("keyword")
 	var shows []data.Show
+	var episodes []data.Episode
 	var header string
 	var title string
 	if keyword != "" {
-		shows = data.GetShowBySearch(&db, keyword)
+		shows, _ = data.GetShowBySearch(&db, keyword)
+		episodes, _ = data.GetEpisodesBySearch(&db, keyword)
 		header = "ผลการค้นหา : " + keyword
 		title = header
 	} else {
@@ -112,10 +114,11 @@ func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *
 		header = "กรุณาพิมพชื่อเรื่องที่ต้องการค้นหา"
 	}
 	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":   title,
-		"keyword": keyword,
-		"header":  header,
-		"shows":   shows,
+		"Title":    title,
+		"keyword":  keyword,
+		"header":   header,
+		"shows":    shows,
+		"episodes": episodes,
 	})
 }
 

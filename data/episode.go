@@ -89,6 +89,14 @@ func GetEpisodes(db *gorm.DB, showID int, start int) (episodes []Episode, err er
 	return
 }
 
+func GetEpisodesBySearch(db *gorm.DB, keyword string) (episodes []Episode, err error) {
+	err = db.Where("banned = 0 AND title LIKE ?", "%"+keyword+"%").Order("ep desc, id desc").Limit(20).Find(&episodes).Error
+	for index := range episodes {
+		GetEpisodeTitle(&episodes[index])
+	}
+	return
+}
+
 func GetEpisode(db *gorm.DB, id int) (episode Episode, err error) {
 	err = db.First(&episode, id).Error
 	SetVideoList(db, &episode)

@@ -86,7 +86,7 @@ func GetShowByChannelPopular(db *gorm.DB, id string) (shows []Show, err error) {
 	return
 }
 
-func GetShowBySearch(db *gorm.DB, keyword string) (shows []Show) {
+func GetShowBySearch(db *gorm.DB, keyword string) (shows []Show, err error) {
 	db.Scopes(ShowScope).Where("title LIKE ?", "%"+keyword+"%").Order("update_date desc, title asc").Limit(20).Find(&shows)
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
