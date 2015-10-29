@@ -9,7 +9,7 @@
     <div class="row placeholders">
       <div class="col-xs-12 col-sm-3 placeholder" ng-repeat="episode in episodes">
         <div class="thumbnail">
-        <a href="/watch/{{episode.ID}}/0/{{episode.Title|urlencode}}">
+        <a href="/watch/{{episode.ID}}/0/{{episode.Title}}">
         <img ng-src="{{episode.Thumbnail}}" class="img-responsive" alt="{{episode.Title}}" />
         </a>
         <div class="caption"><h4>{{episode.Title}}</h4></div>
