@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
@@ -26,8 +25,6 @@
     <title id="header-title">{[{ if .Title }]} TV Thailand | {[{ .Title }]} {[{ else }]} TV Thailand | Watch Free Thailand Show Online {[{ end }]}</title>
     <meta name="keywords" content="ดูละครย้อนหลัง, ทีวีออนไลน์, ดูทีวีย้อนหลัง, TV Thailand" />
     <meta name="description" content="TV Thailand | Watch Free Thailand Show Online | ดูรายการทีวีย้อนหลังฟรี"/>
-    <meta property="og:url" content="http://www.macthai.com/"/>
-    <meta property="og:title" content="TV Thailand | Watch Free Thailand Show Online | ดูรายการทีวีย้อนหลังฟรี"/>
 
     <!-- Bootstrap -->
     <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -55,6 +52,15 @@
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
 
     <script>var app = angular.module('TVThailand', ['infinite-scroll']);</script>
+
+    <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="/bower_components/iron-image/iron-image.html">
+    <style>
+      body {
+        font-family: Roboto, 'Noto', 'Helvetica Neue',
+                     Helvetica, Arial, sans-serif;
+      }
+    </style>
   </head>
   <body ng-app="TVThailand">
     <script>
