@@ -2,32 +2,48 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/auth"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/admin"
 	"github.com/code-mobi/tvthailand.me/api/v1"
+	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
 	"html/template"
-	"log"
 	"net/url"
 	"os"
 	"reflect"
 	"strings"
 )
 
+var commandParam CommandParam
+
+func init() {
+	flag.StringVar(&commandParam.Command, "command", "", "COMMAND = botrun | findchannel | findvideochannel(channel)")
+	flag.StringVar(&commandParam.User, "user", "", "USER")
+	flag.StringVar(&commandParam.Channel, "channel", "", "CHANNEL")
+	flag.StringVar(&commandParam.Q, "q", "", "QUERY")
+	flag.IntVar(&commandParam.Start, "start", 0, "START")
+	flag.IntVar(&commandParam.Stop, "stop", 0, "STOP")
+	flag.Parse()
+}
+
 func main() {
+	if commandParam.Command != "" {
+		processCommand(commandParam)
+	} else {
+		runServer()
+	}
+}
+
+func runServer() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
 	}
-	db, err := gorm.Open("mysql", os.Getenv("DATABASE_DSN"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	db, _ := utils.OpenDB()
 	defer db.Close()
-	db.LogMode(martini.Env != "production")
 
 	m := martini.Classic()
 	m.Map(db)
