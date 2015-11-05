@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/code-mobi/tvthailand.me/data"
 	"log"
 	"strconv"
 	"strings"
@@ -54,16 +54,10 @@ type Result struct {
 	RowAffected int64
 }
 
-type Show struct {
-	ID        int `gorm:"primary_key"`
-	Title     string
-	ViewCount int
-}
-
 func UpdateView(db *gorm.DB, jsonByte []byte) {
 	shows := getShow(jsonByte)
 	if len(shows) > 0 {
-		resetView(db)
+		data.ResetShowViewCount(db)
 	}
 
 	var wg sync.WaitGroup
@@ -73,13 +67,6 @@ func UpdateView(db *gorm.DB, jsonByte []byte) {
 		go updateViewCount(db, show, &wg, throttle)
 	}
 	wg.Wait()
-}
-
-func resetView(db *gorm.DB) {
-	err := db.Model(Show{}).UpdateColumn("view_count", 0).Error
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func getShow(b []byte) []*ShowItem {
@@ -107,10 +94,10 @@ func getShow(b []byte) []*ShowItem {
 
 func updateViewCount(db *gorm.DB, showItem *ShowItem, wg *sync.WaitGroup, throttle chan int) {
 	defer wg.Done()
-	err := db.Model(Show{}).Where("title = ?", showItem.Title).UpdateColumn("view_count", showItem.ViewCount).Error
+	fmt.Println(showItem.Title, showItem.ViewCount)
+	err := data.UpdateShowViewCount(db, showItem.Title, showItem.ViewCount)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(showItem.Title, showItem.ViewCount)
 	<-throttle
 }

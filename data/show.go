@@ -96,3 +96,13 @@ func GetShowBySearch(db *gorm.DB, keyword string) (shows []Show, err error) {
 func ShowScope(db *gorm.DB) *gorm.DB {
 	return db.Where("is_online = ? AND build_max > ?", true, 1000)
 }
+
+func ResetShowViewCount(db *gorm.DB) (err error) {
+	err = db.Model(Show{}).UpdateColumn("view_count", 0).Error
+	return
+}
+
+func UpdateShowViewCount(db *gorm.DB, title string, viewCount int) (err error) {
+	err = db.Model(Show{}).Where("title = ?", title).UpdateColumn("view_count", viewCount).Error
+	return
+}
