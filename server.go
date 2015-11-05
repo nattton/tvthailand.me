@@ -81,7 +81,7 @@ func runServer() {
 	}))
 
 	authAdmin := auth.BasicFunc(func(username, password string) bool {
-		return auth.SecureCompare(username, "saly") && auth.SecureCompare(password, "gundamadmin88")
+		return auth.SecureCompare(username, "saly") && auth.SecureCompare(password, "admin888")
 	})
 
 	m.Get("/", indexHandler)
@@ -108,6 +108,7 @@ func runServer() {
 		m.Get("/encrypt_episode", admin.EncryptEpisodeHandler)
 		m.Get("/encrypt_episode/:episodeID", authAdmin, admin.EncryptEpisodeHandler)
 		m.Post("/mthai_embed", authAdmin, admin.AddEmbedMThaiHandler)
+		m.Post("/analytic", authAdmin, admin.AnalyticProcessHandler)
 	})
 
 	m.Group("/api/v1", func(r martini.Router) {
