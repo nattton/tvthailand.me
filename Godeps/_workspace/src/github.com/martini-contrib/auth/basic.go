@@ -2,7 +2,7 @@ package auth
 
 import (
 	"encoding/base64"
-	"github.com/go-martini/martini"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
 	"net/http"
 	"strings"
 )

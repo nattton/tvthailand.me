@@ -48,9 +48,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/oxtoacart/bpool"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/oxtoacart/bpool"
 
-	"github.com/go-martini/martini"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
 )
 
 const (

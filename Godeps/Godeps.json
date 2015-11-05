@@ -22,8 +22,8 @@
 		},
 		{
 			"ImportPath": "github.com/go-martini/martini",
-			"Comment": "v1.0-166-g9987fc5",
-			"Rev": "9987fc59f060a063247d22472c2fb48654bac5f6"
+			"Comment": "v1.0-168-g1766d4b",
+			"Rev": "1766d4b551f29d93db1e721e19b15580699e26cc"
 		},
 		{
 			"ImportPath": "github.com/go-sql-driver/mysql",
@@ -36,8 +36,8 @@
 		},
 		{
 			"ImportPath": "github.com/lib/pq/hstore",
-			"Comment": "go1.0-cutoff-60-gffe986a",
-			"Rev": "ffe986aba3e6cfcded8b06615965941408891ef0"
+			"Comment": "go1.0-cutoff-61-g83c4f41",
+			"Rev": "83c4f410d0aed80a0f44bac6a576a7f2435791f3"
 		},
 		{
 			"ImportPath": "github.com/martini-contrib/auth",
@@ -62,7 +62,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "db8e4de5b2d6653f66aea53094624468caad15d2"
+			"Rev": "b4e17d61b15679caf2335da776c614169a1b4643"
 		}
 	]
 }

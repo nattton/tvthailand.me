@@ -23,6 +23,7 @@ _testmain.go
 *.test
 *.prof
 
+# Compiled File
+tvthailand.me
 gin-bin
 dump.rdb
-
