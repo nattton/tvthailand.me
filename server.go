@@ -20,10 +20,10 @@ import (
 var commandParam CommandParam
 
 func init() {
-	flag.StringVar(&commandParam.Command, "command", "", "COMMAND = botrun | findchannel | findvideochannel(channel)")
-	flag.StringVar(&commandParam.User, "user", "", "USER")
+	flag.StringVar(&commandParam.Command, "command", "", "COMMAND = runbotch [-channel] [-q] | runbotpl [-playlist] | updateuser | migrate_botvideo")
 	flag.StringVar(&commandParam.Channel, "channel", "", "CHANNEL")
-	flag.StringVar(&commandParam.Q, "q", "", "QUERY")
+	flag.StringVar(&commandParam.Playlist, "playlist", "", "Playlist")
+	flag.StringVar(&commandParam.Query, "q", "", "QUERY")
 	flag.IntVar(&commandParam.Start, "start", 0, "START")
 	flag.IntVar(&commandParam.Stop, "stop", 0, "STOP")
 	flag.Parse()

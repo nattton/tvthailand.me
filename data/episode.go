@@ -173,3 +173,8 @@ func GetEpisodeTitle(episode *Episode) {
 	}
 	return
 }
+
+func GetCountEpisodeByVideoID(db *gorm.DB, videoID string) (count int, err error) {
+	err = db.Model(Episode{}).Unscoped().Where("video LIKE ?", "%"+videoID+"%").Count(&count).Error
+	return
+}
