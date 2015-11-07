@@ -4,9 +4,7 @@
   <div class="col-xs-12 col-sm-3 placeholder">
     <div class="thumbnail">
     <a href="/watch/{[{ $episode.ID }]}/0/{[{ urlEsc $episode.Title }]}" >
-      <iron-image  style="width:240px; height:180px;" class="img-responsive" sizing="cover" preload fade
-      src="{[{ $episode.Thumbnail }]}" alt="{[{ $episode.Title }]}"
-      placeholder="http://thumbnail.instardara.com/tv/"></iron-image>
+      <img src="{[{ $episode.Thumbnail }]}" class="img-responsive" alt="{[{ $episode.Title }]}">
     </a>
     <div class="caption"><h4>{[{ $episode.Title }]}</h4></div>
     </div>
