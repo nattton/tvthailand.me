@@ -10,6 +10,7 @@ import (
 
 func AjaxRecentlyHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByRecently(&db, offset)
 	if err != nil {
@@ -22,6 +23,7 @@ func AjaxRecentlyHandler(c *gin.Context) {
 
 func AjaxPopularHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByPopular(&db, offset)
 	if err != nil {
@@ -34,6 +36,7 @@ func AjaxPopularHandler(c *gin.Context) {
 
 func AjaxCategoryHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByCategory(&db, c.Param("id"), offset)
 	if err != nil {
@@ -46,6 +49,7 @@ func AjaxCategoryHandler(c *gin.Context) {
 
 func AjaxChannelsHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	categories, err := data.GetChannels(&db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
@@ -57,6 +61,7 @@ func AjaxChannelsHandler(c *gin.Context) {
 
 func AjaxChannelHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByChannel(&db, c.Param("id"), offset)
 	if err != nil {
@@ -69,6 +74,7 @@ func AjaxChannelHandler(c *gin.Context) {
 
 func AjaxShowHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
 	showID, _ := strconv.Atoi(c.Param("show_id"))
 	episodes, pageInfo, err := data.GetEpisodesAndPageInfo(&db, showID, int32(page))

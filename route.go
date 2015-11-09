@@ -14,6 +14,7 @@ import (
 
 func indexHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	recents, _ := data.GetShowByRecently(&db, 0)
 	populars, _ := data.GetShowByPopular(&db, 0)
 	data := map[string]interface{}{
@@ -35,6 +36,7 @@ func goOutHandler(c *gin.Context) {
 
 func recentlyHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	shows, _ := data.GetShowByRecently(&db, 0)
 	data := map[string]interface{}{
 		"Title":    "รายการล่าสุด",
@@ -48,6 +50,7 @@ func recentlyHandler(c *gin.Context) {
 
 func popularHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	shows, _ := data.GetShowByPopular(&db, 0)
 	data := map[string]interface{}{
 		"Title":    "Popular",
@@ -61,6 +64,7 @@ func popularHandler(c *gin.Context) {
 
 func categoriesHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	categories, _ := data.GetCategories(&db)
 	data := map[string]interface{}{
 		"header":     "หมวด",
@@ -72,6 +76,7 @@ func categoriesHandler(c *gin.Context) {
 
 func categoryShowHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	titlize := c.Param("titlize")
 	category, _ := data.GetCategory(&db, titlize)
 	shows, _ := data.GetShowByCategory(&db, category.ID, 0)
@@ -87,6 +92,7 @@ func categoryShowHandler(c *gin.Context) {
 
 func channelsHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	channels, _ := data.GetChannels(&db)
 	data := map[string]interface{}{
 		"header":   "ช่องทีวี",
@@ -97,6 +103,7 @@ func channelsHandler(c *gin.Context) {
 
 func channelShowHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	id := c.Param("id")
 	channel, _ := data.GetChannel(&db, id)
 	shows, _ := data.GetShowByChannel(&db, channel.ID, 0)
@@ -113,6 +120,7 @@ func channelShowHandler(c *gin.Context) {
 
 func searchShowHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	qs := c.Request.URL.Query()
 	keyword := qs.Get("keyword")
 	var shows []data.Show
@@ -140,6 +148,7 @@ func searchShowHandler(c *gin.Context) {
 
 func showHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(&db, showID)
 	if show.IsOtv && (os.Getenv("WATCH_OTV") == "1" || show.ChannelID == 3) {
@@ -151,6 +160,7 @@ func showHandler(c *gin.Context) {
 
 func showTvHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(&db, showID)
 	renderShow(c, show)
@@ -158,6 +168,7 @@ func showTvHandler(c *gin.Context) {
 
 func showOtvHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	otvID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShowByOtv(&db, otvID)
 	if show.IsOtv {
@@ -169,6 +180,7 @@ func showOtvHandler(c *gin.Context) {
 
 func renderShow(c *gin.Context, show data.Show) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
 	episodes, pageInfo, _ := data.GetEpisodesAndPageInfo(&db, show.ID, int32(page))
 	// episodes, _ := data.GetEpisodes(&db, show.ID, 0)
@@ -193,6 +205,7 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 
 func watchHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	watchID, _ := strconv.Atoi(c.Param("watchID"))
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
 	episode, err := data.GetEpisode(&db, watchID)
@@ -233,6 +246,7 @@ func watchHandler(c *gin.Context) {
 
 func watchOtvHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	isMobile := utils.IsMobile(c.Request.UserAgent())
 	_, otvEpisodePlay := data.GetOTVEpisodePlay(c.Param("watchID"), isMobile)
 

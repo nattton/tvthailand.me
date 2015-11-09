@@ -10,6 +10,7 @@ import (
 
 func CategoriesHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	categories, err := data.GetCategories(&db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
@@ -21,6 +22,7 @@ func CategoriesHandler(c *gin.Context) {
 
 func RecentlyHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByRecently(&db, start)
 	if err != nil {
@@ -33,6 +35,7 @@ func RecentlyHandler(c *gin.Context) {
 
 func PopularHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByPopular(&db, start)
 	if err != nil {
@@ -45,6 +48,7 @@ func PopularHandler(c *gin.Context) {
 
 func CategoryHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByCategory(&db, c.Param("id"), start)
 	if err != nil {
@@ -57,6 +61,7 @@ func CategoryHandler(c *gin.Context) {
 
 func ChannelsHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	categories, err := data.GetChannels(&db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
@@ -68,6 +73,7 @@ func ChannelsHandler(c *gin.Context) {
 
 func ChannelHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByChannel(&db, c.Param("id"), start)
 	if err != nil {
@@ -80,6 +86,7 @@ func ChannelHandler(c *gin.Context) {
 
 func ShowHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	showID, _ := strconv.Atoi(c.Param("show_id"))
 	show, err := data.GetShow(&db, showID)
@@ -98,6 +105,7 @@ func ShowHandler(c *gin.Context) {
 
 func WatchHandler(c *gin.Context) {
 	db := c.MustGet("DB").(gorm.DB)
+	defer db.Close()
 	episode, err := data.GetVideoList(&db, c.Param("hashID"))
 	if err != nil {
 		c.JSON(http.StatusNotFound, episode)
