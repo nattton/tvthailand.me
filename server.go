@@ -96,10 +96,3 @@ func runServer() {
 	}
 	server.ListenAndServe()
 }
-
-func Database() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		db, _ := utils.OpenDB()
-		c.Set("DB", db)
-	}
-}

@@ -2,14 +2,14 @@ package v1
 
 import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
 	"net/http"
 	"strconv"
 )
 
 func CategoriesHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	categories, err := data.GetCategories(&db)
 	if err != nil {
@@ -21,7 +21,7 @@ func CategoriesHandler(c *gin.Context) {
 }
 
 func RecentlyHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByRecently(&db, start)
@@ -34,7 +34,7 @@ func RecentlyHandler(c *gin.Context) {
 }
 
 func PopularHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByPopular(&db, start)
@@ -47,7 +47,7 @@ func PopularHandler(c *gin.Context) {
 }
 
 func CategoryHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByCategory(&db, c.Param("id"), start)
@@ -60,7 +60,7 @@ func CategoryHandler(c *gin.Context) {
 }
 
 func ChannelsHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	categories, err := data.GetChannels(&db)
 	if err != nil {
@@ -72,7 +72,7 @@ func ChannelsHandler(c *gin.Context) {
 }
 
 func ChannelHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	shows, err := data.GetShowByChannel(&db, c.Param("id"), start)
@@ -85,7 +85,7 @@ func ChannelHandler(c *gin.Context) {
 }
 
 func ShowHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	showID, _ := strconv.Atoi(c.Param("show_id"))
@@ -104,7 +104,7 @@ func ShowHandler(c *gin.Context) {
 }
 
 func WatchHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	episode, err := data.GetVideoList(&db, c.Param("hashID"))
 	if err != nil {
