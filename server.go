@@ -43,6 +43,7 @@ func runServer() {
 	router.Static("/bower_components", "./public/bower_components")
 	router.Static("/static", "./public/static")
 	router.StaticFile("/favicon.ico", "./public/favicon.ico")
+	router.StaticFile("/robot.txt", "./public/robot.txt")
 
 	router.GET("/", indexHandler)
 	router.GET("/recently", recentlyHandler)
