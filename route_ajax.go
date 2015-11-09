@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
 	"net/http"
 	"strconv"
 )
 
 func AjaxRecentlyHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByRecently(&db, offset)
@@ -22,7 +22,7 @@ func AjaxRecentlyHandler(c *gin.Context) {
 }
 
 func AjaxPopularHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByPopular(&db, offset)
@@ -35,7 +35,7 @@ func AjaxPopularHandler(c *gin.Context) {
 }
 
 func AjaxCategoryHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByCategory(&db, c.Param("id"), offset)
@@ -48,7 +48,7 @@ func AjaxCategoryHandler(c *gin.Context) {
 }
 
 func AjaxChannelsHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	categories, err := data.GetChannels(&db)
 	if err != nil {
@@ -60,7 +60,7 @@ func AjaxChannelsHandler(c *gin.Context) {
 }
 
 func AjaxChannelHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	shows, err := data.GetShowByChannel(&db, c.Param("id"), offset)
@@ -73,7 +73,7 @@ func AjaxChannelHandler(c *gin.Context) {
 }
 
 func AjaxShowHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
 	showID, _ := strconv.Atoi(c.Param("show_id"))

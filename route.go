@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
@@ -13,7 +12,7 @@ import (
 )
 
 func indexHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	recents, _ := data.GetShowByRecently(&db, 0)
 	populars, _ := data.GetShowByPopular(&db, 0)
@@ -35,7 +34,7 @@ func goOutHandler(c *gin.Context) {
 }
 
 func recentlyHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	shows, _ := data.GetShowByRecently(&db, 0)
 	data := map[string]interface{}{
@@ -49,7 +48,7 @@ func recentlyHandler(c *gin.Context) {
 }
 
 func popularHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	shows, _ := data.GetShowByPopular(&db, 0)
 	data := map[string]interface{}{
@@ -63,7 +62,7 @@ func popularHandler(c *gin.Context) {
 }
 
 func categoriesHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	categories, _ := data.GetCategories(&db)
 	data := map[string]interface{}{
@@ -75,7 +74,7 @@ func categoriesHandler(c *gin.Context) {
 }
 
 func categoryShowHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	titlize := c.Param("titlize")
 	category, _ := data.GetCategory(&db, titlize)
@@ -91,7 +90,7 @@ func categoryShowHandler(c *gin.Context) {
 }
 
 func channelsHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	channels, _ := data.GetChannels(&db)
 	data := map[string]interface{}{
@@ -102,7 +101,7 @@ func channelsHandler(c *gin.Context) {
 }
 
 func channelShowHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	id := c.Param("id")
 	channel, _ := data.GetChannel(&db, id)
@@ -119,7 +118,7 @@ func channelShowHandler(c *gin.Context) {
 }
 
 func searchShowHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	qs := c.Request.URL.Query()
 	keyword := qs.Get("keyword")
@@ -147,7 +146,7 @@ func searchShowHandler(c *gin.Context) {
 }
 
 func showHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(&db, showID)
@@ -159,7 +158,7 @@ func showHandler(c *gin.Context) {
 }
 
 func showTvHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(&db, showID)
@@ -167,7 +166,7 @@ func showTvHandler(c *gin.Context) {
 }
 
 func showOtvHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	otvID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShowByOtv(&db, otvID)
@@ -179,7 +178,7 @@ func showOtvHandler(c *gin.Context) {
 }
 
 func renderShow(c *gin.Context, show data.Show) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
 	episodes, pageInfo, _ := data.GetEpisodesAndPageInfo(&db, show.ID, int32(page))
@@ -204,7 +203,7 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 }
 
 func watchHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	watchID, _ := strconv.Atoi(c.Param("watchID"))
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
@@ -245,7 +244,7 @@ func watchHandler(c *gin.Context) {
 }
 
 func watchOtvHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
 	defer db.Close()
 	isMobile := utils.IsMobile(c.Request.UserAgent())
 	_, otvEpisodePlay := data.GetOTVEpisodePlay(c.Param("watchID"), isMobile)
