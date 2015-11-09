@@ -1,3 +1,4 @@
+{{ define "layout" }}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,7 +11,7 @@
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title id="header-title">{[{ if .Title }]} TV Thailand | {[{ .Title }]} {[{ else }]} TV Thailand | Watch Free Thailand Show Online {[{ end }]}</title>
+    <title id="header-title">{{ if .Title }} TV Thailand | {{ .Title }} {{ else }} TV Thailand | Watch Free Thailand Show Online {{ end }}</title>
     <meta name="keywords" content="ดูละครย้อนหลัง, ทีวีออนไลน์, ดูทีวีย้อนหลัง, TV Thailand" />
     <meta name="description" content="TV Thailand | Watch Free Thailand Show Online | ดูรายการทีวีย้อนหลังฟรี"/>
     <meta property="og:site_name" content="tvthailand.me"/>
@@ -19,8 +20,8 @@
     <meta property="og:image" content="http://www.tvthailand.me/favicon/ms-icon-310x310.png"/>
 
     <!-- Bootstrap -->
-    <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -30,22 +31,20 @@
     <![endif]-->
 
     <link href="/static/css/base.css" rel="stylesheet">
-    {[{ if .isMobile }]}
+    {{ if .isMobile }}
     <link href="/static/css/mobile.css" rel="stylesheet">
-    {[{ end }]}
-    <script src="/bower_components/angular/angular.min.js"></script>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script> -->
-    <script src="/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js"></script>
+    {{ end }}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
-
-    <script>var app = angular.module('TVThailand', ['infinite-scroll']);</script>
+    <script src="/bower_components/react/react.js"></script>
+    <script src="/bower_components/react/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
   </head>
-  <body ng-app="TVThailand">
+  <body>
     <script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -98,7 +97,7 @@
           </ul>
           <form class="navbar-form navbar-right" action="/search">
             <div class="form-group">
-              <input type="text" name="keyword" placeholder="Search" class="form-control" value="{[{ .keyword }]}">
+              <input type="text" name="keyword" placeholder="Search" class="form-control" value="{{ .keyword }}">
             </div>
             <!-- <button type="submit" class="btn btn-success">Sign in</button> -->
           </form>
@@ -107,18 +106,20 @@
     </nav>
    <div class="container-fluid">
 
-     {[{ range $key, $message := .flash }]}
-     <div class="alert alert-{[{ $key }]}" role="alert">
-       {[{ $message }]}
+     {{ range $key, $message := .flash }}
+     <div class="alert alert-{{ $key }}" role="alert">
+       {{ $message }}
      </div>
-     {[{ end }]}
+     {{ end }}
 
-     {[{ yield }]}
+     {{ template "content" . }}
+
    </div>
-   {[{ template "mobile_ads" . }]}
+   {{ template "mobile_ads" . }}
       <footer id="footer">
         © tvthailand.me All Rights Reserved.
         <div>facebook : <a href="https://www.facebook.com/TV.Thailand" target="_blank">TV Thailand</a><div>
       </footer>
   </body>
 </html>
+{{ end }}

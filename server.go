@@ -1,20 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/auth"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/admin"
-	"github.com/code-mobi/tvthailand.me/api/v1"
 	"github.com/code-mobi/tvthailand.me/utils"
-	"html"
-	"html/template"
-	"net/url"
+	"net/http"
 	"os"
-	"reflect"
-	"strings"
+	"time"
 )
 
 var commandParam CommandParam
@@ -38,97 +31,75 @@ func main() {
 }
 
 func runServer() {
+	config := utils.LoadConfig()
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3000"
+		port = config.Port
 	}
-	db, _ := utils.OpenDB()
-	defer db.Close()
 
-	m := martini.Classic()
-	m.Map(db)
-	m.Use(render.Renderer(render.Options{
-		Directory:  "templates",
-		Layout:     "layout",
-		Extensions: []string{".tmpl", ".html"},
-		Delims:     render.Delims{"{[{", "}]}"},
-		Charset:    "UTF-8",
-		IndentJSON: false,
-		Funcs: []template.FuncMap{
-			{
-				"last": func(x int, a interface{}) bool {
-					return x == reflect.ValueOf(a).Len()-1
-				},
-			},
-			{
-				"escStr": func(a ...string) string {
-					return html.EscapeString(strings.Join(a, "-"))
-				},
-			},
-			{
-				"urlEsc": func(a ...string) string {
-					return url.QueryEscape(strings.Join(a, "-"))
-				},
-			},
-			{
-				"toJson": func(a interface{}) string {
-					b, _ := json.Marshal(a)
-					r := strings.NewReplacer("\\", "")
-					return r.Replace(string(b))
-				},
-			},
-		},
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(Database())
+	router.Static("/bower_components", "./public/bower_components")
+	router.Static("/static", "./public/static")
+	router.StaticFile("/favicon.ico", "./public/favicon.ico")
+
+	router.GET("/", indexHandler)
+	router.GET("/recently", recentlyHandler)
+	router.GET("/not_found", goOutHandler)
+	router.GET("/popular", popularHandler)
+	router.GET("/categories", categoriesHandler)
+	router.GET("/category/:titlize", categoryShowHandler)
+	router.GET("/channels", channelsHandler)
+	router.GET("/channel/:id", channelShowHandler)
+	router.GET("/channel/:id/*title", channelShowHandler)
+	router.GET("/search", searchShowHandler)
+	router.GET("/show/:id", showHandler)
+	router.GET("/show/:id/*title", showHandler)
+	router.GET("/show_tv/:id/*title", showTvHandler)
+	router.GET("/show_otv/:id/*title", showOtvHandler)
+	router.GET("/watch/:watchID", watchHandler)
+	router.GET("/watch/:watchID/:playIndex/*title", watchHandler)
+	router.GET("/watch_otv/:watchID", watchOtvHandler)
+	router.GET("/watch_otv/:watchID/:playIndex/*title", watchOtvHandler)
+	router.GET("/mobile_apps", func(c *gin.Context) {
+		utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "static/mobile_apps")
+	})
+
+	routerAjax := router.Group("/ajax")
+	{
+		routerAjax.GET("/recently", AjaxRecentlyHandler)
+		routerAjax.GET("/popular", AjaxPopularHandler)
+		routerAjax.GET("/category/:id", AjaxCategoryHandler)
+		routerAjax.GET("/channels", AjaxChannelsHandler)
+		routerAjax.GET("/channel/:id", AjaxChannelHandler)
+		routerAjax.GET("/show/:show_id/episodes", AjaxShowHandler)
+	}
+
+	router.GET("/admin/encrypt_episode", admin.EncryptEpisodeHandler)
+	routerAuthorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
+		"saly":    "admin888",
+		"lucifer": "gundamman",
 	}))
+	routerAuthorized.GET("/", admin.IndexHandler)
+	routerAuthorized.GET("/encrypt_episode/:episodeID", admin.EncryptEpisodeHandler)
+	routerAuthorized.POST("/mthai_embed", admin.AddEmbedMThaiHandler)
+	routerAuthorized.POST("/analytic", admin.AnalyticProcessHandler)
 
-	authAdmin := auth.BasicFunc(func(username, password string) bool {
-		return auth.SecureCompare(username, "saly") && auth.SecureCompare(password, "admin888")
-	})
+	router.NoRoute(notFoundHandler)
+	server := &http.Server{
+		Addr:           ":" + port,
+		Handler:        router,
+		ReadTimeout:    time.Duration(config.ReadTimeout * int64(time.Second)),
+		WriteTimeout:   time.Duration(config.WriteTimeout * int64(time.Second)),
+		MaxHeaderBytes: 1 << 20,
+	}
+	server.ListenAndServe()
+}
 
-	m.Get("/", indexHandler)
-	m.Get("/recently", recentlyHandler)
-	m.Get("/popular", popularHandler)
-	m.Get("/categories", categoriesHandler)
-	m.Get("/category/:titlize", categoryShowHandler)
-	m.Get("/channels", channelsHandler)
-	m.Get("/channel/:id", channelShowHandler)
-	m.Get("/channel/:id/**", channelShowHandler)
-	m.Get("/search", searchShowHandler)
-	m.Get("/show/:id", showHandler)
-	m.Get("/show/:id/**", showHandler)
-	m.Get("/show_tv/:id", showTvHandler)
-	m.Get("/show_tv/:id/**", showTvHandler)
-	m.Get("/show_otv/:id", showOtvHandler)
-	m.Get("/show_otv/:id/**", showOtvHandler)
-	m.Get("/watch/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchHandler)
-	m.Get("/watch/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchHandler)
-	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)", watchOtvHandler)
-	m.Get("/watch_otv/(?P<watchID>[0-9]+)/(?P<playIndex>[0-9]+)/**", watchOtvHandler)
-	m.Group("/admin", func(r martini.Router) {
-		m.Get("", authAdmin, admin.IndexHandler)
-		m.Get("/encrypt_episode", admin.EncryptEpisodeHandler)
-		m.Get("/encrypt_episode/:episodeID", authAdmin, admin.EncryptEpisodeHandler)
-		m.Post("/mthai_embed", authAdmin, admin.AddEmbedMThaiHandler)
-		m.Post("/analytic", authAdmin, admin.AnalyticProcessHandler)
-	})
-
-	m.Group("/api/v1", func(r martini.Router) {
-		r.Get("/recently/:start", v1.RecentlyHandler)
-		r.Get("/popular/:start", v1.PopularHandler)
-		r.Get("/categories", v1.CategoriesHandler)
-		r.Get("/category/:id", v1.CategoryHandler)
-		r.Get("/category/:id/(?P<start>[0-9]+)", v1.CategoryHandler)
-		r.Get("/channels", v1.ChannelsHandler)
-		r.Get("/channel/:id", v1.ChannelHandler)
-		r.Get("/channel/:id/(?P<start>[0-9]+)", v1.ChannelHandler)
-		r.Get("/show/:show_id", v1.ShowHandler)
-		r.Get("/show/:show_id/(?P<start>[0-9]+)", v1.ShowHandler)
-		r.Get("/watch/:hashID", v1.WatchHandler)
-		m.Get("/watch_otv/(?P<watchID>[0-9]+)", v1.WatchOtvHandler)
-	})
-	m.Get("/mobile_apps", func(r render.Render) {
-		r.HTML(200, "static/mobile_apps", nil)
-	})
-	m.Get("/not_found", notFoundHandler)
-	m.NotFound(notFoundHandler)
-	m.RunOnAddr(":" + port)
+func Database() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		db, _ := utils.OpenDB()
+		c.Set("DB", db)
+	}
 }

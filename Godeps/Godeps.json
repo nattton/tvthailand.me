@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/code-mobi/tvthailand.me",
 	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
@@ -12,18 +15,13 @@
 			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
 		},
 		{
-			"ImportPath": "github.com/codegangsta/inject",
-			"Comment": "v1.0-rc1-10-g33e0aa1",
-			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
-		},
-		{
 			"ImportPath": "github.com/facebookgo/httpcontrol",
 			"Rev": "ccde4420e1fee9af5da365cb76075b95683f39a6"
 		},
 		{
-			"ImportPath": "github.com/go-martini/martini",
-			"Comment": "v1.0-168-g1766d4b",
-			"Rev": "1766d4b551f29d93db1e721e19b15580699e26cc"
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v1.0rc1-148-g52fcc5d",
+			"Rev": "52fcc5dbf6e94df33ad313858fb94b713e9d1b4a"
 		},
 		{
 			"ImportPath": "github.com/go-sql-driver/mysql",
@@ -40,12 +38,12 @@
 			"Rev": "83c4f410d0aed80a0f44bac6a576a7f2435791f3"
 		},
 		{
-			"ImportPath": "github.com/martini-contrib/auth",
-			"Rev": "fa62c19b7ae87da370242054c8beb11af31d327f"
+			"ImportPath": "github.com/manucorporat/sse",
+			"Rev": "fe6ea2c8e398672518ef204bf0fbd9af858d0e15"
 		},
 		{
-			"ImportPath": "github.com/martini-contrib/render",
-			"Rev": "ec18f8345a1181146728238980606fb1d6f40e8c"
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
 		},
 		{
 			"ImportPath": "github.com/mssola/user_agent",
@@ -53,16 +51,21 @@
 			"Rev": "a163d6a569f1cd264d2f8b2bf3c5d04ace5995eb"
 		},
 		{
-			"ImportPath": "github.com/oxtoacart/bpool",
-			"Rev": "4e1c5567d7c2dd59fa4c7c83d34c2f3528b025d6"
-		},
-		{
 			"ImportPath": "github.com/qor/inflection",
 			"Rev": "3272df6c21d04180007eb3349844c89a3856bc25"
 		},
 		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "042ba42fa6633b34205efc66ba5719cd3afd8d38"
+		},
+		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "b4e17d61b15679caf2335da776c614169a1b4643"
+			"Rev": "042ba42fa6633b34205efc66ba5719cd3afd8d38"
+		},
+		{
+			"ImportPath": "gopkg.in/bluesuncorp/validator.v5",
+			"Comment": "v5.12",
+			"Rev": "d5acf1dac43705f8bfbb71d878e290e2bed3950b"
 		}
 	]
 }

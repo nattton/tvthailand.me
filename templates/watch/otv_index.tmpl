@@ -1,3 +1,4 @@
+{{ define "content" }}
 <div>
   <div class="video-player-root">
     <div class="row">
@@ -7,9 +8,7 @@
         <div class="video-player-root">
           <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
             <div class="otv-iframe">
-              <script>
-              document.write({[{ .partItem.IframeHTML }]})
-              </script>
+              {{ html .partItem.IframeHTML }}
               </div>
           </div>
         </div>
@@ -20,12 +19,12 @@
     <div class="row video-meta">
       <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
         <div class="row video-meta">
-          <a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}">
-            <span class="show-title">{[{ .otvEpisodePlay.SeasonDetail.Title }]}</span>
+          <a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}">
+            <span class="show-title">{{ .otvEpisodePlay.SeasonDetail.Title }}</span>
           </a>
-          {[{ if not .isMobile }]}
-          <div  class="episode-detail">{[{ .otvEpisodePlay.EpisodeDetail.Detail }]}</div>
-          {[{ end }]}
+          {{ if not .isMobile }}
+          <div  class="episode-detail">{{ .otvEpisodePlay.EpisodeDetail.Detail }}</div>
+          {{ end }}
         </div>
         <div class="row">
         <div class="pull-right" style="padding-right:30px;">
@@ -38,32 +37,32 @@
 
   <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
     <div class="row placeholders">
-      {[{ range $index, $partItem := .otvEpisodePlay.EpisodeDetail.PartItems }]}
+      {{ range $index, $partItem := .otvEpisodePlay.EpisodeDetail.PartItems }}
       <div class="col-xs-12 col-sm-3 placeholder">
         <div class="thumbnail">
-            <a href="/watch_otv/{[{$.otvEpisodePlay.EpisodeDetail.EpisodeID}]}/{[{$index}]}/{[{ urlEsc $partItem.Title }]}">
-              <img src="{[{ $partItem.Cover }]}" class="img-responsive" alt="{[{ $partItem.Title }]}">
+            <a href="/watch_otv/{{$.otvEpisodePlay.EpisodeDetail.EpisodeID}}/{{$index}}/{{ urlEsc $partItem.Title }}">
+              <img src="{{ $partItem.Cover }}" class="img-responsive" alt="{{ $partItem.Title }}">
             </a>
         </div>
-        <div><h4>{[{ $partItem.Title }]}</h4></div>
+        <div><h4>{{ $partItem.Title }}</h4></div>
         </div>
-        {[{ end }]}
+        {{ end }}
       </div>
     </div>
 
     <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation">
-      <h1 class="page-header"><a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}">EPISODES &gt;</a></h1>
+      <h1 class="page-header"><a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}">EPISODES &gt;</a></h1>
     <div class="row placeholders">
-    {[{ range $index, $episode := .episodes.EpisodeList }]}
+    {{ range $index, $episode := .episodes.EpisodeList }}
       <div class="col-xs-12 col-sm-3 placeholder">
         <div class="thumbnail">
-        <a href="/watch_otv/{[{ $episode.EpisodeID }]}/0/{[{ urlEsc $episode.NameTh $episode.Date }]}" >
-        <img src="{[{ $episode.Thumbnail }]}" class="img-responsive" alt="{[{ $episode.NameTh }]}">
+        <a href="/watch_otv/{{ $episode.EpisodeID }}/0/{{ urlEsc $episode.NameTh $episode.Date }}" >
+        <img src="{{ $episode.Thumbnail }}" class="img-responsive" alt="{{ $episode.NameTh }}">
         </a>
-        <div class="caption"><h4>{[{ $episode.NameTh }]} {[{ $episode.Date }]}</h4></div>
+        <div class="caption"><h4>{{ $episode.NameTh }} {{ $episode.Date }}</h4></div>
         </div>
       </div>
-    {[{ end }]}
+    {{ end }}
     </div>
     </div>
 
@@ -71,3 +70,4 @@
   </div>
   </div>
 </div>
+{{ end }}

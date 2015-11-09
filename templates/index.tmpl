@@ -1,39 +1,74 @@
+{{ define "content" }}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
 
   <h1 class="page-header"><a href="/recently">รายการล่าสุด</a></h1>
   <div class="row placeholders">
-  {[{ range .showRecents }]}
+  {{ range .showRecents }}
     <div class="col-xs-12 col-sm-3 placeholder">
       <div class="thumbnail">
-      <a href="/show/{[{ .ID }]}/{[{ urlEsc .Title }]}">
-      <img src="{[{ .Thumbnail }]}" class="img-responsive" alt="{[{ .Title }]}">
+      <a href="/show/{{ .ID }}/{{ urlEsc .Title }}">
+      <img src="{{ .Thumbnail }}" class="img-responsive" alt="{{ .Title }}">
       </a>
-      <div class="caption"><h4>{[{ .Title }]}</h4></div>
+      <div class="caption"><h4>{{ .Title }}</h4></div>
       </div>
     </div>
     <div class="clearfix visible-xs-block"></div>
-  {[{ end }]}
+  {{ end }}
   </div>
 
-{[{ template "mobile_ads" . }]}
+{{ template "mobile_ads" . }}
 
-  {[{ if .showPopulars }]}
+  {{ if .showPopulars }}
   <h1 class="page-header"><a href="/popular">Popular</a></h1>
-  {[{ end }]}
+  {{ end }}
   <div class="row placeholders">
-  {[{ range .showPopulars }]}
+  {{ range .showPopulars }}
     <div class="col-xs-12 col-sm-3 placeholder">
       <div class="thumbnail">
-      <a href="/show/{[{ .ID }]}/{[{ urlEsc .Title }]}">
-        <img src="{[{ .Thumbnail }]}" class="img-responsive" alt="{[{ .Title }]}">
+      <a href="/show/{{ .ID }}/{{ urlEsc .Title }}">
+        <img src="{{ .Thumbnail }}" class="img-responsive" alt="{{ .Title }}">
       </a>
-      <div class="caption"><h4>{[{ .Title }]}</h4></div>
+      <div class="caption"><h4>{{ .Title }}</h4></div>
       </div>
     </div>
     <div class="clearfix visible-xs-block"></div>
-  {[{ end }]}
+  {{ end }}
   </div>
 
 <div class="table-responsive">
 </div>
 </div>
+
+<div id="show_content" class="row placeholders"></div>
+<script type="text/babel">
+var ShowList = React.createClass({
+  render : function() {
+    return (
+      <div className="col-xs-12 col-sm-3 placeholder">
+        <div className="thumbnail">
+        <a href="/show/{this.props.show.ID}/{this.props.show.Title}">
+        <img src="{this.props.show.Thumbnail}" className="img-responsive" />
+        </a>
+        <div className="caption"><h4>{this.props.show.Title}</h4></div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var HelloWorld = React.createClass({
+  render: function() {
+    return (
+      <p>
+        Hello, <input type="text" placeholder="Your name here" />!
+        It is {this.props.date.toTimeString()}
+      </p>
+    );
+  }
+});
+ReactDOM.render(
+  <HelloWorld date={new Date()} />,
+  document.getElementById('show_content')
+);
+</script>
+{{ end }}

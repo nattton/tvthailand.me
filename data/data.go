@@ -29,3 +29,10 @@ func Encrypt(plaintext string) (cryptext string) {
 	cryptext = fmt.Sprintf("%x", sha1.Sum([]byte(SECRET_SALT+plaintext)))
 	return
 }
+
+type PageInfo struct {
+	PreviousPage   int32 `json:"previousPage,omitempty"`
+	NextPage       int32 `json:"nextPage,omitempty"`
+	TotalResults   int32 `json:"totalResults"`
+	ResultsPerPage int32 `json:"resultsPerPage"`
+}

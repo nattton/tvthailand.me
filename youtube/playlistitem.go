@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
+	"github.com/facebookgo/httpcontrol"
 )
 
 func (y *Youtube) GetVideoJsonByPlaylistID(playlistID string, botLimit int, pageToken string) (api YoutubePlaylist, err error) {

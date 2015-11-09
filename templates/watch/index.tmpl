@@ -1,6 +1,7 @@
+{{ define "content" }}
 <script src="http://content.jwplatform.com/libraries/0FN4ytgB.js"></script>
 <script>jwplayer.key="SzJyFNDHCWFi/mon3bYLTSncw4BsmOpTYFgwrw==";</script>
-<div ng-controller="VideoCtrl" ng-init="{[{ if eq .episode.SrcType 0 }]} watch('{[{ .episode.HashID }]}', {[{ .playIndex }]}); {[{ end }]} episode_title = '{[{ escStr .playlistItem.Title }]}';">
+<div ng-controller="VideoCtrl" ng-init="{{ if eq .episode.SrcType 0 }} watch('{{ .episode.HashID }}', {{ .playIndex }}); {{ end }} episode_title = '{{ escStr .playlistItem.Title }}';">
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">
@@ -11,15 +12,15 @@
             <div id="player"></div>
             <div ng-bind="logPlayer"></div>
             <div>
-              {[{ if .embedURL }]}
-                {[{ if .isMobile }]}
+              {{ if .embedURL }}
+                {{ if .isMobile }}
                     <iframe class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1" frameborder="0"
-                    width="320" height="240" src="{[{ .embedURL }]}" allowfullscreen></iframe>
-                {[{ else }]}
+                    width="320" height="240" src="{{ .embedURL }}" allowfullscreen></iframe>
+                {{ else }}
                     <iframe class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1" frameborder="0"
-                    width="800" height="460" src="{[{ .embedURL }]}" allowfullscreen></iframe>
-                {[{ end }]}
-              {[{ end }]}
+                    width="800" height="460" src="{{ .embedURL }}" allowfullscreen></iframe>
+                {{ end }}
+              {{ end }}
             </div>
           </div>
         </div>
@@ -30,7 +31,7 @@
     <div class="row video-meta">
       <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
         <div class="row video-meta">
-          <a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}"><span class="show-title">{[{ .show.Title }]}</span></a>
+          <a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}"><span class="show-title">{{ .show.Title }}</span></a>
           <span  class="episode-title" ng-bind="episode_title"></span>
         </div>
       </div>
@@ -43,44 +44,44 @@
   </div>
   <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
     <div class="row placeholders">
-        {[{ range $index, $playlist := .episode.Playlists }]}
+        {{ range $index, $playlist := .episode.Playlists }}
         <div class="col-xs-12 col-sm-3 placeholder">
           <div class="thumbnail">
-          {[{ if $.episode.IsURL }]}
-          <a href="{[{ $playlist.File }]}" target="_blank" >
-            <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.Title }]}">
+          {{ if $.episode.IsURL }}
+          <a href="{{ $playlist.File }}" target="_blank" >
+            <img src="{{ $playlist.Image }}" class="img-responsive" alt="{{ $playlist.Title }}">
           </a>
-          {[{ else }]}
-            <a href="/watch/{[{$.episode.ID}]}/{[{$index}]}/{[{ urlEsc $.episode.Title }]}">
-              <img src="{[{ $playlist.Image }]}" class="img-responsive" alt="{[{ $playlist.Title }]}">
+          {{ else }}
+            <a href="/watch/{{$.episode.ID}}/{{$index}}/{{ urlEsc $.episode.Title }}">
+              <img src="{{ $playlist.Image }}" class="img-responsive" alt="{{ $playlist.Title }}">
             </a>
-          {[{ end }]}
+          {{ end }}
           </div>
           <div>
-            <h4>{[{ $playlist.Title }]}</h4>
-            {[{ if $playlist.Password }]}
-              <p>{[{ $playlist.Password }]}</p>
-            {[{ end }]}
+            <h4>{{ $playlist.Title }}</h4>
+            {{ if $playlist.Password }}
+              <p>{{ $playlist.Password }}</p>
+            {{ end }}
           </div>
         </div>
-        {[{ end }]}
+        {{ end }}
 
       </div>
     </div>
 
     <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 hide-animation ng-hide-add-active">
-      <h1 class="page-header"><a href="/show/{[{ .show.ID }]}/{[{ urlEsc .show.Title }]}">EPISODES &gt;</a></h1>
+      <h1 class="page-header"><a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}">EPISODES &gt;</a></h1>
     <div class="row placeholders">
-      {[{ range $index, $episode := .episodes }]}
+      {{ range $index, $episode := .episodes }}
         <div class="col-xs-12 col-sm-3 placeholder">
           <div class="thumbnail">
-          <a href="/watch/{[{ $episode.ID }]}/0/{[{ urlEsc $.show.Title $episode.Title }]}" >
-          <img src="{[{ $episode.Thumbnail }]}" class="img-responsive" alt="{[{ $episode.Title }]}">
+          <a href="/watch/{{ $episode.ID }}/0/{{ urlEsc $.show.Title $episode.Title }}" >
+          <img src="{{ $episode.Thumbnail }}" class="img-responsive" alt="{{ $episode.Title }}">
           </a>
-          <div class="caption"><h4>{[{ $episode.Title }]}</h4></div>
+          <div class="caption"><h4>{{ $episode.Title }}</h4></div>
           </div>
         </div>
-      {[{ end }]}
+      {{ end }}
     </div>
     </div>
 
@@ -88,4 +89,18 @@
   </div>
   </div>
 </div>
-<script type="text/javascript" src="/static/js/watch.js"></script>
+
+{{ if eq .episode.SrcType 0}}
+<script>
+var playerInstance = jwplayer("player");
+playerInstance.setup({
+  autostart: true,
+   playlist: {{ marshal .episode.Playlists }}
+});
+playerInstance.on('ready', function(){
+  playerInstance.playlistItem({{ .playIndex }});
+});
+</script>
+{{ end }}
+
+{{ end }}

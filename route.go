@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-martini/martini"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
@@ -13,92 +12,108 @@ import (
 	"strings"
 )
 
-func indexHandler(db gorm.DB, r render.Render, req *http.Request) {
+func indexHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
 	recents, _ := data.GetShowByRecently(&db, 0)
 	populars, _ := data.GetShowByPopular(&db, 0)
-	r.HTML(http.StatusOK, "index", map[string]interface{}{
+	data := map[string]interface{}{
 		"showRecents":  recents,
 		"showPopulars": populars,
-		"isMobile":     utils.IsMobile(req.UserAgent()),
-	})
+		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
+	}
+
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "index")
 }
 
-func notFoundHandler(r render.Render) {
-	r.HTML(http.StatusOK, "not_found", nil)
+func notFoundHandler(c *gin.Context) {
+	utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "not_found")
 }
 
-func goOutHandler(r render.Render) {
-	r.Redirect("/not_found", http.StatusMovedPermanently)
+func goOutHandler(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "/not_found")
 }
 
-func recentlyHandler(db gorm.DB, r render.Render, req *http.Request) {
+func recentlyHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
 	shows, _ := data.GetShowByRecently(&db, 0)
-	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
+	data := map[string]interface{}{
 		"Title":    "รายการล่าสุด",
 		"header":   "รายการล่าสุด",
-		"apiPath":  "/recently/",
+		"typeMode": "recently",
 		"shows":    shows,
-		"isMobile": utils.IsMobile(req.UserAgent()),
-	})
+		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
-func popularHandler(db gorm.DB, r render.Render, req *http.Request) {
+func popularHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
 	shows, _ := data.GetShowByPopular(&db, 0)
-	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
+	data := map[string]interface{}{
 		"Title":    "Popular",
 		"header":   "Popular",
-		"apiPath":  "/popular/",
+		"typeMode": "popular",
 		"shows":    shows,
-		"isMobile": utils.IsMobile(req.UserAgent()),
-	})
+		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
-func categoriesHandler(db gorm.DB, r render.Render, req *http.Request) {
+func categoriesHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
 	categories, _ := data.GetCategories(&db)
-	r.HTML(http.StatusOK, "category/list", map[string]interface{}{
+	data := map[string]interface{}{
 		"header":     "หมวด",
 		"categories": categories,
-		"isMobile":   utils.IsMobile(req.UserAgent()),
-	})
+		"isMobile":   utils.IsMobile(c.Request.UserAgent()),
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "category/list")
 }
 
-func categoryShowHandler(db gorm.DB, r render.Render, params martini.Params) {
-	titlize := params["titlize"]
-	start, _ := strconv.Atoi(params["start"])
+func categoryShowHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	titlize := c.Param("titlize")
 	category, _ := data.GetCategory(&db, titlize)
-	shows, _ := data.GetShowByCategory(&db, category.ID, start)
-	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":   category.Title,
-		"header":  category.Title,
-		"apiPath": "/category/" + category.ID + "/",
-		"shows":   shows,
-	})
+	shows, _ := data.GetShowByCategory(&db, category.ID, 0)
+	data := map[string]interface{}{
+		"Title":    category.Title,
+		"header":   category.Title,
+		"typeMode": "category",
+		"typeId":   category.ID,
+		"shows":    shows,
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
-func channelsHandler(db gorm.DB, r render.Render) {
+func channelsHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
 	channels, _ := data.GetChannels(&db)
-	r.HTML(http.StatusOK, "channel/list", map[string]interface{}{
+	data := map[string]interface{}{
 		"header":   "ช่องทีวี",
 		"channels": channels,
-	})
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "channel/list")
 }
 
-func channelShowHandler(db gorm.DB, r render.Render, params martini.Params) {
-	id := params["id"]
-	start, _ := strconv.Atoi(params["start"])
+func channelShowHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	id := c.Param("id")
 	channel, _ := data.GetChannel(&db, id)
-	shows, _ := data.GetShowByChannel(&db, channel.ID, start)
-	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
-		"Title":   channel.Title,
-		"header":  channel.Title,
-		"channel": channel,
-		"apiPath": "/channel/" + channel.ID + "/",
-		"shows":   shows,
-	})
+	shows, _ := data.GetShowByChannel(&db, channel.ID, 0)
+	data := map[string]interface{}{
+		"Title":    channel.Title,
+		"header":   channel.Title,
+		"channel":  channel,
+		"typeMode": "category",
+		"typeId":   channel.ID,
+		"shows":    shows,
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
-func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
-	qs := req.URL.Query()
+func searchShowHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	qs := c.Request.URL.Query()
 	keyword := qs.Get("keyword")
 	var shows []data.Show
 	var episodes []data.Episode
@@ -113,65 +128,76 @@ func searchShowHandler(db gorm.DB, r render.Render, params martini.Params, req *
 		title = "Search"
 		header = "กรุณาพิมพชื่อเรื่องที่ต้องการค้นหา"
 	}
-	r.HTML(http.StatusOK, "show/list", map[string]interface{}{
+	data := map[string]interface{}{
 		"Title":    title,
 		"keyword":  keyword,
 		"header":   header,
 		"shows":    shows,
 		"episodes": episodes,
-	})
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
-func showHandler(db gorm.DB, r render.Render, params martini.Params) {
-	showID, _ := strconv.Atoi(params["id"])
+func showHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(&db, showID)
 	if show.IsOtv && (os.Getenv("WATCH_OTV") == "1" || show.ChannelID == 3) {
-		renderShowOtv(db, r, show)
+		renderShowOtv(c, show)
 	} else {
-		renderShow(db, r, show)
+		renderShow(c, show)
 	}
 }
 
-func showTvHandler(db gorm.DB, r render.Render, params martini.Params) {
-	showID, _ := strconv.Atoi(params["id"])
+func showTvHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(&db, showID)
-	renderShow(db, r, show)
+	renderShow(c, show)
 }
 
-func showOtvHandler(db gorm.DB, r render.Render, params martini.Params) {
-	otvID, _ := strconv.Atoi(params["id"])
+func showOtvHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	otvID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShowByOtv(&db, otvID)
 	if show.IsOtv {
-		renderShowOtv(db, r, show)
+		renderShowOtv(c, show)
 	} else {
-		renderShow(db, r, show)
+		renderShow(c, show)
 	}
 }
 
-func renderShow(db gorm.DB, r render.Render, show data.Show) {
-	episodes, _ := data.GetEpisodes(&db, show.ID, 0)
-	r.HTML(http.StatusOK, "show/index", map[string]interface{}{
+func renderShow(c *gin.Context, show data.Show) {
+	db := c.MustGet("DB").(gorm.DB)
+	page, _ := strconv.Atoi(c.Query("page"))
+	episodes, pageInfo, _ := data.GetEpisodesAndPageInfo(&db, show.ID, int32(page))
+	// episodes, _ := data.GetEpisodes(&db, show.ID, 0)
+	data := map[string]interface{}{
 		"Title":    show.Title,
 		"show":     show,
 		"episodes": episodes,
-	})
+		"pageInfo": pageInfo,
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/index", "episode/item")
 }
 
-func renderShowOtv(db gorm.DB, r render.Render, show data.Show) {
+func renderShowOtv(c *gin.Context, show data.Show) {
 	_, episodes := data.GetOTVEpisodelist(show.OtvID)
-	r.HTML(http.StatusOK, "show/otv_index", map[string]interface{}{
+	data := map[string]interface{}{
 		"Title":    show.Title,
 		"show":     show,
 		"episodes": episodes,
-	})
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "show/otv_index")
 }
 
-func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
-	watchID, _ := strconv.Atoi(params["watchID"])
-	playIndex, _ := strconv.Atoi(params["playIndex"])
+func watchHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	watchID, _ := strconv.Atoi(c.Param("watchID"))
+	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
 	episode, err := data.GetEpisode(&db, watchID)
 	if err != nil {
-		goOutHandler(r)
+		// goOutHandler(r)
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
@@ -179,7 +205,7 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 	}
 
 	if playIndex == -1 {
-		r.Redirect("/not_found", http.StatusMovedPermanently)
+		c.Redirect(http.StatusMovedPermanently, "/not_found")
 	}
 
 	playlistItem := episode.Playlists[playIndex]
@@ -192,7 +218,7 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 	}
 
 	episodes, _ := data.GetEpisodes(&db, show.ID, 0)
-	r.HTML(http.StatusOK, "watch/index", map[string]interface{}{
+	data := map[string]interface{}{
 		"Title":        show.Title + " | " + episode.Title,
 		"playIndex":    playIndex,
 		"episode":      episode,
@@ -200,22 +226,24 @@ func watchHandler(db gorm.DB, r render.Render, params martini.Params, req *http.
 		"episodes":     episodes,
 		"playlistItem": playlistItem,
 		"embedURL":     embedURL,
-		"isMobile":     utils.IsMobile(req.UserAgent()),
-	})
+		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "watch/index")
 }
 
-func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *http.Request) {
-	isMobile := utils.IsMobile(req.UserAgent())
-	_, otvEpisodePlay := data.GetOTVEpisodePlay(params["watchID"], isMobile)
+func watchOtvHandler(c *gin.Context) {
+	db := c.MustGet("DB").(gorm.DB)
+	isMobile := utils.IsMobile(c.Request.UserAgent())
+	_, otvEpisodePlay := data.GetOTVEpisodePlay(c.Param("watchID"), isMobile)
 
-	watchID, _ := strconv.Atoi(params["watchID"])
-	playIndex, _ := strconv.Atoi(params["playIndex"])
+	watchID, _ := strconv.Atoi(c.Param("watchID"))
+	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
 	if maxIndex := len(otvEpisodePlay.EpisodeDetail.PartItems) - 1; maxIndex < playIndex {
 		playIndex = maxIndex
 	}
 
 	if playIndex == -1 {
-		r.Redirect("/not_found", http.StatusMovedPermanently)
+		c.Redirect(http.StatusMovedPermanently, "/not_found")
 	}
 
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
@@ -228,7 +256,7 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 	show, _ := data.GetShowByOtv(&db, otvID)
 
 	_, episodes := data.GetOTVEpisodelist(show.OtvID)
-	r.HTML(http.StatusOK, "watch/otv_index", map[string]interface{}{
+	data := map[string]interface{}{
 		"Title":          partItem.Title,
 		"partItem":       partItem,
 		"otvEpisodePlay": otvEpisodePlay,
@@ -237,5 +265,6 @@ func watchOtvHandler(db gorm.DB, r render.Render, params martini.Params, req *ht
 		"show":           show,
 		"episodes":       episodes,
 		"isMobile":       isMobile,
-	})
+	}
+	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "watch/otv_index")
 }

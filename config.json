@@ -1,0 +1,7 @@
+{
+  "Port"          : "3000",
+  "ReadTimeout"   : 10,
+  "WriteTimeout"  : 600,
+  "Static"        : "public",
+  "SiteTitle"     : ""
+}

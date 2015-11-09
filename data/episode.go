@@ -2,10 +2,16 @@ package data
 
 import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"math"
 	"strconv"
 	"strings"
 	"time"
 )
+
+type EpisodePage struct {
+	PageInfo PageInfo  `json:"pageInfo"`
+	Episodes []Episode `json:"episodes"`
+}
 
 type Episode struct {
 	ID        int    `gorm:"primary_key"`
@@ -13,8 +19,8 @@ type Episode struct {
 	ShowID    int    `json:"-"`
 	Ep        int    `json:"-"`
 	Title     string
-	Video     string `json:"-"`
-	SrcType   int
+	Video     string    `json:"-"`
+	SrcType   int       `json:"-"`
 	Date      time.Time `json:"-"`
 	ViewCount int       `json:"-"`
 	Parts     string    `json:"-"`
@@ -81,10 +87,40 @@ func CreatThumbnail(episode *Episode) {
 	}
 }
 
-func GetEpisodes(db *gorm.DB, showID int, start int) (episodes []Episode, err error) {
-	err = db.Where("banned = 0 AND show_id = ?", showID).Order("ep desc, id desc").Offset(start).Limit(20).Find(&episodes).Error
+func GetEpisodes(db *gorm.DB, showID int, offset int) (episodes []Episode, err error) {
+	err = db.Where("banned = 0 AND show_id = ?", showID).Order("ep desc, id desc").Offset(offset).Limit(20).Find(&episodes).Error
 	for index := range episodes {
 		GetEpisodeTitle(&episodes[index])
+	}
+	return
+}
+
+func GetEpisodesAndPageInfo(db *gorm.DB, showID int, page int32) (episodes []Episode, pageInfo PageInfo, err error) {
+	if page < 1 {
+		page = 1
+	}
+	currentPage := page
+	pageInfo.ResultsPerPage = 20
+	page--
+	offset := page * pageInfo.ResultsPerPage
+
+	dbQ := db.Table("episodes").Where("banned = 0 AND show_id = ?", showID).Order("ep desc, id desc")
+	dbQ.Count(&pageInfo.TotalResults)
+
+	maxPage := int32(math.Ceil(float64(pageInfo.TotalResults) / float64(pageInfo.ResultsPerPage)))
+	if currentPage <= maxPage {
+		if currentPage > 1 {
+			pageInfo.PreviousPage = currentPage - 1
+		}
+		if currentPage < maxPage {
+			pageInfo.NextPage = currentPage + 1
+		}
+		err = dbQ.Offset(offset).Limit(pageInfo.ResultsPerPage).Find(&episodes).Error
+		for index := range episodes {
+			GetEpisodeTitle(&episodes[index])
+		}
+	} else {
+
 	}
 	return
 }

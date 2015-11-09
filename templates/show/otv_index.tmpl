@@ -1,5 +1,6 @@
+{{ define "content" }}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
-  <h1 class="page-header">{[{ .show.Title }]}</h1>
+  <h1 class="page-header">{{ .show.Title }}</h1>
   <div id="video-player-section" class="z-index-layer-2 watch-page">
     <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
       <div class="video-player-root">
@@ -11,16 +12,16 @@
     </div>
   </div>
   <div class="row placeholders">
-  {[{ range $index, $episode := .episodes.EpisodeList }]}
+  {{ range $index, $episode := .episodes.EpisodeList }}
     <div class="col-xs-12 col-sm-3 placeholder">
       <div class="thumbnail">
-      <a href="/watch_otv/{[{ $episode.EpisodeID }]}/0/{[{ urlEsc $.show.Title $episode.Date }]}" >
-      <img src="{[{ $episode.Thumbnail }]}" class="img-responsive" alt="{[{ $episode.NameTh }]}">
+      <a href="/watch_otv/{{ $episode.EpisodeID }}/0/{{ urlEsc $.show.Title $episode.Date }}" >
+      <img src="{{ $episode.Thumbnail }}" class="img-responsive" alt="{{ $episode.NameTh }}">
       </a>
-      <div class="caption"><h4>{[{ $episode.NameTh }]} {[{ $episode.Date }]}</h4></div>
+      <div class="caption"><h4>{{ $episode.NameTh }} {{ $episode.Date }}</h4></div>
       </div>
     </div>
-  {[{ end }]}
+  {{ end }}
   </div>
   <div class="table-responsive">
   </div>
@@ -30,3 +31,4 @@
   </div>
   </div>
 </div>
+{{ end }}

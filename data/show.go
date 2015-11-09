@@ -6,15 +6,15 @@ import (
 )
 
 type Show struct {
-	ID          int `gorm:"primary_key"`
-	CategoryID  int `json:"-"`
-	ChannelID   int `json:"-"`
-	Title       string
-	Description string
-	Thumbnail   string
-	Poster      string
-	Detail      string `json:"-"`
-	LastEpname  string
+	ID          int     `gorm:"primary_key" json:"id"`
+	CategoryID  int     `json:"-"`
+	ChannelID   int     `json:"-"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Thumbnail   string  `json:"thumbnail"`
+	Poster      string  `json:"-"`
+	Detail      string  `json:"-"`
+	LastEpname  string  `json:"-"`
 	ViewCount   int     `json:"-"`
 	Rating      float32 `json:"-"`
 	VoteCount   int     `json:"-"`
@@ -37,24 +37,24 @@ func GetShowByOtv(db *gorm.DB, id int) (show Show, err error) {
 	return
 }
 
-func GetShowByRecently(db *gorm.DB, start int) (shows []Show, err error) {
-	err = db.Scopes(ShowScope).Order("update_date desc").Offset(start).Limit(20).Find(&shows).Error
+func GetShowByRecently(db *gorm.DB, offset int) (shows []Show, err error) {
+	err = db.Scopes(ShowScope).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
 	}
 	return
 }
 
-func GetShowByPopular(db *gorm.DB, start int) (shows []Show, err error) {
-	err = db.Scopes(ShowScope).Order("view_count desc").Offset(start).Limit(20).Find(&shows).Error
+func GetShowByPopular(db *gorm.DB, offset int) (shows []Show, err error) {
+	err = db.Scopes(ShowScope).Order("view_count desc").Offset(offset).Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
 	}
 	return
 }
 
-func GetShowByCategory(db *gorm.DB, id string, start int) (shows []Show, err error) {
-	err = db.Scopes(ShowScope).Where("category_id = ?", id).Order("update_date desc").Offset(start).Limit(20).Find(&shows).Error
+func GetShowByCategory(db *gorm.DB, id string, offset int) (shows []Show, err error) {
+	err = db.Scopes(ShowScope).Where("category_id = ?", id).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
 	}
@@ -69,8 +69,8 @@ func GetShowByCategoryPopular(db *gorm.DB, id string) (shows []Show, err error) 
 	return
 }
 
-func GetShowByChannel(db *gorm.DB, id string, start int) (shows []Show, err error) {
-	err = db.Scopes(ShowScope).Where("channel_id = ?", id).Order("update_date desc").Offset(start).Limit(20).Find(&shows).Error
+func GetShowByChannel(db *gorm.DB, id string, offset int) (shows []Show, err error) {
+	err = db.Scopes(ShowScope).Where("channel_id = ?", id).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
 	}
