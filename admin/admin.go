@@ -2,7 +2,6 @@ package admin
 
 import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/analytic"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
@@ -15,7 +14,8 @@ func IndexHandler(c *gin.Context) {
 }
 
 func EncryptEpisodeHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
+	defer db.Close()
 	episodeID, _ := strconv.Atoi(c.Param("episodeID"))
 	data.EncryptEpisode(&db, episodeID)
 	flash := map[string]string{
@@ -28,7 +28,8 @@ func EncryptEpisodeHandler(c *gin.Context) {
 }
 
 func AddEmbedMThaiHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
+	defer db.Close()
 	showID, _ := strconv.Atoi(c.Request.FormValue("show_id"))
 	data.InsertMThaiEmbedVideos(&db, showID)
 	flash := map[string]string{"info": "Insert MThai Embed Videos Successfully"}
@@ -39,7 +40,8 @@ func AddEmbedMThaiHandler(c *gin.Context) {
 }
 
 func AnalyticProcessHandler(c *gin.Context) {
-	db := c.MustGet("DB").(gorm.DB)
+	db, _ := utils.OpenDB()
+	defer db.Close()
 	c.Request.ParseMultipartForm(1024)
 	fnPleaseChooseFile := func() {
 		flash := map[string]string{"warning": "Please Choose Anlytice.json File"}
