@@ -1,28 +1,32 @@
 {{ define "content" }}
 <script src="http://content.jwplatform.com/libraries/0FN4ytgB.js"></script>
 <script>jwplayer.key="SzJyFNDHCWFi/mon3bYLTSncw4BsmOpTYFgwrw==";</script>
-<div ng-controller="VideoCtrl" ng-init="{{ if eq .episode.SrcType 0 }} watch('{{ .episode.HashID }}', {{ .playIndex }}); {{ end }} episode_title = '{{ escStr .playlistItem.Title }}';">
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">
       <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
       <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
         <div class="video-player-root">
-          <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
-            <div id="player"></div>
-            <div ng-bind="logPlayer"></div>
-            <div>
+          {{ if .episode.IsURL }}
+            <a href="{{ .playlistItem.File }}" target="_blank" >
+              <img src="{{ .playlistItem.Image }}" class="img-responsive" alt="{{ .playlistItem.Title }}">
+            </a>
+          {{ else }}
+            <div class="embed-responsive embed-responsive-16by9">
               {{ if .embedURL }}
                 {{ if .isMobile }}
-                    <iframe class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1" frameborder="0"
+                    <iframe class="embed-responsive-item" frameborder="0"
                     width="320" height="240" src="{{ .embedURL }}" allowfullscreen></iframe>
                 {{ else }}
-                    <iframe class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1" frameborder="0"
+                    <iframe class="embed-responsive-item" frameborder="0"
                     width="800" height="460" src="{{ .embedURL }}" allowfullscreen></iframe>
                 {{ end }}
+              {{ else }}
+
+                  <div id="player" class="embed-responsive-item"></div>
               {{ end }}
             </div>
-          </div>
+           {{ end }}
         </div>
       </div>
       </div>
@@ -87,8 +91,6 @@
 
   <div class="table-responsive">
   </div>
-  </div>
-</div>
 
 {{ if eq .episode.SrcType 0}}
 <script>

@@ -102,7 +102,6 @@ func ResetShowViewCount(db *gorm.DB) (err error) {
 	return
 }
 
-func UpdateShowViewCount(db *gorm.DB, title string, viewCount int) (err error) {
-	err = db.Model(Show{}).Where("title = ?", title).UpdateColumn("view_count", viewCount).Error
-	return
+func UpdateShowViewCount(db *gorm.DB, title string, viewCount int) int64 {
+	return db.Model(Show{}).Where("title = ?", title).UpdateColumn("view_count", viewCount).RowsAffected
 }

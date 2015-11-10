@@ -21,10 +21,10 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	flash := map[string]string{
 		"info": "Encrypt Successfully",
 	}
-	data := map[string]interface{}{
+	renderData := map[string]interface{}{
 		"flash": flash,
 	}
-	utils.GenerateHTML(c.Writer, data, "layout", "mobile_ads", "admin/index")
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
 }
 
 func AddEmbedMThaiHandler(c *gin.Context) {
@@ -39,6 +39,10 @@ func AddEmbedMThaiHandler(c *gin.Context) {
 		"layout", "mobile_ads", "admin/index")
 }
 
+func AnalyticHandler(c *gin.Context) {
+	utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "admin/analytic")
+}
+
 func AnalyticProcessHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
@@ -48,7 +52,7 @@ func AnalyticProcessHandler(c *gin.Context) {
 		utils.GenerateHTML(c.Writer, map[string]interface{}{
 			"flash": flash,
 		},
-			"layout", "mobile_ads", "admin/index")
+			"layout", "mobile_ads", "admin/analytic")
 	}
 
 	if len(c.Request.MultipartForm.File["uploaded"]) == 0 {
@@ -62,17 +66,19 @@ func AnalyticProcessHandler(c *gin.Context) {
 		fnPleaseChooseFile()
 		return
 	}
-	data, err := ioutil.ReadAll(file)
+	dataFile, err := ioutil.ReadAll(file)
 	if err != nil {
 		fnPleaseChooseFile()
 		return
 	}
-	analytic.UpdateView(&db, data)
+	shows := analytic.UpdateView(&db, dataFile)
 	flash := map[string]string{
 		"info": "Update View Count Successfully",
 	}
-	utils.GenerateHTML(c.Writer, map[string]interface{}{
+	renderData := map[string]interface{}{
 		"flash": flash,
-	},
-		"layout", "mobile_ads", "admin/index")
+		"shows": shows,
+	}
+
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "admin/analytic")
 }

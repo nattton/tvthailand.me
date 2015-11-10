@@ -84,6 +84,7 @@ func runServer() {
 	routerAuthorized.GET("/", admin.IndexHandler)
 	routerAuthorized.GET("/encrypt_episode/:episodeID", admin.EncryptEpisodeHandler)
 	routerAuthorized.POST("/mthai_embed", admin.AddEmbedMThaiHandler)
+	routerAuthorized.GET("/analytic", admin.AnalyticHandler)
 	routerAuthorized.POST("/analytic", admin.AnalyticProcessHandler)
 
 	router.NoRoute(notFoundHandler)

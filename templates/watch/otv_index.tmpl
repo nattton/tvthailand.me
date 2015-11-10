@@ -7,7 +7,7 @@
       <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
         <div class="video-player-root">
           <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
-            <div class="otv-iframe">
+            <div class="embed-responsive embed-responsive-16by9">
               {{ html .partItem.IframeHTML }}
               </div>
           </div>
@@ -19,12 +19,25 @@
     <div class="row video-meta">
       <div class="col-sm-12 col-sm-offset-1 col-md-9 col-md-offset-2">
         <div class="row video-meta">
-          <a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}">
-            <span class="show-title">{{ .otvEpisodePlay.SeasonDetail.Title }}</span>
-          </a>
-          {{ if not .isMobile }}
+          <div class="row">
+            <div class="col-sm-9 col-md-9">
+              <a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}">
+                <span class="show-title">{{ .partItem.Title }}</span>
+              </a>
+            </div>
+            <div class="col-sm-2 col-md-2">
+              <button id="btn-show-episode-detail" class="btn">อ่านเรื่องย่อ</button>
+            </div>
+          </div>
+          <script>
+          $(function(){
+            $('.episode-detail').hide()
+            $('#btn-show-episode-detail').click(function(){
+              $('.episode-detail').toggle(1000)
+            });
+          });
+          </script>
           <div  class="episode-detail">{{ .otvEpisodePlay.EpisodeDetail.Detail }}</div>
-          {{ end }}
         </div>
         <div class="row">
         <div class="pull-right" style="padding-right:30px;">

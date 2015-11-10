@@ -7,13 +7,10 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
 	_ "github.com/go-sql-driver/mysql"
-	"html"
 	"html/template"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
-	"reflect"
 	"strings"
 )
 
@@ -71,32 +68,12 @@ func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	}
 
 	var funcMaps = []template.FuncMap{
-		{
-			"last": func(x int, a interface{}) bool {
-				return x == reflect.ValueOf(a).Len()-1
-			},
-		},
-		{
-			"escStr": func(a ...string) string {
-				return html.EscapeString(strings.Join(a, "-"))
-			},
-		},
-		{
-			"urlEsc": func(a ...string) string {
-				return url.QueryEscape(strings.Join(a, "-"))
-			},
-		},
-		{
-			"marshal": func(v interface{}) template.JS {
-				a, _ := json.Marshal(v)
-				return template.JS(a)
-			},
-		},
-		{
-			"html": func(a string) template.HTML {
-				return template.HTML(a)
-			},
-		},
+		{"add": add},
+		{"last": lastItem},
+		{"escStr": escStr},
+		{"urlEsc": urlEsc},
+		{"marshal": marshal},
+		{"html": templateHTML},
 	}
 	templates := template.New("")
 	for i := range funcMaps {

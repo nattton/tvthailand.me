@@ -5,7 +5,6 @@ import (
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -30,7 +29,7 @@ func notFoundHandler(c *gin.Context) {
 }
 
 func goOutHandler(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, "/not_found")
+	goOutHandler(c)
 }
 
 func recentlyHandler(c *gin.Context) {
@@ -211,7 +210,7 @@ func watchHandler(c *gin.Context) {
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
 	episode, err := data.GetEpisode(&db, watchID)
 	if err != nil {
-		// goOutHandler(r)
+		goOutHandler(c)
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
@@ -219,7 +218,7 @@ func watchHandler(c *gin.Context) {
 	}
 
 	if playIndex == -1 {
-		c.Redirect(http.StatusMovedPermanently, "/not_found")
+		goOutHandler(c)
 	}
 
 	playlistItem := episode.Playlists[playIndex]
@@ -258,14 +257,18 @@ func watchOtvHandler(c *gin.Context) {
 	}
 
 	if playIndex == -1 {
-		c.Redirect(http.StatusMovedPermanently, "/not_found")
+		goOutHandler(c)
 	}
 
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
 	partItem.IframeHTML = html.UnescapeString(partItem.IframeHTML)
-	if !isMobile {
-		partItem.IframeHTML = strings.Replace(partItem.IframeHTML, "/v/", "/playlist/", 1)
-	}
+	// if !isMobile {
+	// 	r := strings.NewReplacer("/v/", "/playlist/",
+	// 		"iframe", `iframe class="embed-responsive-item"`)
+	// 	partItem.IframeHTML = r.Replace(partItem.IframeHTML)
+	// }
+	r := strings.NewReplacer("iframe", `iframe class="embed-responsive-item"`)
+	partItem.IframeHTML = r.Replace(partItem.IframeHTML)
 
 	otvID, _ := strconv.Atoi(otvEpisodePlay.SeasonDetail.ContentSeasonID)
 	show, _ := data.GetShowByOtv(&db, otvID)
