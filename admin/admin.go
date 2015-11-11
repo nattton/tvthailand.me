@@ -10,7 +10,7 @@ import (
 )
 
 func IndexHandler(c *gin.Context) {
-	utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "admin/index")
+	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/index")
 }
 
 func EncryptEpisodeHandler(c *gin.Context) {
@@ -24,7 +24,7 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"flash": flash,
 	}
-	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "index")
 }
 
 func AddEmbedMThaiHandler(c *gin.Context) {
@@ -36,11 +36,11 @@ func AddEmbedMThaiHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, map[string]interface{}{
 		"flash": flash,
 	},
-		"layout", "mobile_ads", "admin/index")
+		"admin/layout", "admin/index")
 }
 
 func AnalyticHandler(c *gin.Context) {
-	utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "admin/analytic")
+	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/analytic")
 }
 
 func AnalyticProcessHandler(c *gin.Context) {
@@ -52,7 +52,7 @@ func AnalyticProcessHandler(c *gin.Context) {
 		utils.GenerateHTML(c.Writer, map[string]interface{}{
 			"flash": flash,
 		},
-			"layout", "mobile_ads", "admin/analytic")
+			"admin/layout", "admin/analytic")
 	}
 
 	if len(c.Request.MultipartForm.File["uploaded"]) == 0 {
@@ -80,5 +80,5 @@ func AnalyticProcessHandler(c *gin.Context) {
 		"shows": shows,
 	}
 
-	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "admin/analytic")
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/analytic")
 }

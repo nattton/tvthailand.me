@@ -1,0 +1,60 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" >
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title id="header-title">{{ if .Title }} TV Thailand | {{ .Title }} {{ else }} TV Thailand | Admin {{ end }}</title>
+
+    <!-- Bootstrap -->
+    <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="/static/css/base.css" rel="stylesheet">
+    {{ if .isMobile }}
+    <link href="/static/css/mobile.css" rel="stylesheet">
+    {{ end }}
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">TV Thailand.Me</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="/admin">Admin</a></li>
+              <li><a href="/admin/analytic">Analytic</a></li>
+            </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+   <div class="container-fluid">
+
+     {{ range $key, $message := .flash }}
+     <div class="alert alert-{{ $key }}" role="alert">
+       {{ $message }}
+     </div>
+     {{ end }}
+
+     {{ template "content" . }}
+   </div>
+    <footer id="footer">
+      © tvthailand.me All Rights Reserved.
+      <div>facebook : <a href="https://www.facebook.com/TV.Thailand" target="_blank">TV Thailand</a><div>
+    </footer>
+    <!-- CDNJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    {{ template "script" . }}
+  </body>
+</html>
+{{ end }}
