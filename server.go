@@ -75,12 +75,12 @@ func runServer() {
 		routerAjax.GET("/show/:show_id/episodes", AjaxShowHandler)
 	}
 
-	router.GET("/admin/encrypt_episode", admin.EncryptEpisodeHandler)
 	routerAuthorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
 		"saly":    "admin888",
 		"lucifer": "gundamman",
 	}))
 	routerAuthorized.GET("/", admin.IndexHandler)
+	routerAuthorized.GET("/encrypt_episode", admin.EncryptEpisodeHandler)
 	routerAuthorized.GET("/encrypt_episode/:episodeID", admin.EncryptEpisodeHandler)
 	routerAuthorized.POST("/mthai_embed", admin.AddEmbedMThaiHandler)
 	routerAuthorized.GET("/analytic", admin.AnalyticHandler)

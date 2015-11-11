@@ -24,7 +24,7 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"flash": flash,
 	}
-	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "index")
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
 }
 
 func AddEmbedMThaiHandler(c *gin.Context) {
