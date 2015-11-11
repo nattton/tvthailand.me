@@ -9,33 +9,17 @@
           <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
             <h2 style="color:#000;">Live TV</h4>
             <link rel="stylesheet" href="//releases.flowplayer.org/6.0.3/skin/functional.css">
-            <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
-
             <div class="player">
                <video>
                   <source type="application/x-mpegurl"  src="{{ .channel.URL }}">
                </video>
             </div>
-            <script>
-            $(function () {
-               $(".player").flowplayer({
-                 autoplay: true,
-                 embed: false
-               });
-            });
-            </script>
-
           </div>
         </div>
       </div>
       </div>
   </div>
   {{ end }}
-  <div class="row">
-  <div class="pull-right">
-      <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>
-  </div>
-  </div>
   <div id="show_content" class="row placeholders">
   {{ range .shows }}
     <div class="col-xs-12 col-sm-3 placeholder">
@@ -52,6 +36,11 @@
       <li><a className="btn" href="">Next</a></li>
     </ul>
   </div>
+  <div class="row">
+  <div class="pull-right">
+      <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>
+  </div>
+  </div>
 {{ if .episodes}}
   <h1 class="page-header">EPISODES</h1>
   {{ template "episode_item" . }}
@@ -60,6 +49,20 @@
 <div class="table-responsive">
 </div>
 </div>
+{{ end }}
+
+{{ define "script" }}
+  {{ if .channel.URL }}
+  <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+  <script>
+  $(function () {
+     $(".player").flowplayer({
+       autoplay: true,
+       embed: false
+     });
+  });
+  </script>
+  {{ end }}
 <script>
 var TYPE_MODE = {{ .typeMode }};
 var TYPE_ID = {{ .typeId }};

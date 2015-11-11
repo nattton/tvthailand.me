@@ -38,6 +38,7 @@ func runServer() {
 	router.Use(gin.Logger())
 	router.Static("/bower_components", "./public/bower_components")
 	router.Static("/static", "./public/static")
+	router.Static("/favicon", "./public/favicon")
 	router.StaticFile("/favicon.ico", "./public/favicon.ico")
 	router.StaticFile("/robot.txt", "./public/robot.txt")
 

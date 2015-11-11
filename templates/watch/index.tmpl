@@ -91,18 +91,19 @@
 
   <div class="table-responsive">
   </div>
-
-{{ if eq .episode.SrcType 0}}
-<script>
-var playerInstance = jwplayer("player");
-playerInstance.setup({
-  autostart: true,
-   playlist: {{ marshal .episode.Playlists }}
-});
-playerInstance.on('ready', function(){
-  playerInstance.playlistItem({{ .playIndex }});
-});
-</script>
 {{ end }}
 
+{{ define "script" }}
+  {{ if eq .episode.SrcType 0}}
+  <script>
+  var playerInstance = jwplayer("player");
+  playerInstance.setup({
+    autostart: true,
+     playlist: {{ marshal .episode.Playlists }}
+  });
+  playerInstance.on('ready', function(){
+    playerInstance.playlistItem({{ .playIndex }});
+  });
+  </script>
+  {{ end }}
 {{ end }}

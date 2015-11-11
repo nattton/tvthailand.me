@@ -16,6 +16,11 @@
     <div class="clearfix visible-xs-block"></div>
   {{ end }}
   </div>
+  <div class="row">
+  <div class="pull-right">
+      <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>
+  </div>
+  </div>
 {{ end }}
 
 {{ template "mobile_ads" . }}
@@ -41,4 +46,7 @@
 </div>
 </div>
 <div id="show_content" class="row placeholders"></div>
+{{ end }}
+
+{{ define "script" }}
 {{ end }}
