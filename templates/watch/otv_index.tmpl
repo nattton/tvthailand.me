@@ -29,14 +29,6 @@
               <button id="btn-show-episode-detail" class="btn">อ่านเรื่องย่อ</button>
             </div>
           </div>
-          <script>
-          $(function(){
-            $('.episode-detail').hide()
-            $('#btn-show-episode-detail').click(function(){
-              $('.episode-detail').toggle(1000)
-            });
-          });
-          </script>
           <div  class="episode-detail">{{ .otvEpisodePlay.EpisodeDetail.Detail }}</div>
         </div>
         <div class="row">
@@ -86,4 +78,12 @@
 {{ end }}
 
 {{ define "script" }}
+<script>
+$(function(){
+  $('.episode-detail').hide()
+  $('#btn-show-episode-detail').click(function(){
+    $('.episode-detail').toggle(1000)
+  });
+});
+</script>
 {{ end }}

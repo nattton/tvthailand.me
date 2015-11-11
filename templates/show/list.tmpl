@@ -53,20 +53,20 @@
 
 {{ define "script" }}
   {{ if .channel.URL }}
-  <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
-  <script>
-  $(function () {
-     $(".player").flowplayer({
-       autoplay: true,
-       embed: false
-     });
-  });
-  </script>
+    <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+    <script>
+    $(function () {
+       $(".player").flowplayer({
+         autoplay: true,
+         embed: false
+       });
+    });
+    </script>
   {{ end }}
-<script>
-var TYPE_MODE = {{ .typeMode }};
-var TYPE_ID = {{ .typeId }};
-var SHOWS = {{ marshal .shows }};
-</script>
-<script src="/static/buildjs/show_list.js"></script>
+  <script>
+  var TYPE_MODE = {{ .typeMode }};
+  var TYPE_ID = {{ .typeId }};
+  var SHOWS = {{ marshal .shows }};
+  </script>
+  <script src="/static/buildjs/show_list.js"></script>
 {{ end }}
