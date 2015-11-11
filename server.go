@@ -60,6 +60,7 @@ func runServer() {
 	router.GET("/watch/:watchID/:playIndex/*title", watchHandler)
 	router.GET("/watch_otv/:watchID", watchOtvHandler)
 	router.GET("/watch_otv/:watchID/:playIndex/*title", watchOtvHandler)
+	router.GET("/oplay/:watchID/*title", OPlayHandler)
 	router.GET("/mobile_apps", func(c *gin.Context) {
 		utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "static/mobile_apps")
 	})

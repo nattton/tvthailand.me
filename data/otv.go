@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -65,7 +66,7 @@ type OtvPartItem struct {
 	Thumbnail  string `json:"thumbnail"`
 }
 
-func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpisode) {
+func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpisode, err error) {
 	apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
 	client := &http.Client{
 		Transport: &httpcontrol.Transport{
@@ -75,28 +76,31 @@ func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpi
 	}
 	resp, err := client.Get(apiURL)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	defer resp.Body.Close()
 	responseBody, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	err = json.Unmarshal(responseBody, &otvEpisode)
 	if err != nil {
-		fmt.Println("JSON Parser Error : ", apiURL)
+		log.Println(err)
+		return
 	}
 	for index := range otvEpisode.EpisodeList {
 		Date, errT := time.Parse(DateFMT, otvEpisode.EpisodeList[index].Date)
 		if errT != nil {
-			fmt.Println(errT)
+			log.Println(errT)
 		}
 		otvEpisode.EpisodeList[index].Date = Date.Format(DateLongFMT)
 	}
 	return
 }
 
-func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, otvEpisodePlay OtvEpisodePlay) {
+func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, otvEpisodePlay OtvEpisodePlay, err error) {
 	width := "800"
 	height := "340"
 	if isMobile {
@@ -110,8 +114,6 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, ot
 		"app_id":      {OtvAppID},
 		"app_version": {OtvAppVersion},
 		"ep_id":       {episodeID},
-		"ep_prev":     {"2"},
-		"ep_next":     {"2"},
 		"width":       {width},
 		"height":      {height},
 	}
@@ -123,17 +125,19 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, ot
 	}
 	resp, err := client.PostForm(apiURL, formVal)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	defer resp.Body.Close()
 	responseBody, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	err = json.Unmarshal(responseBody, &otvEpisodePlay)
 	if err != nil {
-		fmt.Println("JSON Parser Error : ", apiURL)
+		log.Println(err)
+		return
 	}
-
 	return
 }

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -194,7 +196,11 @@ func renderShow(c *gin.Context, show data.Show) {
 }
 
 func renderShowOtv(c *gin.Context, show data.Show) {
-	_, episodes := data.GetOTVEpisodelist(show.OtvID)
+	_, episodes, err := data.GetOTVEpisodelist(show.OtvID)
+	if err != nil {
+		printFlash(c.Writer, "danger", "OTV Server Error")
+		return
+	}
 	renderData := map[string]interface{}{
 		"Title":    show.Title,
 		"show":     show,
@@ -248,7 +254,11 @@ func watchOtvHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	isMobile := utils.IsMobile(c.Request.UserAgent())
-	_, otvEpisodePlay := data.GetOTVEpisodePlay(c.Param("watchID"), isMobile)
+	_, otvEpisodePlay, err := data.GetOTVEpisodePlay(c.Param("watchID"), isMobile)
+	if err != nil {
+		printFlash(c.Writer, "danger", "OTV Server Error")
+		return
+	}
 
 	watchID, _ := strconv.Atoi(c.Param("watchID"))
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
@@ -272,8 +282,11 @@ func watchOtvHandler(c *gin.Context) {
 
 	otvID, _ := strconv.Atoi(otvEpisodePlay.SeasonDetail.ContentSeasonID)
 	show, _ := data.GetShowByOtv(&db, otvID)
-
-	_, episodes := data.GetOTVEpisodelist(show.OtvID)
+	_, episodes, err := data.GetOTVEpisodelist(show.OtvID)
+	if err != nil {
+		printFlash(c.Writer, "danger", "OTV Server Error")
+		return
+	}
 	renderData := map[string]interface{}{
 		"Title":          partItem.Title,
 		"partItem":       partItem,
@@ -285,4 +298,20 @@ func watchOtvHandler(c *gin.Context) {
 		"isMobile":       isMobile,
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "watch/otv_index")
+}
+
+func OPlayHandler(c *gin.Context) {
+	responseBody, _, _ := data.GetOTVEpisodePlay(c.Param("watchID"), false)
+	fmt.Fprintf(c.Writer, string(responseBody))
+}
+
+// flashType : danger, warning, info
+func printFlash(writer http.ResponseWriter, flashType, message string) {
+	flash := map[string]string{
+		flashType: message,
+	}
+	renderData := map[string]interface{}{
+		"flash": flash,
+	}
+	utils.GenerateHTML(writer, renderData, "layout", "mobile_ads", "index")
 }

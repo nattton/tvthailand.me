@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/data"
+	"log"
 	"strconv"
 	"strings"
 	"sync"
@@ -53,13 +54,13 @@ type Result struct {
 	RowAffected int64
 }
 
-func getShow(b []byte) []ShowItem {
+func getShow(b []byte) (shows []ShowItem, err error) {
 	var analytics Analytics
-	err := json.Unmarshal(b, &analytics)
+	err = json.Unmarshal(b, &analytics)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
-	var shows []ShowItem
 	rowClusters := analytics.Components[0].DataTable.RowClusters
 	if len(rowClusters) == 0 {
 		rowClusters = analytics.Components[1].DataTable.RowClusters
@@ -68,16 +69,17 @@ func getShow(b []byte) []ShowItem {
 		displayKey := rowCluster.RowKey[0].DisplayKey
 		dataValue, err := strconv.Atoi(strings.Replace(rowCluster.Row[0].RowValue[0].DataValue, ",", "", -1))
 		if err != nil {
-			panic(err)
+			log.Println(err)
 		}
-
-		shows = append(shows, ShowItem{displayKey, dataValue, false})
+		if dataValue > 0 {
+			shows = append(shows, ShowItem{displayKey, dataValue, false})
+		}
 	}
-	return shows
+	return
 }
 
 func UpdateView(db *gorm.DB, jsonByte []byte) []ShowItem {
-	shows := getShow(jsonByte)
+	shows, _ := getShow(jsonByte)
 	if len(shows) > 0 {
 		data.ResetShowViewCount(db)
 	}
