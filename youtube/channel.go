@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/facebookgo/httpcontrol"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 )
 
 const YoutubeChannelForUsernameAPIURL = "https://www.googleapis.com/youtube/v3/channels?key=%s&forUsername=%s&part=snippet"

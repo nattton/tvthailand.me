@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"golang.org/x/net/html"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/golang.org/x/net/html"
 )
 
 // the Selector type, and functions for creating them

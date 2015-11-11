@@ -1,38 +1,17 @@
 package utils
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
+	_ "github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-sql-driver/mysql"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
-	_ "github.com/go-sql-driver/mysql"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 )
-
-type Configuration struct {
-	Port         string
-	ReadTimeout  int64
-	WriteTimeout int64
-	Static       string
-}
-
-func LoadConfig() (config Configuration) {
-	file, err := os.Open("config.json")
-	if err != nil {
-		log.Fatalln("Cannot open config file", err)
-	}
-	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&config)
-	if err != nil {
-		log.Fatalln("Cannot get configuration from file", err)
-	}
-	return
-}
 
 func OpenDB() (gorm.DB, error) {
 	db, err := gorm.Open("mysql", os.Getenv("DATABASE_DSN"))

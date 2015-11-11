@@ -1,9 +1,6 @@
 {
 	"ImportPath": "github.com/code-mobi/tvthailand.me",
 	"GoVersion": "go1.5",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",

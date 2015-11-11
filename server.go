@@ -5,9 +5,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/admin"
 	"github.com/code-mobi/tvthailand.me/utils"
-	"net/http"
 	"os"
-	"time"
 )
 
 var commandParam CommandParam
@@ -31,10 +29,9 @@ func main() {
 }
 
 func runServer() {
-	config := utils.LoadConfig()
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = config.Port
+		port = "3000"
 	}
 
 	router := gin.New()
@@ -88,12 +85,5 @@ func runServer() {
 	routerAuthorized.POST("/analytic", admin.AnalyticProcessHandler)
 
 	router.NoRoute(notFoundHandler)
-	server := &http.Server{
-		Addr:           ":" + port,
-		Handler:        router,
-		ReadTimeout:    time.Duration(config.ReadTimeout * int64(time.Second)),
-		WriteTimeout:   time.Duration(config.WriteTimeout * int64(time.Second)),
-		MaxHeaderBytes: 1 << 20,
-	}
-	server.ListenAndServe()
+	router.Run(":" + port)
 }
