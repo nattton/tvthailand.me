@@ -15,11 +15,19 @@ import (
 func indexHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	recents, _ := data.GetShowByRecently(&db, 0)
-	populars, _ := data.GetShowByPopular(&db, 0)
+	recents := make(chan []data.Show)
+	populars := make(chan []data.Show)
+	go func() {
+		shows, _ := data.GetShowByRecently(&db, 0)
+		recents <- shows
+	}()
+	go func() {
+		shows, _ := data.GetShowByPopular(&db, 0)
+		populars <- shows
+	}()
 	renderData := map[string]interface{}{
-		"showRecents":  recents,
-		"showPopulars": populars,
+		"showRecents":  <-recents,
+		"showPopulars": <-populars,
 		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
 	}
 
@@ -27,11 +35,7 @@ func indexHandler(c *gin.Context) {
 }
 
 func notFoundHandler(c *gin.Context) {
-	utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "not_found")
-}
-
-func goOutHandler(c *gin.Context) {
-	goOutHandler(c)
+	printFlash(c.Writer, "danger", "Page not found")
 }
 
 func recentlyHandler(c *gin.Context) {
@@ -78,7 +82,11 @@ func categoryShowHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	titlize := c.Param("titlize")
-	category, _ := data.GetCategory(&db, titlize)
+	category, err := data.GetCategory(&db, titlize)
+	if err != nil {
+		notFoundHandler(c)
+		return
+	}
 	shows, _ := data.GetShowByCategory(&db, category.ID, 0)
 	renderData := map[string]interface{}{
 		"Title":    category.Title,
@@ -216,7 +224,7 @@ func watchHandler(c *gin.Context) {
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
 	episode, err := data.GetEpisode(&db, watchID)
 	if err != nil {
-		goOutHandler(c)
+		notFoundHandler(c)
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
@@ -224,7 +232,7 @@ func watchHandler(c *gin.Context) {
 	}
 
 	if playIndex == -1 {
-		goOutHandler(c)
+		notFoundHandler(c)
 	}
 
 	playlistItem := episode.Playlists[playIndex]
@@ -267,7 +275,7 @@ func watchOtvHandler(c *gin.Context) {
 	}
 
 	if playIndex == -1 {
-		goOutHandler(c)
+		notFoundHandler(c)
 	}
 
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]

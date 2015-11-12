@@ -44,7 +44,7 @@ func runServer() {
 
 	router.GET("/", indexHandler)
 	router.GET("/recently", recentlyHandler)
-	router.GET("/not_found", goOutHandler)
+	router.GET("/not_found", notFoundHandler)
 	router.GET("/popular", popularHandler)
 	router.GET("/categories", categoriesHandler)
 	router.GET("/category/:titlize", categoryShowHandler)
