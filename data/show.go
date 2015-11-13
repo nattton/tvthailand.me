@@ -1,7 +1,12 @@
 package data
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/gob"
+	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/utils"
 	"time"
 )
 
@@ -26,14 +31,56 @@ type Show struct {
 	DeletedAt *time.Time `json:"-"`
 }
 
+func (s Show) ToGOB64() string {
+	b := bytes.Buffer{}
+	e := gob.NewEncoder(&b)
+	err := e.Encode(s)
+	if err != nil {
+		fmt.Println(`failed gob Encode`, err)
+	}
+	return base64.StdEncoding.EncodeToString(b.Bytes())
+}
+
+func (s *Show) FromGOB64(str string) {
+	by, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		fmt.Println(`failed base64 Decode`, err)
+	}
+	b := bytes.Buffer{}
+	b.Write(by)
+	d := gob.NewDecoder(&b)
+	err = d.Decode(&s)
+	if err != nil {
+		fmt.Println(`failed gob Decode`, err)
+	}
+	return
+}
+
 func GetShow(db *gorm.DB, id int) (show Show, err error) {
-	err = db.First(&show, id).Error
-	show.Thumbnail = ThumbnailURLTv + show.Thumbnail
+	cachedKey := fmt.Sprintf("Show/id=%d", id)
+	redisClient := utils.OpenRedis()
+	result, err := redisClient.Get(cachedKey).Result()
+	if err != nil {
+		err = db.First(&show, id).Error
+		show.Thumbnail = ThumbnailURLTv + show.Thumbnail
+		redisClient.Set(cachedKey, show.ToGOB64(), 24*time.Hour)
+	} else {
+		show.FromGOB64(result)
+	}
 	return
 }
 
 func GetShowByOtv(db *gorm.DB, id int) (show Show, err error) {
-	err = db.Where("otv_id = ?", id).First(&show).Error
+	cachedKey := fmt.Sprintf("Show/otv_id=%d", id)
+	redisClient := utils.OpenRedis()
+	result, err := redisClient.Get(cachedKey).Result()
+	if err != nil {
+		err = db.Where("otv_id = ?", id).First(&show).Error
+		show.Thumbnail = ThumbnailURLTv + show.Thumbnail
+		redisClient.Set(cachedKey, show.ToGOB64(), 24*time.Hour)
+	} else {
+		show.FromGOB64(result)
+	}
 	return
 }
 
