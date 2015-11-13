@@ -49,6 +49,7 @@ func runServer() {
 	router.GET("/categories", categoriesHandler)
 	router.GET("/category/:titlize", categoryShowHandler)
 	router.GET("/channels", channelsHandler)
+	router.GET("/channel/:id", channelShowHandler)
 	router.GET("/channel/:id/*title", channelShowHandler)
 	router.GET("/search", searchShowHandler)
 	router.GET("/show/:id", showHandler)
