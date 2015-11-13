@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
+	"github.com/code-mobi/tvthailand.me/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -67,24 +68,38 @@ type OtvPartItem struct {
 }
 
 func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpisode, err error) {
-	apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
-	client := &http.Client{
-		Transport: &httpcontrol.Transport{
-			RequestTimeout: time.Minute,
-			MaxTries:       3,
-		},
-	}
-	resp, err := client.Get(apiURL)
+	cacheTime := 5 * time.Minute
+	keyOTVEpisodelist := fmt.Sprintf("OTV/Episodelist/%s/0/50", contentID)
+	redisClient := utils.OpenRedis()
+	jsonResult, err := redisClient.Get(keyOTVEpisodelist).Result()
 	if err != nil {
-		log.Println(err)
-		return
+		apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
+		client := &http.Client{
+			Transport: &httpcontrol.Transport{
+				RequestTimeout: time.Minute,
+				MaxTries:       3,
+			},
+		}
+		resp, err := client.Get(apiURL)
+		if err != nil {
+			log.Println(err)
+			return responseBody, otvEpisode, err
+		}
+		defer resp.Body.Close()
+		responseBody, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Println(err)
+			return responseBody, otvEpisode, err
+		}
+
+		errRedis := redisClient.Set(keyOTVEpisodelist, string(responseBody), cacheTime).Err()
+		if errRedis != nil {
+			log.Println(errRedis)
+		}
+	} else {
+		responseBody = []byte(jsonResult)
 	}
-	defer resp.Body.Close()
-	responseBody, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+
 	err = json.Unmarshal(responseBody, &otvEpisode)
 	if err != nil {
 		log.Println(err)

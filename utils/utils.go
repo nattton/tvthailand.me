@@ -6,6 +6,7 @@ import (
 	_ "github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-sql-driver/mysql"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
+	"gopkg.in/redis.v3"
 	"html/template"
 	"log"
 	"net/http"
@@ -20,6 +21,15 @@ func OpenDB() (gorm.DB, error) {
 	}
 	db.LogMode(gin.Mode() == "debug")
 	return db, err
+}
+
+func OpenRedis() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_HOST") + ":6379",
+		Password: "",
+		DB:       0,
+	})
+	return client
 }
 
 func IsMobile(userAgent string) bool {
