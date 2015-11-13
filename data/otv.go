@@ -69,9 +69,9 @@ type OtvPartItem struct {
 
 func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpisode, err error) {
 	cacheTime := 5 * time.Minute
-	keyOTVEpisodelist := fmt.Sprintf("OTV/Episodelist/%s/0/50", contentID)
+	keyOtvEpisodelist := fmt.Sprintf("OTV/Episodelist/%s/0/50", contentID)
 	redisClient := utils.OpenRedis()
-	jsonResult, err := redisClient.Get(keyOTVEpisodelist).Result()
+	jsonResult, err := redisClient.Get(keyOtvEpisodelist).Result()
 	if err != nil {
 		apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
 		client := &http.Client{
@@ -92,7 +92,7 @@ func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpi
 			return responseBody, otvEpisode, err
 		}
 
-		errRedis := redisClient.Set(keyOTVEpisodelist, string(responseBody), cacheTime).Err()
+		errRedis := redisClient.Set(keyOtvEpisodelist, string(responseBody), cacheTime).Err()
 		if errRedis != nil {
 			log.Println(errRedis)
 		}
@@ -122,33 +122,47 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, ot
 		width = "320"
 		height = "200"
 	}
-	apiURL := fmt.Sprintf("%s/Episode/oplay", OtvDomain)
-	formVal := url.Values{
-		"dev_code":    {OtvDevCode},
-		"dev_key":     {OtvSecretKey},
-		"app_id":      {OtvAppID},
-		"app_version": {OtvAppVersion},
-		"ep_id":       {episodeID},
-		"width":       {width},
-		"height":      {height},
-	}
-	client := &http.Client{
-		Transport: &httpcontrol.Transport{
-			RequestTimeout: time.Minute,
-			MaxTries:       3,
-		},
-	}
-	resp, err := client.PostForm(apiURL, formVal)
+	cacheTime := 1 * time.Minute
+	keyOPlay := fmt.Sprintf("OTV/oplay/%s/%d/%d", episodeID, width, height)
+	redisClient := utils.OpenRedis()
+	jsonResult, err := redisClient.Get(keyOPlay).Result()
 	if err != nil {
-		log.Println(err)
-		return
+		apiURL := fmt.Sprintf("%s/Episode/oplay", OtvDomain)
+		formVal := url.Values{
+			"dev_code":    {OtvDevCode},
+			"dev_key":     {OtvSecretKey},
+			"app_id":      {OtvAppID},
+			"app_version": {OtvAppVersion},
+			"ep_id":       {episodeID},
+			"width":       {width},
+			"height":      {height},
+		}
+		client := &http.Client{
+			Transport: &httpcontrol.Transport{
+				RequestTimeout: time.Minute,
+				MaxTries:       3,
+			},
+		}
+		resp, err := client.PostForm(apiURL, formVal)
+		if err != nil {
+			log.Println(err)
+			return responseBody, otvEpisodePlay, err
+		}
+		defer resp.Body.Close()
+		responseBody, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Println(err)
+			return responseBody, otvEpisodePlay, err
+		}
+
+		errRedis := redisClient.Set(keyOPlay, string(responseBody), cacheTime).Err()
+		if errRedis != nil {
+			log.Println(errRedis)
+		}
+	} else {
+		responseBody = []byte(jsonResult)
 	}
-	defer resp.Body.Close()
-	responseBody, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+
 	err = json.Unmarshal(responseBody, &otvEpisodePlay)
 	if err != nil {
 		log.Println(err)
