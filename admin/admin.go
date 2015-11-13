@@ -43,6 +43,18 @@ func AnalyticHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/analytic")
 }
 
+func FlushHandler(c *gin.Context) {
+	redisClient := utils.OpenRedis()
+	redisClient.FlushAll()
+	flash := map[string]string{
+		"info": "Flush All Successfully",
+	}
+	renderData := map[string]interface{}{
+		"flash": flash,
+	}
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
+}
+
 func AnalyticProcessHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
