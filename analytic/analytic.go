@@ -1,7 +1,9 @@
 package analytic
 
 import (
-	"encoding/json"
+	"bytes"
+	"encoding/csv"
+	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/data"
 	"log"
@@ -14,72 +16,36 @@ const MaxConcurrency = 4
 
 var throttle = make(chan int, MaxConcurrency)
 
-type Analytics struct {
-	Components []*Components `json:"components"`
-}
-
-type Components struct {
-	DataTable DataTable `json:"dataTable"`
-}
-
-type DataTable struct {
-	RowClusters []*RowCluster `json:"rowCluster"`
-}
-
-type RowCluster struct {
-	RowKey []*RowKey `json:"rowKey"`
-	Row    []*Row    `json:"row"`
-}
-
-type RowKey struct {
-	DisplayKey string `json:"displayKey"`
-}
-
-type Row struct {
-	RowValue []*RowValue `json:"rowValue"`
-}
-
-type RowValue struct {
-	DataValue string `json:"dataValue"`
-}
-
 type ShowItem struct {
 	Title     string
 	ViewCount int
 	Updated   bool
 }
 
-type Result struct {
-	Title       string
-	RowAffected int64
-}
-
-func getShow(b []byte) (shows []ShowItem, err error) {
-	var analytics Analytics
-	err = json.Unmarshal(b, &analytics)
+func getShowCSV(b []byte) (shows []ShowItem, err error) {
+	r := csv.NewReader(bytes.NewReader(b))
+	r.Comma = ','
+	r.Comment = '#'
+	records, err := r.ReadAll()
 	if err != nil {
-		log.Println(err)
-		return
+		log.Fatal(err)
 	}
-	rowClusters := analytics.Components[0].DataTable.RowClusters
-	if len(rowClusters) == 0 {
-		rowClusters = analytics.Components[1].DataTable.RowClusters
-	}
-	for _, rowCluster := range rowClusters {
-		displayKey := rowCluster.RowKey[0].DisplayKey
-		dataValue, err := strconv.Atoi(strings.Replace(rowCluster.Row[0].RowValue[0].DataValue, ",", "", -1))
-		if err != nil {
-			log.Println(err)
-		}
-		if dataValue > 0 {
-			shows = append(shows, ShowItem{displayKey, dataValue, false})
+	for _, row := range records[1:] {
+		viewCount, _ := strconv.Atoi(strings.Replace(row[1], ",", "", -1))
+		if viewCount > 0 {
+			show := ShowItem{
+				Title:     row[0],
+				ViewCount: viewCount,
+			}
+			shows = append(shows, show)
+			fmt.Println(show.Title, show.ViewCount)
 		}
 	}
 	return
 }
 
 func UpdateView(db *gorm.DB, jsonByte []byte) []ShowItem {
-	shows, _ := getShow(jsonByte)
+	shows, _ := getShowCSV(jsonByte)
 	if len(shows) > 0 {
 		data.ResetShowViewCount(db)
 	}

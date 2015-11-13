@@ -43,24 +43,12 @@ func AnalyticHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/analytic")
 }
 
-func FlushHandler(c *gin.Context) {
-	redisClient := utils.OpenRedis()
-	redisClient.FlushAll()
-	flash := map[string]string{
-		"info": "Flush All Successfully",
-	}
-	renderData := map[string]interface{}{
-		"flash": flash,
-	}
-	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
-}
-
 func AnalyticProcessHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	c.Request.ParseMultipartForm(1024)
 	fnPleaseChooseFile := func() {
-		flash := map[string]string{"warning": "Please Choose Anlytice.json File"}
+		flash := map[string]string{"warning": "Please Choose Anlytice CSV File"}
 		utils.GenerateHTML(c.Writer, map[string]interface{}{
 			"flash": flash,
 		},
@@ -93,4 +81,16 @@ func AnalyticProcessHandler(c *gin.Context) {
 	}
 
 	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/analytic")
+}
+
+func FlushHandler(c *gin.Context) {
+	redisClient := utils.OpenRedis()
+	redisClient.FlushAll()
+	flash := map[string]string{
+		"info": "Flush All Successfully",
+	}
+	renderData := map[string]interface{}{
+		"flash": flash,
+	}
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
 }

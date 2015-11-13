@@ -75,7 +75,7 @@ func GenerateHTML(writer http.ResponseWriter, renderData interface{}, filenames 
 	var doc bytes.Buffer
 	templates.ExecuteTemplate(&doc, "layout", renderData)
 	if renderData != nil {
-		CachedKey := renderData.(map[string]interface{})["CACHED_KEY"]
+		CachedKey := renderData.(map[string]interface{})["CachedKey"]
 		if CachedKey != nil {
 			redisClient := OpenRedis()
 			redisClient.Set(CachedKey.(string), doc.String(), 5*time.Minute)

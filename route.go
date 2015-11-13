@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-const CACHED_KEY = "CACHED_KEY"
+const TmplCachedKey = "CachedKey"
 
 func indexHandler(c *gin.Context) {
 	isMobile := utils.IsMobile(c.Request.UserAgent())
@@ -37,7 +37,7 @@ func indexHandler(c *gin.Context) {
 			"showRecents":  <-recents,
 			"showPopulars": <-populars,
 			"isMobile":     isMobile,
-			CACHED_KEY:     CachedKey,
+			TmplCachedKey:  CachedKey,
 		}
 
 		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
@@ -75,12 +75,12 @@ func popularHandler(c *gin.Context) {
 		defer db.Close()
 		shows, _ := data.GetShowByPopular(&db, 0)
 		renderData := map[string]interface{}{
-			"Title":    "Popular",
-			"header":   "Popular",
-			"typeMode": "popular",
-			"shows":    shows,
-			"isMobile": isMobile,
-			CACHED_KEY: CachedKey,
+			"Title":       "Popular",
+			"header":      "Popular",
+			"typeMode":    "popular",
+			"shows":       shows,
+			"isMobile":    isMobile,
+			TmplCachedKey: CachedKey,
 		}
 		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 	} else {
@@ -99,10 +99,10 @@ func categoriesHandler(c *gin.Context) {
 		defer db.Close()
 		categories, _ := data.GetCategories(&db)
 		renderData := map[string]interface{}{
-			"header":     "หมวด",
-			"categories": categories,
-			"isMobile":   isMobile,
-			CACHED_KEY:   CachedKey,
+			"header":      "หมวด",
+			"categories":  categories,
+			"isMobile":    isMobile,
+			TmplCachedKey: CachedKey,
 		}
 		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "category/list")
 	} else {
@@ -127,13 +127,13 @@ func categoryShowHandler(c *gin.Context) {
 		}
 		shows, _ := data.GetShowByCategory(&db, category.ID, 0)
 		renderData := map[string]interface{}{
-			"Title":    category.Title,
-			"header":   category.Title,
-			"typeMode": "category",
-			"typeId":   category.ID,
-			"shows":    shows,
-			"isMobile": isMobile,
-			CACHED_KEY: CachedKey,
+			"Title":       category.Title,
+			"header":      category.Title,
+			"typeMode":    "category",
+			"typeId":      category.ID,
+			"shows":       shows,
+			"isMobile":    isMobile,
+			TmplCachedKey: CachedKey,
 		}
 		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 	} else {
@@ -153,10 +153,10 @@ func channelsHandler(c *gin.Context) {
 		defer db.Close()
 		channels, _ := data.GetChannels(&db)
 		renderData := map[string]interface{}{
-			"header":   "ช่องทีวี",
-			"channels": channels,
-			"isMobile": isMobile,
-			CACHED_KEY: CachedKey,
+			"header":      "ช่องทีวี",
+			"channels":    channels,
+			"isMobile":    isMobile,
+			TmplCachedKey: CachedKey,
 		}
 		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "channel/list")
 	} else {
@@ -176,14 +176,14 @@ func channelShowHandler(c *gin.Context) {
 		channel, _ := data.GetChannel(&db, id)
 		shows, _ := data.GetShowByChannel(&db, channel.ID, 0)
 		renderData := map[string]interface{}{
-			"Title":    channel.Title,
-			"header":   channel.Title,
-			"channel":  channel,
-			"typeMode": "category",
-			"typeId":   channel.ID,
-			"shows":    shows,
-			"isMobile": isMobile,
-			CACHED_KEY: CachedKey,
+			"Title":       channel.Title,
+			"header":      channel.Title,
+			"channel":     channel,
+			"typeMode":    "category",
+			"typeId":      channel.ID,
+			"shows":       shows,
+			"isMobile":    isMobile,
+			TmplCachedKey: CachedKey,
 		}
 		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 	} else {
