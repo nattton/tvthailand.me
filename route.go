@@ -273,6 +273,7 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 	page, _ := strconv.Atoi(c.Query("page"))
 	var offset int
 	if page <= 1 {
+		page = 1
 		offset = 0
 	} else {
 		offset = (page - 1) * limit
@@ -375,6 +376,7 @@ func watchOtvHandler(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Query("page"))
 	var offset int
 	if page <= 1 {
+		page = 1
 		offset = 0
 	} else {
 		offset = (page - 1) * limit
