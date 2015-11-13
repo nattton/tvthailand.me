@@ -1,16 +1,14 @@
 {{ define "content" }}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
   <h1 class="page-header">{{ .show.Title }}</h1>
-  <div id="video-player-section" class="z-index-layer-2 watch-page">
-    <div style="left: 0px; visibility: visible; top: 0px; position: relative;" class="large-player video-player-container">
-      <div class="video-player-root">
-        <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
-          <div id="player"></div>
-          <div ng-bind-html="iframeVideo"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ul class="pager">
+    {{ if .pageInfo.PreviousPage }}
+      <li><a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}?page={{ .pageInfo.PreviousPage }}">Previous</a></li>
+    {{ end }}
+    {{ if .pageInfo.NextPage }}
+      <li><a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}?page={{ .pageInfo.NextPage }}">Next</a></li>
+    {{ end }}
+  </ul>
   <div class="row placeholders">
   {{ range $index, $episode := .episodes.EpisodeList }}
     <div class="col-xs-12 col-sm-3 placeholder">
@@ -25,6 +23,14 @@
   </div>
   <div class="table-responsive">
   </div>
+  <ul class="pager">
+    {{ if .pageInfo.PreviousPage }}
+      <li><a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}?page={{ .pageInfo.PreviousPage }}">Previous</a></li>
+    {{ end }}
+    {{ if .pageInfo.NextPage }}
+      <li><a href="/show/{{ .show.ID }}/{{ urlEsc .show.Title }}?page={{ .pageInfo.NextPage }}">Next</a></li>
+    {{ end }}
+  </ul>
   <div class="row">
   <div class="pull-right">
       <div class="fb-like" data-share="true" data-width="100" data-show-faces="true"></div>

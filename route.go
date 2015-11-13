@@ -269,7 +269,22 @@ func renderShow(c *gin.Context, show data.Show) {
 }
 
 func renderShowOtv(c *gin.Context, show data.Show) {
-	_, episodes, err := data.GetOTVEpisodelist(show.OtvID)
+	limit := 20
+	page, _ := strconv.Atoi(c.Query("page"))
+	var offset int
+	if page <= 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * limit
+	}
+	_, episodes, err := data.GetOTVEpisodelist(show.OtvID, offset, limit)
+	pageInfo := data.PageInfo{}
+	if len(episodes.EpisodeList) == limit {
+		pageInfo.NextPage = int32(page + 1)
+	}
+	if page > 1 {
+		pageInfo.PreviousPage = int32(page - 1)
+	}
 	if err != nil {
 		printFlash(c.Writer, "danger", "OTV Server Error")
 		return
@@ -278,6 +293,7 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 		"Title":    show.Title,
 		"show":     show,
 		"episodes": episodes,
+		"pageInfo": pageInfo,
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/otv_index")
 }
@@ -324,6 +340,7 @@ func watchHandler(c *gin.Context) {
 }
 
 func watchOtvHandler(c *gin.Context) {
+	limit := 20
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	isMobile := utils.IsMobile(c.Request.UserAgent())
@@ -355,11 +372,26 @@ func watchOtvHandler(c *gin.Context) {
 
 	otvID, _ := strconv.Atoi(otvEpisodePlay.SeasonDetail.ContentSeasonID)
 	show, _ := data.GetShowByOtv(&db, otvID)
-	_, episodes, err := data.GetOTVEpisodelist(show.OtvID)
+	page, _ := strconv.Atoi(c.Query("page"))
+	var offset int
+	if page <= 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * limit
+	}
+	_, episodes, err := data.GetOTVEpisodelist(show.OtvID, offset, limit)
 	if err != nil {
 		printFlash(c.Writer, "danger", "OTV Server Error")
 		return
 	}
+	pageInfo := data.PageInfo{}
+	if len(episodes.EpisodeList) == limit {
+		pageInfo.NextPage = int32(page + 1)
+	}
+	if page > 1 {
+		pageInfo.PreviousPage = int32(page - 1)
+	}
+
 	renderData := map[string]interface{}{
 		"Title":          partItem.Title,
 		"partItem":       partItem,
@@ -369,6 +401,7 @@ func watchOtvHandler(c *gin.Context) {
 		"show":           show,
 		"episodes":       episodes,
 		"isMobile":       isMobile,
+		"pageInfo":       pageInfo,
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "watch/otv_index")
 }

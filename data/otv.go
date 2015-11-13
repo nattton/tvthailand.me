@@ -67,13 +67,13 @@ type OtvPartItem struct {
 	Thumbnail  string `json:"thumbnail"`
 }
 
-func GetOTVEpisodelist(contentID string) (responseBody []byte, otvEpisode OtvEpisode, err error) {
+func GetOTVEpisodelist(contentID string, offset int, limit int) (responseBody []byte, otvEpisode OtvEpisode, err error) {
 	cacheTime := 5 * time.Minute
-	keyOtvEpisodelist := fmt.Sprintf("OTV/Episodelist/%s/0/50", contentID)
+	keyOtvEpisodelist := fmt.Sprintf("OTV/Episodelist/contentID=%s/offset=%d/limit=%d", contentID, offset, limit)
 	redisClient := utils.OpenRedis()
 	jsonResult, err := redisClient.Get(keyOtvEpisodelist).Result()
 	if err != nil {
-		apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, 0, 50)
+		apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, offset, limit)
 		client := &http.Client{
 			Transport: &httpcontrol.Transport{
 				RequestTimeout: time.Minute,
