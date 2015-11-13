@@ -3,11 +3,10 @@ package youtube
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 	"io/ioutil"
 	"net/http"
 	"time"
-
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 )
 
 func (y *Youtube) GetVideoJsonByPlaylistID(playlistID string, botLimit int, pageToken string) (api YoutubePlaylist, err error) {

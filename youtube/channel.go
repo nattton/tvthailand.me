@@ -3,11 +3,10 @@ package youtube
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 	"io/ioutil"
 	"net/http"
 	"time"
-
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 )
 
 const YoutubeChannelForUsernameAPIURL = "https://www.googleapis.com/youtube/v3/channels?key=%s&forUsername=%s&part=snippet"
