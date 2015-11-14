@@ -11,7 +11,7 @@ import (
 func CategoriesHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	categories, err := data.GetCategories(&db)
+	categories, err := data.CategoriesActive(&db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -24,7 +24,7 @@ func RecentlyHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.GetShowByRecently(&db, start)
+	shows, err := data.ShowsRecently(&db, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -37,7 +37,7 @@ func PopularHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.GetShowByPopular(&db, start)
+	shows, err := data.ShowsPopular(&db, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -50,7 +50,7 @@ func CategoryHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.GetShowByCategory(&db, c.Param("id"), start)
+	shows, err := data.ShowsCategory(&db, c.Param("id"), start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -62,7 +62,7 @@ func CategoryHandler(c *gin.Context) {
 func ChannelsHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	categories, err := data.GetChannels(&db)
+	categories, err := data.ChannelsActive(&db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -75,7 +75,7 @@ func ChannelHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.GetShowByChannel(&db, c.Param("id"), start)
+	shows, err := data.ShowsChannel(&db, c.Param("id"), start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
