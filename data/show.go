@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/utils"
+	"log"
 	"time"
 )
 
@@ -36,12 +37,37 @@ func (s Show) ToGOB64() string {
 	e := gob.NewEncoder(&b)
 	err := e.Encode(s)
 	if err != nil {
-		fmt.Println(`failed gob Encode`, err)
+		log.Println(`failed gob Encode`, err)
 	}
 	return base64.StdEncoding.EncodeToString(b.Bytes())
 }
 
 func (s *Show) FromGOB64(str string) {
+	by, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		log.Println(`failed base64 Decode`, err)
+	}
+	b := bytes.Buffer{}
+	b.Write(by)
+	d := gob.NewDecoder(&b)
+	err = d.Decode(&s)
+	if err != nil {
+		log.Println(`failed gob Decode`, err)
+	}
+	return
+}
+
+func ShowsToGOB64(s []Show) string {
+	b := bytes.Buffer{}
+	e := gob.NewEncoder(&b)
+	err := e.Encode(s)
+	if err != nil {
+		log.Println(`failed gob Encode`, err)
+	}
+	return base64.StdEncoding.EncodeToString(b.Bytes())
+}
+
+func ShowsFromGOB64(str string) (s []Show) {
 	by, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
 		fmt.Println(`failed base64 Decode`, err)
@@ -70,8 +96,8 @@ func GetShow(db *gorm.DB, id int) (show Show, err error) {
 	return
 }
 
-func GetShowByOtv(db *gorm.DB, id int) (show Show, err error) {
-	cachedKey := fmt.Sprintf("Show/otv_id=%d", id)
+func ShowWithOtv(db *gorm.DB, id int) (show Show, err error) {
+	cachedKey := fmt.Sprintf("ShowWithOtv/otv_id=%d", id)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
 	if err != nil {
@@ -84,23 +110,39 @@ func GetShowByOtv(db *gorm.DB, id int) (show Show, err error) {
 	return
 }
 
-func GetShowByRecently(db *gorm.DB, offset int) (shows []Show, err error) {
-	err = db.Scopes(ShowScope).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
-	for i := range shows {
-		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+func ShowsRecently(db *gorm.DB, offset int) (shows []Show, err error) {
+	cachedKey := fmt.Sprintf("ShowsRecently/offset=%d", offset)
+	redisClient := utils.OpenRedis()
+	result, err := redisClient.Get(cachedKey).Result()
+	if err != nil {
+		err = db.Scopes(ShowScope).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
+		for i := range shows {
+			shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+		}
+		redisClient.Set(cachedKey, ShowsToGOB64(shows), 5*time.Minute)
+	} else {
+		shows = ShowsFromGOB64(result)
 	}
 	return
 }
 
-func GetShowByPopular(db *gorm.DB, offset int) (shows []Show, err error) {
-	err = db.Scopes(ShowScope).Order("view_count desc").Offset(offset).Limit(20).Find(&shows).Error
-	for i := range shows {
-		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+func ShowsPopular(db *gorm.DB, offset int) (shows []Show, err error) {
+	cachedKey := fmt.Sprintf("ShowsPopular/offset=%d", offset)
+	redisClient := utils.OpenRedis()
+	result, err := redisClient.Get(cachedKey).Result()
+	if err != nil {
+		err = db.Scopes(ShowScope).Order("view_count desc").Offset(offset).Limit(20).Find(&shows).Error
+		for i := range shows {
+			shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+		}
+		redisClient.Set(cachedKey, ShowsToGOB64(shows), 24*time.Hour)
+	} else {
+		shows = ShowsFromGOB64(result)
 	}
 	return
 }
 
-func GetShowByCategory(db *gorm.DB, id string, offset int) (shows []Show, err error) {
+func ShowsCategory(db *gorm.DB, id string, offset int) (shows []Show, err error) {
 	err = db.Scopes(ShowScope).Where("category_id = ?", id).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
@@ -108,7 +150,7 @@ func GetShowByCategory(db *gorm.DB, id string, offset int) (shows []Show, err er
 	return
 }
 
-func GetShowByCategoryPopular(db *gorm.DB, id string) (shows []Show, err error) {
+func ShowsCategoryPopular(db *gorm.DB, id string) (shows []Show, err error) {
 	err = db.Scopes(ShowScope).Where("category_id = ?", id).Order("view_count desc").Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
@@ -116,7 +158,7 @@ func GetShowByCategoryPopular(db *gorm.DB, id string) (shows []Show, err error) 
 	return
 }
 
-func GetShowByChannel(db *gorm.DB, id string, offset int) (shows []Show, err error) {
+func ShowsChannel(db *gorm.DB, id string, offset int) (shows []Show, err error) {
 	err = db.Scopes(ShowScope).Where("channel_id = ?", id).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
@@ -124,7 +166,7 @@ func GetShowByChannel(db *gorm.DB, id string, offset int) (shows []Show, err err
 	return
 }
 
-func GetShowByChannelPopular(db *gorm.DB, id string) (shows []Show, err error) {
+func ShowsChannelPopular(db *gorm.DB, id string) (shows []Show, err error) {
 	err = db.Scopes(ShowScope).Where("channel_id = ?", id).Order("view_count desc").Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
@@ -132,7 +174,7 @@ func GetShowByChannelPopular(db *gorm.DB, id string) (shows []Show, err error) {
 	return
 }
 
-func GetShowBySearch(db *gorm.DB, keyword string) (shows []Show, err error) {
+func ShowsSearch(db *gorm.DB, keyword string) (shows []Show, err error) {
 	db.Scopes(ShowScope).Where("title LIKE ?", "%"+keyword+"%").Order("update_date desc, title asc").Limit(20).Find(&shows)
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail

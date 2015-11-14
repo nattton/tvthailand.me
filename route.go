@@ -12,38 +12,25 @@ import (
 	"strings"
 )
 
-const TmplCachedKey = "CachedKey"
-
 func indexHandler(c *gin.Context) {
-	isMobile := utils.IsMobile(c.Request.UserAgent())
-	CachedKey := fmt.Sprintf("Index/isMobile=%t", isMobile)
-
-	redisClient := utils.OpenRedis()
-	htmlResult, err := redisClient.Get(CachedKey).Result()
-	if err != nil {
-		db, _ := utils.OpenDB()
-		defer db.Close()
-		recents := make(chan []data.Show)
-		populars := make(chan []data.Show)
-		go func() {
-			shows, _ := data.GetShowByRecently(&db, 0)
-			recents <- shows
-		}()
-		go func() {
-			shows, _ := data.GetShowByPopular(&db, 0)
-			populars <- shows
-		}()
-		renderData := map[string]interface{}{
-			"showRecents":  <-recents,
-			"showPopulars": <-populars,
-			"isMobile":     isMobile,
-			TmplCachedKey:  CachedKey,
-		}
-
-		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
-	} else {
-		fmt.Fprint(c.Writer, htmlResult)
+	db, _ := utils.OpenDB()
+	defer db.Close()
+	recents := make(chan []data.Show)
+	populars := make(chan []data.Show)
+	go func() {
+		shows, _ := data.ShowsRecently(&db, 0)
+		recents <- shows
+	}()
+	go func() {
+		shows, _ := data.ShowsPopular(&db, 0)
+		populars <- shows
+	}()
+	renderData := map[string]interface{}{
+		"showRecents":  <-recents,
+		"showPopulars": <-populars,
+		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
 	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
 }
 
 func notFoundHandler(c *gin.Context) {
@@ -53,7 +40,7 @@ func notFoundHandler(c *gin.Context) {
 func recentlyHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	shows, _ := data.GetShowByRecently(&db, 0)
+	shows, _ := data.ShowsRecently(&db, 0)
 	renderData := map[string]interface{}{
 		"Title":    "รายการล่าสุด",
 		"header":   "รายการล่าสุด",
@@ -65,130 +52,79 @@ func recentlyHandler(c *gin.Context) {
 }
 
 func popularHandler(c *gin.Context) {
-	isMobile := utils.IsMobile(c.Request.UserAgent())
-	CachedKey := fmt.Sprintf("Popular/isMobile=%t", isMobile)
-
-	redisClient := utils.OpenRedis()
-	htmlResult, err := redisClient.Get(CachedKey).Result()
-	if err != nil {
-		db, _ := utils.OpenDB()
-		defer db.Close()
-		shows, _ := data.GetShowByPopular(&db, 0)
-		renderData := map[string]interface{}{
-			"Title":       "Popular",
-			"header":      "Popular",
-			"typeMode":    "popular",
-			"shows":       shows,
-			"isMobile":    isMobile,
-			TmplCachedKey: CachedKey,
-		}
-		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
-	} else {
-		fmt.Fprintf(c.Writer, htmlResult)
+	db, _ := utils.OpenDB()
+	defer db.Close()
+	shows, _ := data.ShowsPopular(&db, 0)
+	renderData := map[string]interface{}{
+		"Title":    "Popular",
+		"header":   "Popular",
+		"typeMode": "popular",
+		"shows":    shows,
+		"isMobile": utils.IsMobile(c.Request.UserAgent()),
 	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
 func categoriesHandler(c *gin.Context) {
-	isMobile := utils.IsMobile(c.Request.UserAgent())
-	CachedKey := fmt.Sprintf("Categories/isMobile=%t", isMobile)
-
-	redisClient := utils.OpenRedis()
-	htmlResult, err := redisClient.Get(CachedKey).Result()
-	if err != nil {
-		db, _ := utils.OpenDB()
-		defer db.Close()
-		categories, _ := data.GetCategories(&db)
-		renderData := map[string]interface{}{
-			"header":      "หมวด",
-			"categories":  categories,
-			"isMobile":    isMobile,
-			TmplCachedKey: CachedKey,
-		}
-		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "category/list")
-	} else {
-		fmt.Fprintf(c.Writer, htmlResult)
+	db, _ := utils.OpenDB()
+	defer db.Close()
+	categories, _ := data.CategoriesActive(&db)
+	renderData := map[string]interface{}{
+		"header":     "หมวด",
+		"categories": categories,
+		"isMobile":   utils.IsMobile(c.Request.UserAgent()),
 	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "category/list")
 }
 
 func categoryShowHandler(c *gin.Context) {
-	isMobile := utils.IsMobile(c.Request.UserAgent())
 	titlize := c.Param("titlize")
-	CachedKey := fmt.Sprintf("CategoryShow/isMobile=%t/titlize=%s", isMobile, titlize)
-
-	redisClient := utils.OpenRedis()
-	htmlResult, err := redisClient.Get(CachedKey).Result()
+	db, _ := utils.OpenDB()
+	defer db.Close()
+	category, err := data.GetCategory(&db, titlize)
 	if err != nil {
-		db, _ := utils.OpenDB()
-		defer db.Close()
-		category, err := data.GetCategory(&db, titlize)
-		if err != nil {
-			notFoundHandler(c)
-			return
-		}
-		shows, _ := data.GetShowByCategory(&db, category.ID, 0)
-		renderData := map[string]interface{}{
-			"Title":       category.Title,
-			"header":      category.Title,
-			"typeMode":    "category",
-			"typeId":      category.ID,
-			"shows":       shows,
-			"isMobile":    isMobile,
-			TmplCachedKey: CachedKey,
-		}
-		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
-	} else {
-		fmt.Fprintf(c.Writer, htmlResult)
+		notFoundHandler(c)
+		return
 	}
+	shows, _ := data.ShowsCategory(&db, category.ID, 0)
+	renderData := map[string]interface{}{
+		"Title":    category.Title,
+		"header":   category.Title,
+		"typeMode": "category",
+		"typeId":   category.ID,
+		"shows":    shows,
+		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
 func channelsHandler(c *gin.Context) {
-	isMobile := utils.IsMobile(c.Request.UserAgent())
-	titlize := c.Param("titlize")
-	CachedKey := fmt.Sprintf("Channels/isMobile=%t/titlize=%s", isMobile, titlize)
-
-	redisClient := utils.OpenRedis()
-	htmlResult, err := redisClient.Get(CachedKey).Result()
-	if err != nil {
-		db, _ := utils.OpenDB()
-		defer db.Close()
-		channels, _ := data.GetChannels(&db)
-		renderData := map[string]interface{}{
-			"header":      "ช่องทีวี",
-			"channels":    channels,
-			"isMobile":    isMobile,
-			TmplCachedKey: CachedKey,
-		}
-		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "channel/list")
-	} else {
-		fmt.Fprintf(c.Writer, htmlResult)
+	db, _ := utils.OpenDB()
+	defer db.Close()
+	channels, _ := data.ChannelsActive(&db)
+	renderData := map[string]interface{}{
+		"header":   "ช่องทีวี",
+		"channels": channels,
+		"isMobile": utils.IsMobile(c.Request.UserAgent()),
 	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "channel/list")
 }
 
 func channelShowHandler(c *gin.Context) {
-	isMobile := utils.IsMobile(c.Request.UserAgent())
 	id := c.Param("id")
-	CachedKey := fmt.Sprintf("ChannelShow/isMobile=%t/id=%s", isMobile, id)
-	redisClient := utils.OpenRedis()
-	htmlResult, err := redisClient.Get(CachedKey).Result()
-	if err != nil {
-		db, _ := utils.OpenDB()
-		defer db.Close()
-		channel, _ := data.GetChannel(&db, id)
-		shows, _ := data.GetShowByChannel(&db, channel.ID, 0)
-		renderData := map[string]interface{}{
-			"Title":       channel.Title,
-			"header":      channel.Title,
-			"channel":     channel,
-			"typeMode":    "category",
-			"typeId":      channel.ID,
-			"shows":       shows,
-			"isMobile":    isMobile,
-			TmplCachedKey: CachedKey,
-		}
-		utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
-	} else {
-		fmt.Fprintf(c.Writer, htmlResult)
+	db, _ := utils.OpenDB()
+	defer db.Close()
+	channel, _ := data.GetChannel(&db, id)
+	shows, _ := data.ShowsChannel(&db, channel.ID, 0)
+	renderData := map[string]interface{}{
+		"Title":    channel.Title,
+		"header":   channel.Title,
+		"channel":  channel,
+		"typeMode": "category",
+		"typeId":   channel.ID,
+		"shows":    shows,
 	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
 
 func searchShowHandler(c *gin.Context) {
@@ -205,7 +141,7 @@ func searchShowHandler(c *gin.Context) {
 		renderData["title"] = header
 		renderData["header"] = header
 		go func() {
-			shows, _ := data.GetShowBySearch(&db, keyword)
+			shows, _ := data.ShowsSearch(&db, keyword)
 			chShows <- shows
 		}()
 		go func() {
@@ -246,7 +182,7 @@ func showOtvHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	otvID, _ := strconv.Atoi(c.Param("id"))
-	show, _ := data.GetShowByOtv(&db, otvID)
+	show, _ := data.ShowWithOtv(&db, otvID)
 	if show.IsOtv {
 		renderShowOtv(c, show)
 	} else {
@@ -258,7 +194,7 @@ func renderShow(c *gin.Context, show data.Show) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
-	episodes, pageInfo, _ := data.GetEpisodesAndPageInfo(&db, show.ID, int32(page))
+	episodes, pageInfo, _ := data.EpisodesAndPageInfo(&db, show.ID, int32(page))
 	renderData := map[string]interface{}{
 		"Title":    show.Title,
 		"show":     show,
@@ -372,7 +308,7 @@ func watchOtvHandler(c *gin.Context) {
 	partItem.IframeHTML = r.Replace(partItem.IframeHTML)
 
 	otvID, _ := strconv.Atoi(otvEpisodePlay.SeasonDetail.ContentSeasonID)
-	show, _ := data.GetShowByOtv(&db, otvID)
+	show, _ := data.ShowWithOtv(&db, otvID)
 	page, _ := strconv.Atoi(c.Query("page"))
 	var offset int
 	if page <= 1 {

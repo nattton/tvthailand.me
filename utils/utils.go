@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	_ "github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-sql-driver/mysql"
@@ -13,7 +12,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 )
 
 func OpenDB() (gorm.DB, error) {
@@ -52,7 +50,7 @@ func ParseTemplateFiles(filenames ...string) (t *template.Template) {
 	return
 }
 
-func GenerateHTML(writer http.ResponseWriter, renderData interface{}, filenames ...string) {
+func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
 	var files []string
 	for _, file := range filenames {
 		files = append(files, fmt.Sprintf("templates/%s.tmpl", file))
@@ -72,15 +70,5 @@ func GenerateHTML(writer http.ResponseWriter, renderData interface{}, filenames 
 	}
 	templates = template.Must(templates.ParseFiles(files...))
 
-	var doc bytes.Buffer
-	templates.ExecuteTemplate(&doc, "layout", renderData)
-	if renderData != nil {
-		CachedKey := renderData.(map[string]interface{})["CachedKey"]
-		if CachedKey != nil {
-			redisClient := OpenRedis()
-			redisClient.Set(CachedKey.(string), doc.String(), 5*time.Minute)
-		}
-	}
-
-	fmt.Fprint(writer, doc.String())
+	templates.ExecuteTemplate(writer, "layout", data)
 }

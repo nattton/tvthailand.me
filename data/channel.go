@@ -1,7 +1,13 @@
 package data
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/gob"
+	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/utils"
+	"log"
 	"time"
 )
 
@@ -19,10 +25,43 @@ type Channel struct {
 	DeletedAt *time.Time `json:"-"`
 }
 
-func GetChannels(db *gorm.DB) (channels []Channel, err error) {
-	err = db.Scopes(ChannelScope).Order("order_display").Find(&channels).Error
-	for i := range channels {
-		channels[i].Thumbnail = ThumbnailURLChannel + channels[i].Thumbnail
+func ChannelsToGOB64(s []Channel) string {
+	b := bytes.Buffer{}
+	e := gob.NewEncoder(&b)
+	err := e.Encode(s)
+	if err != nil {
+		log.Println(`failed gob Encode`, err)
+	}
+	return base64.StdEncoding.EncodeToString(b.Bytes())
+}
+
+func ChannelsFromGOB64(str string) (s []Channel) {
+	by, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		log.Println(`failed base64 Decode`, err)
+	}
+	b := bytes.Buffer{}
+	b.Write(by)
+	d := gob.NewDecoder(&b)
+	err = d.Decode(&s)
+	if err != nil {
+		log.Println(`failed gob Decode`, err)
+	}
+	return
+}
+
+func ChannelsActive(db *gorm.DB) (channels []Channel, err error) {
+	cachedKey := fmt.Sprintf("ChannelsActive")
+	redisClient := utils.OpenRedis()
+	result, err := redisClient.Get(cachedKey).Result()
+	if err != nil {
+		err = db.Scopes(ChannelScope).Order("order_display").Find(&channels).Error
+		for i := range channels {
+			channels[i].Thumbnail = ThumbnailURLChannel + channels[i].Thumbnail
+		}
+		redisClient.Set(cachedKey, ChannelsToGOB64(channels), 24*time.Hour)
+	} else {
+		channels = ChannelsFromGOB64(result)
 	}
 	return
 }

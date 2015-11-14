@@ -95,7 +95,7 @@ func GetEpisodes(db *gorm.DB, showID int, offset int) (episodes []Episode, err e
 	return
 }
 
-func GetEpisodesAndPageInfo(db *gorm.DB, showID int, page int32) (episodes []Episode, pageInfo PageInfo, err error) {
+func EpisodesAndPageInfo(db *gorm.DB, showID int, page int32) (episodes []Episode, pageInfo PageInfo, err error) {
 	if page < 1 {
 		page = 1
 	}
