@@ -119,9 +119,9 @@ func channelsHandler(c *gin.Context) {
 	defer db.Close()
 	channels, _ := data.ChannelsActive(&db)
 	renderData := map[string]interface{}{
-		"Title":       "ช่องทีวี",
-		"Description": "ช่องทีวี",
-		"header":      "ช่องทีวี",
+		"Title":       "ช่องทีวี / Live",
+		"Description": "ดูทีวี / Live / รายการสด",
+		"header":      "ช่องทีวี / Live",
 		"channels":    channels,
 		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
 	}
