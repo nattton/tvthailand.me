@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/admin"
-	"github.com/code-mobi/tvthailand.me/utils"
 	"os"
 )
 
@@ -61,9 +60,7 @@ func runServer() {
 	router.GET("/watch_otv/:watchID", watchOtvHandler)
 	router.GET("/watch_otv/:watchID/:playIndex/*title", watchOtvHandler)
 	router.GET("/oplay/:watchID/*title", OPlayHandler)
-	router.GET("/mobile_apps", func(c *gin.Context) {
-		utils.GenerateHTML(c.Writer, nil, "layout", "mobile_ads", "static/mobile_apps")
-	})
+	router.GET("/mobile_apps", mobileAppsHandler)
 
 	routerAjax := router.Group("/ajax")
 	{

@@ -89,7 +89,7 @@ func GetShow(db *gorm.DB, id int) (show Show, err error) {
 	if err != nil {
 		err = db.First(&show, id).Error
 		show.Thumbnail = ThumbnailURLTv + show.Thumbnail
-		redisClient.Set(cachedKey, show.ToGOB64(), 24*time.Hour)
+		redisClient.Set(cachedKey, show.ToGOB64(), 0)
 	} else {
 		show.FromGOB64(result)
 	}
@@ -103,7 +103,7 @@ func ShowWithOtv(db *gorm.DB, id int) (show Show, err error) {
 	if err != nil {
 		err = db.Where("otv_id = ?", id).First(&show).Error
 		show.Thumbnail = ThumbnailURLTv + show.Thumbnail
-		redisClient.Set(cachedKey, show.ToGOB64(), 24*time.Hour)
+		redisClient.Set(cachedKey, show.ToGOB64(), 0)
 	} else {
 		show.FromGOB64(result)
 	}
@@ -135,7 +135,7 @@ func ShowsPopular(db *gorm.DB, offset int) (shows []Show, err error) {
 		for i := range shows {
 			shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
 		}
-		redisClient.Set(cachedKey, ShowsToGOB64(shows), 24*time.Hour)
+		redisClient.Set(cachedKey, ShowsToGOB64(shows), 0)
 	} else {
 		shows = ShowsFromGOB64(result)
 	}

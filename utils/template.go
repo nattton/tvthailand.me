@@ -33,3 +33,11 @@ func urlEsc(a ...string) string {
 func lastItem(x int, a interface{}) bool {
 	return x == reflect.ValueOf(a).Len()-1
 }
+
+func metaDescription(a interface{}) string {
+	if reflect.ValueOf(a).IsValid() {
+		return "TV Thailand | " + reflect.ValueOf(a).String()
+	} else {
+		return "TV Thailand | Watch Free Thailand Show Online | ดูรายการทีวีย้อนหลัง"
+	}
+}

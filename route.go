@@ -26,11 +26,21 @@ func indexHandler(c *gin.Context) {
 		populars <- shows
 	}()
 	renderData := map[string]interface{}{
+		"Title":        "Watch Thailand Show Online",
+		"Description":  "ดูรายการทีวี ละครย้อนหลัง",
 		"showRecents":  <-recents,
 		"showPopulars": <-populars,
 		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
+}
+
+func mobileAppsHandler(c *gin.Context) {
+	renderData := map[string]interface{}{
+		"Title":       "Mobile Apps",
+		"Description": "Download Apps TV Thailand ได้ที่นี่",
+	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "static/mobile_apps")
 }
 
 func notFoundHandler(c *gin.Context) {
@@ -42,11 +52,12 @@ func recentlyHandler(c *gin.Context) {
 	defer db.Close()
 	shows, _ := data.ShowsRecently(&db, 0)
 	renderData := map[string]interface{}{
-		"Title":    "รายการล่าสุด",
-		"header":   "รายการล่าสุด",
-		"typeMode": "recently",
-		"shows":    shows,
-		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+		"Title":       "รายการล่าสุด",
+		"Description": "รายการล่าสุด",
+		"header":      "รายการล่าสุด",
+		"typeMode":    "recently",
+		"shows":       shows,
+		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -56,11 +67,12 @@ func popularHandler(c *gin.Context) {
 	defer db.Close()
 	shows, _ := data.ShowsPopular(&db, 0)
 	renderData := map[string]interface{}{
-		"Title":    "Popular",
-		"header":   "Popular",
-		"typeMode": "popular",
-		"shows":    shows,
-		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+		"Title":       "Popular",
+		"Description": "รายการยอดนิยม",
+		"header":      "Popular",
+		"typeMode":    "popular",
+		"shows":       shows,
+		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -70,9 +82,11 @@ func categoriesHandler(c *gin.Context) {
 	defer db.Close()
 	categories, _ := data.CategoriesActive(&db)
 	renderData := map[string]interface{}{
-		"header":     "หมวด",
-		"categories": categories,
-		"isMobile":   utils.IsMobile(c.Request.UserAgent()),
+		"Title":       "หมวด",
+		"Description": "หมวดทั้งหมด",
+		"header":      "หมวด",
+		"categories":  categories,
+		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "category/list")
 }
@@ -87,13 +101,15 @@ func categoryShowHandler(c *gin.Context) {
 		return
 	}
 	shows, _ := data.ShowsCategory(&db, category.ID, 0)
+
 	renderData := map[string]interface{}{
-		"Title":    category.Title,
-		"header":   category.Title,
-		"typeMode": "category",
-		"typeId":   category.ID,
-		"shows":    shows,
-		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+		"Title":       category.Title,
+		"Description": category.Description,
+		"header":      category.Title,
+		"typeMode":    "category",
+		"typeId":      category.ID,
+		"shows":       shows,
+		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -103,9 +119,11 @@ func channelsHandler(c *gin.Context) {
 	defer db.Close()
 	channels, _ := data.ChannelsActive(&db)
 	renderData := map[string]interface{}{
-		"header":   "ช่องทีวี",
-		"channels": channels,
-		"isMobile": utils.IsMobile(c.Request.UserAgent()),
+		"Title":       "ช่องทีวี",
+		"Description": "ช่องทีวี",
+		"header":      "ช่องทีวี",
+		"channels":    channels,
+		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "channel/list")
 }
@@ -117,12 +135,13 @@ func channelShowHandler(c *gin.Context) {
 	channel, _ := data.GetChannel(&db, id)
 	shows, _ := data.ShowsChannel(&db, channel.ID, 0)
 	renderData := map[string]interface{}{
-		"Title":    channel.Title,
-		"header":   channel.Title,
-		"channel":  channel,
-		"typeMode": "category",
-		"typeId":   channel.ID,
-		"shows":    shows,
+		"Title":       channel.Title,
+		"Description": channel.Description,
+		"header":      channel.Title,
+		"channel":     channel,
+		"typeMode":    "category",
+		"typeId":      channel.ID,
+		"shows":       shows,
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -138,7 +157,7 @@ func searchShowHandler(c *gin.Context) {
 	renderData := map[string]interface{}{}
 	if keyword != "" {
 		header := "ผลการค้นหา : " + keyword
-		renderData["title"] = header
+		renderData["Title"] = header
 		renderData["header"] = header
 		go func() {
 			shows, _ := data.ShowsSearch(&db, keyword)
@@ -152,7 +171,7 @@ func searchShowHandler(c *gin.Context) {
 		renderData["shows"] = <-chShows
 		renderData["episodes"] = <-chEpisodes
 	} else {
-		renderData["title"] = "Search"
+		renderData["Title"] = "Search"
 		renderData["header"] = "กรุณากรอกชื่อเรื่องที่ต้องการค้นหา"
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
@@ -195,11 +214,14 @@ func renderShow(c *gin.Context, show data.Show) {
 	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
 	episodes, pageInfo, _ := data.EpisodesAndPageInfo(&db, show.ID, int32(page))
+	title := fmt.Sprintf("ดู %s ย้อนหลัง", show.Title)
+	description := fmt.Sprintf("%s | %s", show.Title, show.Description)
 	renderData := map[string]interface{}{
-		"Title":    show.Title,
-		"show":     show,
-		"episodes": episodes,
-		"pageInfo": pageInfo,
+		"Title":       title,
+		"Description": description,
+		"show":        show,
+		"episodes":    episodes,
+		"pageInfo":    pageInfo,
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/index", "episode/item")
 }
@@ -226,11 +248,14 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 		printFlash(c.Writer, "danger", "OTV Server Error")
 		return
 	}
+	title := fmt.Sprintf("ดู %s ย้อนหลัง", show.Title)
+	description := fmt.Sprintf("%s | %s", show.Title, show.Description)
 	renderData := map[string]interface{}{
-		"Title":    show.Title,
-		"show":     show,
-		"episodes": episodes,
-		"pageInfo": pageInfo,
+		"Title":       title,
+		"Description": description,
+		"show":        show,
+		"episodes":    episodes,
+		"pageInfo":    pageInfo,
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/otv_index")
 }
@@ -263,8 +288,10 @@ func watchHandler(c *gin.Context) {
 	}
 
 	episodes, _ := data.GetEpisodes(&db, show.ID, 0)
+	title := fmt.Sprintf("%s | %s", show.Title, episode.Title)
 	renderData := map[string]interface{}{
-		"Title":        show.Title + " | " + episode.Title,
+		"Title":        title,
+		"Description":  title,
 		"playIndex":    playIndex,
 		"episode":      episode,
 		"show":         show,
@@ -330,8 +357,11 @@ func watchOtvHandler(c *gin.Context) {
 		pageInfo.PreviousPage = int32(page - 1)
 	}
 
+	title := fmt.Sprintf("ดู %s ย้อนหลัง", partItem.Title)
+	description := fmt.Sprintf("%s | %s", partItem.Title, otvEpisodePlay.EpisodeDetail.Detail)
 	renderData := map[string]interface{}{
-		"Title":          partItem.Title,
+		"Title":          title,
+		"Description":    description,
 		"partItem":       partItem,
 		"otvEpisodePlay": otvEpisodePlay,
 		"playIndex":      playIndex,
