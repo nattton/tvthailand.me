@@ -88,18 +88,22 @@
           }
         });
       }
+      var cueDone = false;
       function onPlayerReady(event) {
         var videoIds = {{ marshal .episode.Videos}};
-        if (videoIds.length > 1) {
+        if (videoIds.length > 1 && !cueDone) {
           event.target.cuePlaylist({ playlist:{{ marshal .episode.Videos}},
             index:{{ .playIndex }}, startSeconds:0, suggestedQuality:"default"});
+          cueDone = true;
         } else {
           event.target.playVideo();
         }
       }
+      var done = false;
       function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.CUED) {
+        if (event.data == YT.PlayerState.CUED && !done) {
           event.target.playVideo();
+          done = true;
         }
       }
     </script>
