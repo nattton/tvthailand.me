@@ -34,6 +34,11 @@ func OpenRedis() *redis.Client {
 
 func IsMobile(userAgent string) bool {
 	ua := user_agent.New(userAgent)
+	return ua.Mobile()
+}
+
+func IsMobileNotPad(userAgent string) bool {
+	ua := user_agent.New(userAgent)
 	isiPad := strings.Contains(userAgent, "iPad")
 	return ua.Mobile() && !isiPad
 }

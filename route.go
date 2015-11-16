@@ -30,7 +30,7 @@ func indexHandler(c *gin.Context) {
 		"Description":  "ดูรายการทีวี ละครย้อนหลัง",
 		"showRecents":  <-recents,
 		"showPopulars": <-populars,
-		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
+		"isMobile":     utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
 }
@@ -57,7 +57,7 @@ func recentlyHandler(c *gin.Context) {
 		"header":      "รายการล่าสุด",
 		"typeMode":    "recently",
 		"shows":       shows,
-		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
+		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -72,7 +72,7 @@ func popularHandler(c *gin.Context) {
 		"header":      "Popular",
 		"typeMode":    "popular",
 		"shows":       shows,
-		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
+		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -86,7 +86,7 @@ func categoriesHandler(c *gin.Context) {
 		"Description": "หมวดทั้งหมด",
 		"header":      "หมวด",
 		"categories":  categories,
-		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
+		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "category/list")
 }
@@ -110,7 +110,7 @@ func categoryShowHandler(c *gin.Context) {
 		"typeMode":    "category",
 		"typeId":      category.ID,
 		"shows":       shows,
-		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
+		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/list", "episode/item")
 }
@@ -124,7 +124,7 @@ func channelsHandler(c *gin.Context) {
 		"Description": "ดูทีวี / Live / รายการสด",
 		"header":      "ช่องทีวี / Live",
 		"channels":    channels,
-		"isMobile":    utils.IsMobile(c.Request.UserAgent()),
+		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "channel/list")
 }
@@ -312,7 +312,7 @@ func watchOtvHandler(c *gin.Context) {
 	limit := 20
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	isMobile := utils.IsMobile(c.Request.UserAgent())
+	isMobile := utils.IsMobileNotPad(c.Request.UserAgent())
 	_, otvEpisodePlay, err := data.GetOTVEpisodePlay(c.Param("watchID"), isMobile)
 	if err != nil {
 		printFlash(c.Writer, "danger", "OTV Server Error")
