@@ -22,8 +22,11 @@
                     width="800" height="460" src="{{ .embedURL }}" allowfullscreen></iframe>
                 {{ end }}
               {{ else }}
-
+                  {{ if eq .episode.VideoCount 1 }}
+                  <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/{{ .episode.Video }}" frameborder="0" allowfullscreen></iframe>
+                  {{ else }}
                   <div id="player" class="embed-responsive-item"></div>
+                  {{ end }}
               {{ end }}
             </div>
            {{ end }}
@@ -81,6 +84,7 @@
 
 {{ define "script" }}
   {{ if eq .episode.SrcType 0}}
+  {{ if gt .episode.VideoCount 1 }}
   <script>
   var playerInstance = jwplayer("player");
   playerInstance.setup({
@@ -91,5 +95,6 @@
     playerInstance.playlistItem({{ .playIndex }});
   });
   </script>
+  {{ end }}
   {{ end }}
 {{ end }}

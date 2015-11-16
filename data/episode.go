@@ -14,25 +14,26 @@ type EpisodePage struct {
 }
 
 type Episode struct {
-	ID        int    `gorm:"primary_key"`
-	HashID    string `json:"-"`
-	ShowID    int    `json:"-"`
-	Ep        int    `json:"-"`
+	ID        int `gorm:"primary_key"`
+	HashID    string
+	ShowID    int
+	Ep        int
 	Title     string
-	Video     string    `json:"-"`
-	SrcType   int       `json:"-"`
-	Date      time.Time `json:"-"`
-	ViewCount int       `json:"-"`
-	Parts     string    `json:"-"`
-	Password  string    `json:"-"`
+	Video     string
+	SrcType   int
+	Date      time.Time
+	ViewCount int
+	Parts     string
+	Password  string
 	Thumbnail string
 
-	CreatedAt time.Time  `json:"-"`
-	UpdatedAt time.Time  `json:"-"`
-	DeletedAt *time.Time `json:"-"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 
-	Playlists []Playlist `sql:"-" json:",omitempty"`
-	IsURL     bool       `sql:"-" json:"-"`
+	Playlists  []Playlist `sql:"-"`
+	IsURL      bool       `sql:"-"`
+	VideoCount int        `sql:"-"`
 }
 
 type Video struct {
@@ -187,6 +188,7 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 		playlist.Sources = append(playlist.Sources, source)
 		episode.Playlists = append(episode.Playlists, playlist)
 	}
+	episode.VideoCount = len(episode.Playlists)
 	return
 }
 
