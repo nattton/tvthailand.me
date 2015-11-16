@@ -261,7 +261,7 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 		"episodes":    episodes,
 		"pageInfo":    pageInfo,
 	}
-	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/otv_index")
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "show/otv_index", "episode/otv_item")
 }
 
 func watchHandler(c *gin.Context) {
@@ -305,7 +305,7 @@ func watchHandler(c *gin.Context) {
 		"embedURL":     embedURL,
 		"isMobile":     utils.IsMobile(c.Request.UserAgent()),
 	}
-	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "watch/index")
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "watch/index", "episode/item")
 }
 
 func watchOtvHandler(c *gin.Context) {
@@ -377,7 +377,7 @@ func watchOtvHandler(c *gin.Context) {
 		"isMobile":       isMobile,
 		"pageInfo":       pageInfo,
 	}
-	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "watch/otv_index")
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "watch/otv_index", "episode/otv_item")
 }
 
 func OPlayHandler(c *gin.Context) {

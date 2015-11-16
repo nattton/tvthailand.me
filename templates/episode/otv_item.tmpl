@@ -1,0 +1,14 @@
+{{ define "episode_otv_item" }}
+<div class="row placeholders">
+  {{ range $index, $episode := .episodes.EpisodeList }}
+  <div class="col-xs-12 col-sm-3 placeholder">
+    <div class="thumbnail">
+    <a href="/watch_otv/{{ $episode.EpisodeID }}/0" >
+    <img src="{{ $episode.Thumbnail }}" class="img-responsive" alt="{{ $episode.NameTh }}">
+    </a>
+    <div class="caption"><h4>{{ $episode.NameTh }} {{ $episode.Date }}</h4></div>
+    </div>
+  </div>
+  {{ end }}
+</div>
+{{ end }}
