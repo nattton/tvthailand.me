@@ -33,6 +33,7 @@ type Episode struct {
 
 	Playlists  []Playlist `sql:"-"`
 	IsURL      bool       `sql:"-"`
+	Videos     []string   `sql:"-"`
 	VideoCount int        `sql:"-"`
 }
 
@@ -48,6 +49,7 @@ type Playlist struct {
 	Sources  []Source `json:"sources"`
 	Password string   `json:"password"`
 	File     string   `json:"-"`
+	VideoID  string   `json:"-"`
 }
 
 type Source struct {
@@ -149,7 +151,9 @@ func GetVideoList(db *gorm.DB, hashID string) (episode Episode, err error) {
 func SetVideoList(db *gorm.DB, episode *Episode) {
 	GetEpisodeTitle(episode)
 	videos := strings.Split(strings.Trim(episode.Video, ","), ",")
+	episode.Videos = videos
 	lengthVideo := len(videos)
+	episode.VideoCount = lengthVideo
 	for i := range videos {
 		playlist := Playlist{}
 		playlist.Title = episode.Title
@@ -184,11 +188,11 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 			episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
 			source.File = videoID
 		}
+		playlist.VideoID = videoID
 		playlist.File = source.File
 		playlist.Sources = append(playlist.Sources, source)
 		episode.Playlists = append(episode.Playlists, playlist)
 	}
-	episode.VideoCount = len(episode.Playlists)
 	return
 }
 

@@ -1,6 +1,4 @@
 {{ define "content" }}
-<script src="http://content.jwplatform.com/libraries/0FN4ytgB.js"></script>
-<script>jwplayer.key="SzJyFNDHCWFi/mon3bYLTSncw4BsmOpTYFgwrw==";</script>
   <div class="video-player-root">
     <div class="row">
     <div id="video-player-section" class="z-index-layer-2 watch-page">
@@ -14,19 +12,9 @@
           {{ else }}
             <div class="embed-responsive embed-responsive-16by9">
               {{ if .embedURL }}
-                {{ if .isMobile }}
-                    <iframe class="embed-responsive-item" frameborder="0"
-                    width="320" height="240" src="{{ .embedURL }}" allowfullscreen></iframe>
-                {{ else }}
-                    <iframe class="embed-responsive-item" frameborder="0"
-                    width="800" height="460" src="{{ .embedURL }}" allowfullscreen></iframe>
-                {{ end }}
+                  <iframe class="embed-responsive-item" frameborder="0" width="800" height="460" src="{{ .embedURL }}" allowfullscreen></iframe>
               {{ else }}
-                  {{ if eq .episode.VideoCount 1 }}
-                  <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/{{ .episode.Video }}" frameborder="0" allowfullscreen></iframe>
-                  {{ else }}
                   <div id="player" class="embed-responsive-item"></div>
-                  {{ end }}
               {{ end }}
             </div>
            {{ end }}
@@ -83,18 +71,37 @@
 {{ end }}
 
 {{ define "script" }}
-  {{ if eq .episode.SrcType 0}}
-  {{ if gt .episode.VideoCount 1 }}
+  {{ if eq .episode.SrcType 0 }}
   <script>
-  var playerInstance = jwplayer("player");
-  playerInstance.setup({
-    autostart: true,
-     playlist: {{ marshal .episode.Playlists }}
-  });
-  playerInstance.on('ready', function(){
-    playerInstance.playlistItem({{ .playIndex }});
-  });
-  </script>
-  {{ end }}
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      function onYouTubeIframeAPIReady() {
+        var player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: {{ .playlistItem.VideoID }},
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+      function onPlayerReady(event) {
+        var videoIds = {{ marshal .episode.Videos}};
+        if (videoIds.length > 1) {
+          event.target.cuePlaylist({ playlist:{{ marshal .episode.Videos}},
+            index:{{ .playIndex }}, startSeconds:0, suggestedQuality:"default"});
+        } else {
+          event.target.playVideo();
+        }
+      }
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.CUED) {
+          event.target.playVideo();
+        }
+      }
+    </script>
   {{ end }}
 {{ end }}
