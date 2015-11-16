@@ -72,7 +72,21 @@
 
 {{ define "script" }}
   {{ if eq .episode.SrcType 0 }}
-  <script>
+    {{ if .isMobile }}
+    <script src="http://content.jwplatform.com/libraries/0FN4ytgB.js"></script>
+    <script>jwplayer.key="SzJyFNDHCWFi/mon3bYLTSncw4BsmOpTYFgwrw==";</script>
+    <script>
+      var playerInstance = jwplayer("player");
+      playerInstance.setup({
+        autostart: true,
+         playlist: {{ marshal .episode.Playlists }}
+      });
+      playerInstance.on('ready', function(){
+        playerInstance.playlistItem({{ .playIndex }});
+      });
+    </script>
+    {{ else }}
+    <script>
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -88,7 +102,6 @@
           }
         });
       }
-      var isMobile = {{ .isMobile }};
       var cueDone = false;
       function onPlayerReady(event) {
         var videoIds = {{ marshal .episode.Videos}};
@@ -97,16 +110,17 @@
             index:{{ .playIndex }}, startSeconds:0, suggestedQuality:"default"});
           cueDone = true;
         } else {
-          if (!isMobile) event.target.playVideo();
+          event.target.playVideo();
         }
       }
       var done = false;
       function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.CUED && !done) {
-          if (!isMobile) event.target.playVideo();
+          event.target.playVideo();
           done = true;
         }
       }
     </script>
+    {{ end }}
   {{ end }}
 {{ end }}
