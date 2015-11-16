@@ -105,6 +105,7 @@ func categoryShowHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"Title":       category.Title,
 		"Description": category.Description,
+		"Image":       category.Thumbnail,
 		"header":      category.Title,
 		"typeMode":    "category",
 		"typeId":      category.ID,
@@ -137,6 +138,7 @@ func channelShowHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"Title":       channel.Title,
 		"Description": channel.Description,
+		"Image":       channel.Thumbnail,
 		"header":      channel.Title,
 		"channel":     channel,
 		"typeMode":    "category",
@@ -219,6 +221,7 @@ func renderShow(c *gin.Context, show data.Show) {
 	renderData := map[string]interface{}{
 		"Title":       title,
 		"Description": description,
+		"Image":       show.Thumbnail,
 		"show":        show,
 		"episodes":    episodes,
 		"pageInfo":    pageInfo,
@@ -253,6 +256,7 @@ func renderShowOtv(c *gin.Context, show data.Show) {
 	renderData := map[string]interface{}{
 		"Title":       title,
 		"Description": description,
+		"Image":       show.Thumbnail,
 		"show":        show,
 		"episodes":    episodes,
 		"pageInfo":    pageInfo,
@@ -292,6 +296,7 @@ func watchHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"Title":        title,
 		"Description":  title,
+		"Image":        playlistItem.Image,
 		"playIndex":    playIndex,
 		"episode":      episode,
 		"show":         show,
@@ -362,6 +367,7 @@ func watchOtvHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"Title":          title,
 		"Description":    description,
+		"Image":          partItem.Thumbnail,
 		"partItem":       partItem,
 		"otvEpisodePlay": otvEpisodePlay,
 		"playIndex":      playIndex,

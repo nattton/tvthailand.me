@@ -18,7 +18,7 @@
     <meta property="og:title" content="{{ .Title }} - TV Thailand"/>
     <meta property="og:description" content="{{ .Description }}"/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content="http://www.tvthailand.me/favicon/ms-icon-310x310.png"/>
+    <meta property="og:image" content="{{ if .Image }}{{ .Image }}{{ else }}http://www.tvthailand.me/favicon/ms-icon-310x310.png{{ end }}"/>
 
     <!-- Bootstrap -->
     <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
