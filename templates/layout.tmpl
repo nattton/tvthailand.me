@@ -11,11 +11,11 @@
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title id="header-title">{{ if .Title }} TV Thailand | {{ .Title }} {{ else }} TV Thailand | Watch Thailand Show Online {{ end }}</title>
+    <title id="header-title">{{ if .Title }}{{ .Title }} | TV Thailand{{ else }}TV Thailand | Watch Thailand Show Online{{ end }}</title>
     <meta name="keywords" content="ดูละครย้อนหลัง, ทีวีออนไลน์, ดูทีวีย้อนหลัง, TV Thailand, {{ .Title }}" />
     <meta name="description" content="{{ .Description }}"/>
     <meta property="og:site_name" content="tvthailand.me"/>
-    <meta property="og:title" content="{{ .Title }}"/>
+    <meta property="og:title" content="{{ .Title }} - TV Thailand"/>
     <meta property="og:description" content="{{ .Description }}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:image" content="http://www.tvthailand.me/favicon/ms-icon-310x310.png"/>
