@@ -186,15 +186,16 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 			playlist.Image = "http://www.dailymotion.com/thumbnail/video/" + videoID
 			source.File = "http://www.dailymotion.com/embed/video/" + videoID
 		case 14:
-			playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+			SetMThaiThumbnail(episode, &playlist, videoID)
 			if embedVideo := GetEmbedVideo(db, videoID); embedVideo.EmbedURL != "" {
 				source.File = embedVideo.EmbedURL
+				episode.IsURL = false
 			} else {
-				episode.IsURL = true
 				source.File = "http://video.mthai.com/cool/player/" + videoID + ".html"
+				episode.IsURL = true
 			}
 		case 13, 15:
-			playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+			SetMThaiThumbnail(episode, &playlist, videoID)
 			playlist.Password = episode.Password
 			source.File = "http://video.mthai.com/cool/player/" + videoID + ".html"
 			episode.IsURL = true
@@ -210,6 +211,14 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 		episode.Playlists = append(episode.Playlists, playlist)
 	}
 	return
+}
+
+func SetMThaiThumbnail(episode *Episode, playlist *Playlist, videoID string) {
+	if episode.ID > 674351 {
+		playlist.Image = episode.Thumbnail
+	} else {
+		playlist.Image = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+	}
 }
 
 func GetEpisodeTitle(episode *Episode) {
