@@ -272,6 +272,7 @@ func watchHandler(c *gin.Context) {
 	episode, err := data.GetEpisode(&db, watchID)
 	if err != nil {
 		notFoundHandler(c)
+		return
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
@@ -280,6 +281,7 @@ func watchHandler(c *gin.Context) {
 
 	if playIndex == -1 {
 		notFoundHandler(c)
+		return
 	}
 
 	playlistItem := episode.Playlists[playIndex]
@@ -327,6 +329,7 @@ func watchOtvHandler(c *gin.Context) {
 
 	if playIndex == -1 {
 		notFoundHandler(c)
+		return
 	}
 
 	partItem := otvEpisodePlay.EpisodeDetail.PartItems[playIndex]
