@@ -22,7 +22,7 @@ type EmbedVideo struct {
 func GetEmbedVideo(db *gorm.DB, videoID string) (embedVideo EmbedVideo) {
 	err := db.Where("video_id = ?", videoID).First(&embedVideo).Error
 	if err != nil {
-		embedURL := GetMThaiEmbedURL(videoID)
+		embedURL, _ := GetMThaiEmbedURL(videoID)
 		embedVideo = EmbedVideo{VideoID: videoID, EmbedURL: embedURL}
 		db.Create(embedVideo)
 	}
@@ -38,7 +38,7 @@ func InsertMThaiEmbedVideos(db *gorm.DB, showID int) {
 			embedVideo := EmbedVideo{}
 			err := db.Where("video_id = ?", v).First(&embedVideo).Error
 			if err != nil {
-				embedURL := GetMThaiEmbedURL(v)
+				embedURL, _ := GetMThaiEmbedURL(v)
 				embedVideo = EmbedVideo{VideoID: v, EmbedURL: embedURL}
 				db.Create(embedVideo)
 			}
@@ -46,7 +46,7 @@ func InsertMThaiEmbedVideos(db *gorm.DB, showID int) {
 	}
 }
 
-func GetMThaiEmbedURL(id string) (iframeURL string) {
+func GetMThaiEmbedURL(id string) (iframeURL string, thumbnailURL string) {
 	url := fmt.Sprintf(MThaiURL, id)
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
@@ -61,12 +61,17 @@ func GetMThaiEmbedURL(id string) (iframeURL string) {
 	})
 	iframe = html.UnescapeString(iframe)
 	reader := strings.NewReader(iframe)
-	doc, err = goquery.NewDocumentFromReader(reader)
-	doc.Find("iframe").Each(func(i int, s *goquery.Selection) {
+	docIframe, err := goquery.NewDocumentFromReader(reader)
+	docIframe.Find("iframe").Each(func(i int, s *goquery.Selection) {
 		val, _ := s.Attr("src")
 		if val != "" {
 			iframeURL = val
 		}
+	})
+	doc.Find("link[itemprop=thumbnailUrl]").Each(func(i int, s *goquery.Selection) {
+		val, _ := s.Attr("href")
+		thumbnailURL = val
+		log.Println("thumbnailURL:", thumbnailURL)
 	})
 	return
 }

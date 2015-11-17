@@ -42,5 +42,7 @@ func processCommand(cmd CommandParam) {
 		data.CheckActiveUser(&db)
 	case "migrate_botvideo":
 		data.MigrateUsernameToChannelID(&db)
+	case "mthaithumbnail":
+		data.CreateEpisodeMThaiThumbnail(&db, cmd.Start)
 	}
 }

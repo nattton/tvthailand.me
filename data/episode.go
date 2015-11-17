@@ -67,12 +67,22 @@ func EncryptEpisode(db *gorm.DB, episodeID int) {
 	}
 	for _, episode := range episodes {
 		episode.HashID = Encrypt(strconv.Itoa(episode.ID))
-		CreatThumbnail(&episode)
+		CreateThumbnail(&episode)
 		db.Save(&episode)
 	}
 }
 
-func CreatThumbnail(episode *Episode) {
+func CreateEpisodeMThaiThumbnail(db *gorm.DB, gtID int) {
+	var episodes []Episode
+	db.Where("src_type in (?) AND id >= ?", []int{13, 14, 15}, gtID).Order("id asc").Find(&episodes)
+	for _, episode := range episodes {
+		episode.HashID = Encrypt(strconv.Itoa(episode.ID))
+		CreateThumbnail(&episode)
+		db.Save(&episode)
+	}
+}
+
+func CreateThumbnail(episode *Episode) {
 	videos := strings.Split(strings.Trim(episode.Video, ","), ",")
 	var videoID string
 	if len(videos) > 0 {
@@ -84,7 +94,13 @@ func CreatThumbnail(episode *Episode) {
 	case 1:
 		episode.Thumbnail = "http://www.dailymotion.com/thumbnail/video/" + videoID
 	case 13, 14, 15:
-		episode.Thumbnail = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+		_, thumbnailURL := GetMThaiEmbedURL(videoID)
+		episode.Thumbnail = thumbnailURL
+		if thumbnailURL != "" {
+			episode.Thumbnail = thumbnailURL
+		} else {
+			episode.Thumbnail = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
+		}
 	default:
 		episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
 	}

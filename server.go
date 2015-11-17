@@ -10,7 +10,7 @@ import (
 var commandParam CommandParam
 
 func init() {
-	flag.StringVar(&commandParam.Command, "command", "", "COMMAND = runbotch [-channel] [-q] | runbotpl [-playlist] | updateuser | migrate_botvideo")
+	flag.StringVar(&commandParam.Command, "command", "", "COMMAND = runbotch [-channel] [-q] | runbotpl [-playlist] | updateuser | migrate_botvideo | mthaithumbnail")
 	flag.StringVar(&commandParam.Channel, "channel", "", "CHANNEL")
 	flag.StringVar(&commandParam.Playlist, "playlist", "", "Playlist")
 	flag.StringVar(&commandParam.Query, "q", "", "QUERY")
