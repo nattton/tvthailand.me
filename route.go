@@ -26,7 +26,6 @@ func indexHandler(c *gin.Context) {
 		populars <- shows
 	}()
 	renderData := map[string]interface{}{
-		"Title":        "Watch Thailand Show Online",
 		"Description":  "ดูรายการทีวี ละครย้อนหลัง",
 		"showRecents":  <-recents,
 		"showPopulars": <-populars,
