@@ -7,11 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" >
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title id="header-title">{{ if .Title }} TV Thailand | {{ .Title }} {{ else }} TV Thailand | Admin {{ end }}</title>
+    <title id="header-title">{{ if .Title }}{{ .Title }} | TV Thailand{{ else }}TV Thailand | Admin{{ end }}</title>
 
     <!-- Bootstrap -->
-    <!-- <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/base.css" rel="stylesheet">
     {{ if .isMobile }}
     <link href="/static/css/mobile.css" rel="stylesheet">
@@ -41,7 +40,7 @@
 
      {{ range $key, $message := .flash }}
      <div class="alert alert-{{ $key }}" role="alert">
-       {{ $message }}
+       {{ html $message }}
      </div>
      {{ end }}
 
@@ -52,8 +51,8 @@
       <div>facebook : <a href="https://www.facebook.com/TV.Thailand" target="_blank">TV Thailand</a><div>
     </footer>
     <!-- CDNJS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     {{ template "script" . }}
   </body>
 </html>

@@ -6,25 +6,22 @@ import (
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"io/ioutil"
+	"net/http"
 	"strconv"
 )
 
-func IndexHandler(c *gin.Context) {
-	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/index")
-}
-
-func EncryptEpisodeHandler(c *gin.Context) {
-	db, _ := utils.OpenDB()
-	defer db.Close()
-	episodeID, _ := strconv.Atoi(c.Param("episodeID"))
-	data.EncryptEpisode(&db, episodeID)
+func printFlash(writer http.ResponseWriter, flashType, message string) {
 	flash := map[string]string{
-		"info": "Encrypt Successfully",
+		flashType: message,
 	}
 	renderData := map[string]interface{}{
 		"flash": flash,
 	}
-	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
+	utils.GenerateHTML(writer, renderData, "admin/layout", "admin/index")
+}
+
+func IndexHandler(c *gin.Context) {
+	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/index")
 }
 
 func AddEmbedMThaiHandler(c *gin.Context) {

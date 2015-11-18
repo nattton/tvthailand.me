@@ -1,6 +1,7 @@
 package data
 
 import (
+	"encoding/base64"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"math"
 	"strconv"
@@ -14,18 +15,20 @@ type EpisodePage struct {
 }
 
 type Episode struct {
-	ID        int `gorm:"primary_key"`
-	HashID    string
-	ShowID    int
-	Ep        int
-	Title     string
-	Video     string
-	SrcType   int
-	Date      time.Time
-	ViewCount int
-	Parts     string
-	Password  string
-	Thumbnail string
+	ID           int `gorm:"primary_key"`
+	HashID       string
+	ShowID       int
+	Ep           int
+	Title        string
+	Video        string
+	VideoEncrypt string
+	SrcType      int
+	Date         time.Time
+	ViewCount    int
+	Parts        string
+	Password     string
+	Thumbnail    string
+	User         string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -35,6 +38,35 @@ type Episode struct {
 	IsURL      bool       `sql:"-"`
 	Videos     []string   `sql:"-"`
 	VideoCount int        `sql:"-"`
+}
+
+func (episode *Episode) SetVideo(videoID string) {
+	episode.Video = strings.Trim(videoID, ",")
+	var re = strings.NewReplacer(
+		"+", "-",
+		"=", ",",
+		"a", "!",
+		"b", "@",
+		"c", "#",
+		"d", "$",
+		"e", "%",
+		"f", "^",
+		"g", "&",
+		"h", "*",
+		"i", "(",
+		"j", ")",
+		"k", "{",
+		"l", "}",
+		"m", "[",
+		"n", "]",
+		"o", ":",
+		"p", ";",
+		"q", "<",
+		"r", ">",
+		"s", "?",
+	)
+	encrypt := base64.StdEncoding.EncodeToString([]byte(episode.Video))
+	episode.VideoEncrypt = re.Replace(encrypt)
 }
 
 type Video struct {
@@ -56,20 +88,18 @@ type Source struct {
 	File string `json:"file"`
 }
 
-func EncryptEpisode(db *gorm.DB, episodeID int) {
+func EncryptAllEpisodes(db *gorm.DB) {
 	var episodes []Episode
-	if episodeID > 0 {
-		episode := Episode{}
-		db.First(&episode, episodeID)
-		episodes = append(episodes, episode)
-	} else {
-		db.Where("hash_id = ?", "").Order("id desc").Find(&episodes)
-	}
+	db.Where("hash_id = ?", "").Order("id desc").Find(&episodes)
 	for _, episode := range episodes {
-		episode.HashID = Encrypt(strconv.Itoa(episode.ID))
-		CreateThumbnail(&episode)
-		db.Save(&episode)
+		EncryptEpisode(db, &episode)
 	}
+}
+
+func EncryptEpisode(db *gorm.DB, episode *Episode) {
+	episode.HashID = Encrypt(strconv.Itoa(episode.ID))
+	CreateThumbnail(episode)
+	db.Save(&episode)
 }
 
 func CreateEpisodeMThaiThumbnail(db *gorm.DB, gtID int) {

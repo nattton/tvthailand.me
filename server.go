@@ -84,6 +84,8 @@ func runServer() {
 	routerAuthorized.GET("/analytic", admin.AnalyticHandler)
 	routerAuthorized.POST("/analytic", admin.AnalyticProcessHandler)
 	routerAuthorized.GET("/flush", admin.FlushHandler)
+	routerAuthorized.GET("/episode", admin.GetEpisodeHandler)
+	routerAuthorized.POST("/episode", admin.SaveEpisodeHandler)
 	router.NoRoute(notFoundHandler)
 	router.Run(":" + port)
 }
