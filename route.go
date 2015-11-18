@@ -6,11 +6,23 @@ import (
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 )
+
+// flashType : danger, warning, info
+func printFlash(writer http.ResponseWriter, flashType, message string) {
+	flash := map[string]string{
+		flashType: message,
+	}
+	renderData := map[string]interface{}{
+		"flash": flash,
+	}
+	utils.GenerateHTML(writer, renderData, "layout", "mobile_ads", "index")
+}
 
 func indexHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
@@ -44,6 +56,10 @@ func mobileAppsHandler(c *gin.Context) {
 
 func notFoundHandler(c *gin.Context) {
 	printFlash(c.Writer, "danger", "Page not found")
+}
+
+func goNotFound(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "/not_found")
 }
 
 func recentlyHandler(c *gin.Context) {
@@ -94,9 +110,9 @@ func categoryShowHandler(c *gin.Context) {
 	titlize := c.Param("titlize")
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	category, err := data.GetCategory(&db, titlize)
+	category, err := data.CategoryTitleze(&db, titlize)
 	if err != nil {
-		notFoundHandler(c)
+		goNotFound(c)
 		return
 	}
 	shows, _ := data.ShowsCategory(&db, category.ID, 0)
@@ -182,7 +198,12 @@ func showHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
-	show, _ := data.GetShow(&db, showID)
+	show, err := data.GetShow(&db, showID)
+	if err != nil {
+		log.Println(err)
+		goNotFound(c)
+		return
+	}
 	if show.IsOtv && (os.Getenv("WATCH_OTV") == "1" || show.ChannelID == 3) {
 		renderShowOtv(c, show)
 	} else {
@@ -203,6 +224,10 @@ func showOtvHandler(c *gin.Context) {
 	defer db.Close()
 	otvID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.ShowWithOtv(&db, otvID)
+	if show.ID == 0 {
+		goNotFound(c)
+		return
+	}
 	if show.IsOtv {
 		renderShowOtv(c, show)
 	} else {
@@ -270,7 +295,7 @@ func watchHandler(c *gin.Context) {
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
 	episode, err := data.GetEpisode(&db, watchID)
 	if err != nil {
-		notFoundHandler(c)
+		goNotFound(c)
 		return
 	}
 	show, err := data.GetShow(&db, episode.ShowID)
@@ -279,7 +304,7 @@ func watchHandler(c *gin.Context) {
 	}
 
 	if playIndex == -1 {
-		notFoundHandler(c)
+		goNotFound(c)
 		return
 	}
 
@@ -327,7 +352,7 @@ func watchOtvHandler(c *gin.Context) {
 	}
 
 	if playIndex == -1 {
-		notFoundHandler(c)
+		goNotFound(c)
 		return
 	}
 
@@ -385,15 +410,4 @@ func watchOtvHandler(c *gin.Context) {
 func OPlayHandler(c *gin.Context) {
 	responseBody, _, _ := data.GetOTVEpisodePlay(c.Param("watchID"), false)
 	fmt.Fprintf(c.Writer, string(responseBody))
-}
-
-// flashType : danger, warning, info
-func printFlash(writer http.ResponseWriter, flashType, message string) {
-	flash := map[string]string{
-		flashType: message,
-	}
-	renderData := map[string]interface{}{
-		"flash": flash,
-	}
-	utils.GenerateHTML(writer, renderData, "layout", "mobile_ads", "index")
 }

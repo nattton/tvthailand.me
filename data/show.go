@@ -6,6 +6,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"log"
 	"time"
@@ -86,10 +87,12 @@ func GetShow(db *gorm.DB, id int) (show Show, err error) {
 	cachedKey := fmt.Sprintf("Show/id=%d", id)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		err = db.First(&show, id).Error
-		show.Thumbnail = ThumbnailURLTv + show.Thumbnail
-		redisClient.Set(cachedKey, show.ToGOB64(), 0)
+		if err == nil {
+			show.Thumbnail = ThumbnailURLTv + show.Thumbnail
+			redisClient.Set(cachedKey, show.ToGOB64(), 0)
+		}
 	} else {
 		show.FromGOB64(result)
 	}
@@ -100,10 +103,12 @@ func ShowWithOtv(db *gorm.DB, id int) (show Show, err error) {
 	cachedKey := fmt.Sprintf("ShowWithOtv/otv_id=%d", id)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		err = db.Where("otv_id = ?", id).First(&show).Error
-		show.Thumbnail = ThumbnailURLTv + show.Thumbnail
-		redisClient.Set(cachedKey, show.ToGOB64(), 0)
+		if err == nil {
+			show.Thumbnail = ThumbnailURLTv + show.Thumbnail
+			redisClient.Set(cachedKey, show.ToGOB64(), 0)
+		}
 	} else {
 		show.FromGOB64(result)
 	}
@@ -114,12 +119,14 @@ func ShowsRecently(db *gorm.DB, offset int) (shows []Show, err error) {
 	cachedKey := fmt.Sprintf("ShowsRecently/offset=%d", offset)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		err = db.Scopes(ShowScope).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
-		for i := range shows {
-			shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+		if err == nil {
+			for i := range shows {
+				shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+			}
+			redisClient.Set(cachedKey, ShowsToGOB64(shows), 5*time.Minute)
 		}
-		redisClient.Set(cachedKey, ShowsToGOB64(shows), 5*time.Minute)
 	} else {
 		shows = ShowsFromGOB64(result)
 	}
@@ -130,12 +137,14 @@ func ShowsPopular(db *gorm.DB, offset int) (shows []Show, err error) {
 	cachedKey := fmt.Sprintf("ShowsPopular/offset=%d", offset)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		err = db.Scopes(ShowScope).Order("view_count desc").Offset(offset).Limit(20).Find(&shows).Error
-		for i := range shows {
-			shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+		if err == nil {
+			for i := range shows {
+				shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
+			}
+			redisClient.Set(cachedKey, ShowsToGOB64(shows), 0)
 		}
-		redisClient.Set(cachedKey, ShowsToGOB64(shows), 0)
 	} else {
 		shows = ShowsFromGOB64(result)
 	}

@@ -43,7 +43,6 @@ func runServer() {
 
 	router.GET("/", indexHandler)
 	router.GET("/recently", recentlyHandler)
-	router.GET("/not_found", notFoundHandler)
 	router.GET("/popular", popularHandler)
 	router.GET("/categories", categoriesHandler)
 	router.GET("/category/:titlize", categoryShowHandler)
@@ -85,7 +84,6 @@ func runServer() {
 	routerAuthorized.GET("/analytic", admin.AnalyticHandler)
 	routerAuthorized.POST("/analytic", admin.AnalyticProcessHandler)
 	routerAuthorized.GET("/flush", admin.FlushHandler)
-
 	router.NoRoute(notFoundHandler)
 	router.Run(":" + port)
 }

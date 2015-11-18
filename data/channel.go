@@ -6,6 +6,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"log"
 	"time"
@@ -54,12 +55,14 @@ func ChannelsActive(db *gorm.DB) (channels []Channel, err error) {
 	cachedKey := fmt.Sprintf("ChannelsActive")
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		err = db.Scopes(ChannelScope).Order("order_display").Find(&channels).Error
-		for i := range channels {
-			channels[i].Thumbnail = ThumbnailURLChannel + channels[i].Thumbnail
+		if err == nil {
+			for i := range channels {
+				channels[i].Thumbnail = ThumbnailURLChannel + channels[i].Thumbnail
+			}
+			redisClient.Set(cachedKey, ChannelsToGOB64(channels), 0)
 		}
-		redisClient.Set(cachedKey, ChannelsToGOB64(channels), 24*time.Hour)
 	} else {
 		channels = ChannelsFromGOB64(result)
 	}

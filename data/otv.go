@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"io/ioutil"
 	"log"
@@ -72,7 +73,7 @@ func GetOTVEpisodelist(contentID string, offset int, limit int) (responseBody []
 	keyOtvEpisodelist := fmt.Sprintf("OTV/Episodelist/contentID=%s/offset=%d/limit=%d", contentID, offset, limit)
 	redisClient := utils.OpenRedis()
 	jsonResult, err := redisClient.Get(keyOtvEpisodelist).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		apiURL := fmt.Sprintf("%s/Episodelist/index/%s/%s/%s/%s/%s/%d/%d", OtvDomain, OtvDevCode, OtvSecretKey, OtvAppID, OtvAppVersion, contentID, offset, limit)
 		client := &http.Client{
 			Transport: &httpcontrol.Transport{
@@ -126,7 +127,7 @@ func GetOTVEpisodePlay(episodeID string, isMobile bool) (responseBody []byte, ot
 	keyOPlay := fmt.Sprintf("OTV/oplay/%s/%d/%d", episodeID, width, height)
 	redisClient := utils.OpenRedis()
 	jsonResult, err := redisClient.Get(keyOPlay).Result()
-	if err != nil {
+	if err != nil || err == redis.Nil {
 		apiURL := fmt.Sprintf("%s/Episode/oplay", OtvDomain)
 		formVal := url.Values{
 			"dev_code":    {OtvDevCode},
