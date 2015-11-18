@@ -36,7 +36,7 @@ func RunBotPlaylists(db *gorm.DB) {
 	playlists, _ := BotEnabledPlaylists(db)
 	for _, playlist := range playlists {
 		fmt.Println(playlist.Title, playlist.PlaylistID)
-		playlist.RunBot(db, false, "")
+		playlist.RunBot(db, true, "")
 	}
 }
 
@@ -58,7 +58,7 @@ func (p YoutubePlaylist) RunBot(db *gorm.DB, continuous bool, nextToken string) 
 	}
 	wg.Wait()
 
-	if continuous {
+	if continuous && youtubePlaylist.NextPageToken != "" {
 		p.RunBot(db, continuous, youtubePlaylist.NextPageToken)
 	}
 }
