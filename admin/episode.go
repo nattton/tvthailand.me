@@ -122,6 +122,6 @@ func SaveEpisodeHandler(c *gin.Context) {
 
 // DeleteCached by ShowID
 func DeleteCached(showID int) {
-	utils.DeleteListCached("API_RECENTLY")
-	utils.DeleteListCached(fmt.Sprintf("API_SHOW:%d", showID))
+	utils.DeleteHashCached("API_RECENTLY")
+	utils.DeleteHashCached(fmt.Sprintf("API_SHOW:%d", showID))
 }

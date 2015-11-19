@@ -80,14 +80,14 @@ func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	templates.ExecuteTemplate(writer, "layout", data)
 }
 
-// DeleteListCached Delete List Cached by CachedKey
-func DeleteListCached(cachedKey string) {
+// DeleteHashCached Delete Hash Cached by CachedKey
+func DeleteHashCached(cachedKey string) {
 	redisClient := OpenRedis()
-	resultList, err := redisClient.LRange(cachedKey, 0, -1).Result()
+	resultList, err := redisClient.HKeys(cachedKey).Result()
 	if err == redis.Nil {
 		fmt.Println(err)
 	}
 	fmt.Println(resultList)
 	redisClient.Del(resultList...)
-	redisClient.LTrim(cachedKey, -1, 0)
+	redisClient.Del(cachedKey)
 }
