@@ -5,28 +5,30 @@ import (
 	"encoding/base64"
 	"encoding/gob"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"github.com/code-mobi/tvthailand.me/utils"
-	"log"
-	"time"
 )
 
 type Show struct {
-	ID          int     `gorm:"primary_key" json:"id"`
-	CategoryID  int     `json:"-"`
-	ChannelID   int     `json:"-"`
-	Title       string  `json:"title"`
-	Description string  `json:"description"`
-	Thumbnail   string  `json:"thumbnail"`
-	Poster      string  `json:"-"`
-	Detail      string  `json:"-"`
-	LastEpname  string  `json:"-"`
-	ViewCount   int     `json:"-"`
-	Rating      float32 `json:"-"`
-	VoteCount   int     `json:"-"`
-	IsOtv       bool    `json:"-"`
-	OtvID       string  `json:"-"`
+	ID          int       `gorm:"primary_key" json:"id"`
+	CategoryID  int       `json:"-"`
+	ChannelID   int       `json:"-"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Thumbnail   string    `json:"thumbnail"`
+	Poster      string    `json:"-"`
+	Detail      string    `json:"-"`
+	LastEpname  string    `json:"-"`
+	ViewCount   int       `json:"-"`
+	Rating      float32   `json:"-"`
+	VoteCount   int       `json:"-"`
+	IsOtv       bool      `json:"-"`
+	OtvID       string    `json:"-"`
+	UpdateDate  time.Time `json:"-"`
 
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
@@ -209,6 +211,11 @@ func ShowsSearch(db *gorm.DB, keyword string) (shows []Show, err error) {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
 	}
 	return
+}
+
+func ShowUpdateDate(db *gorm.DB, id int) {
+	db.Model(Show{}).Where("id = ?", id).
+		Updates(Show{UpdateDate: time.Now(), UpdatedAt: time.Now()})
 }
 
 func ShowScope(db *gorm.DB) *gorm.DB {

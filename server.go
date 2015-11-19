@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
+	"os"
+
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/admin"
-	"os"
 )
 
 var commandParam CommandParam
@@ -86,6 +87,7 @@ func runServer() {
 	routerAuthorized.GET("/flush", admin.FlushHandler)
 	routerAuthorized.GET("/episode", admin.GetEpisodeHandler)
 	routerAuthorized.POST("/episode", admin.SaveEpisodeHandler)
+
 	router.NoRoute(notFoundHandler)
 	router.Run(":" + port)
 }

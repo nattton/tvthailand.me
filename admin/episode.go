@@ -2,21 +2,22 @@ package admin
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/data"
-	"github.com/code-mobi/tvthailand.me/utils"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
+	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
 )
 
 const (
-	DateFMT      = "2006-01-02"
-	DateSmallFMT = "20060102"
+	dateFMT      = "2006-01-02"
+	dateSmallFMT = "20060102"
 )
 
-type EpisodeForm struct {
+type episodeForm struct {
 	ID        int    `form:"id"`
 	ShowID    int    `form:"show_id" binding:"required"`
 	Ep        int    `form:"ep"`
@@ -29,10 +30,12 @@ type EpisodeForm struct {
 	User      string `form:"user"`
 }
 
+// GetEpisodeHandler GET /admin/episode
 func GetEpisodeHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/index")
 }
 
+// EncryptEpisodeHandler GET /encrypt_episode/:episodeID
 func EncryptEpisodeHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
@@ -55,8 +58,9 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
 }
 
+// SaveEpisodeHandler POST /admin/episode
 func SaveEpisodeHandler(c *gin.Context) {
-	var form EpisodeForm
+	var form episodeForm
 	err := c.Bind(&form)
 	if err != nil {
 		printFlash(c.Writer, "danger", err.Error())
@@ -87,7 +91,7 @@ func SaveEpisodeHandler(c *gin.Context) {
 		}
 	}
 	// Set Date
-	episode.Date, err = time.Parse(DateFMT, form.Date)
+	episode.Date, err = time.Parse(dateFMT, form.Date)
 	if err != nil {
 		printFlash(c.Writer, "danger", err.Error())
 		return
@@ -96,15 +100,19 @@ func SaveEpisodeHandler(c *gin.Context) {
 	if form.Ep > 0 {
 		episode.Ep = form.Ep
 	} else {
-		episode.Ep, _ = strconv.Atoi(episode.Date.Format(DateSmallFMT))
+		episode.Ep, _ = strconv.Atoi(episode.Date.Format(dateSmallFMT))
 	}
 
 	episode.ShowID = form.ShowID
 	episode.SrcType = form.SrcType
 	episode.Password = form.Password
-	episode.User = episode.User
+	episode.User = form.User
 	db.Save(&episode)
 	data.EncryptEpisode(&db, &episode)
+	// Set Show UpdateDate
+	data.ShowUpdateDate(&db, episode.ShowID)
+	// Set Status BotVideo to Updated
+	data.SetBotVideoUpdated(&db, episode.Video)
 
 	message := fmt.Sprintf(`Save Episode <a href="/watch/%d/0">%d : %s</a> Successful`, episode.ID, episode.ID, episode.Title)
 	printFlash(c.Writer, "info", message)

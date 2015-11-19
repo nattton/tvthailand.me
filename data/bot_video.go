@@ -2,13 +2,15 @@ package data
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/youtube"
 	"log"
 	"math"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
+
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/youtube"
 )
 
 type BotVideo struct {
@@ -248,6 +250,11 @@ func SetBotVideosStatus(db *gorm.DB, videoIDs []string, updateStatus string) {
 		ids = append(ids, id)
 	}
 	SetBotVideoStatus(db, ids, statusID)
+}
+
+func SetBotVideoUpdated(db *gorm.DB, video string) {
+	videoIDs := strings.Split(video, ",")
+	db.Model(BotVideo{}).Where("video_id in (?)", videoIDs).UpdateColumn("status", 1)
 }
 
 func DeleteBotVideoByChannel(db *gorm.DB, channelID string) {
