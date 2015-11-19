@@ -2,16 +2,17 @@ package utils
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	_ "github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-sql-driver/mysql"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
+	_ "github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-sql-driver/mysql"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 )
 
 func OpenDB() (gorm.DB, error) {
@@ -77,4 +78,16 @@ func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	templates = template.Must(templates.ParseFiles(files...))
 
 	templates.ExecuteTemplate(writer, "layout", data)
+}
+
+// DeleteListCached Delete List Cached by CachedKey
+func DeleteListCached(cachedKey string) {
+	redisClient := OpenRedis()
+	resultList, err := redisClient.LRange(cachedKey, 0, -1).Result()
+	if err == redis.Nil {
+		fmt.Println(err)
+	}
+	fmt.Println(resultList)
+	redisClient.Del(resultList...)
+	redisClient.LTrim(cachedKey, -1, 0)
 }

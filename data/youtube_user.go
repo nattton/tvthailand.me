@@ -2,11 +2,12 @@ package data
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/youtube"
 	"log"
 	"sync"
 	"time"
+
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/youtube"
 )
 
 type YoutubeUser struct {
@@ -96,7 +97,7 @@ func (user YoutubeUser) RunBot(db *gorm.DB, continuous bool, query string, nextT
 	}
 	wg.Wait()
 
-	if continuous {
+	if continuous && youtube.NextPageToken != "" {
 		user.RunBot(db, continuous, query, youtube.NextPageToken)
 	}
 }

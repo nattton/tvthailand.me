@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 )
 
+// CommandParam store flag variables
 type CommandParam struct {
 	Command  string
 	Channel  string

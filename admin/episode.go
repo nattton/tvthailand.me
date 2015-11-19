@@ -113,7 +113,15 @@ func SaveEpisodeHandler(c *gin.Context) {
 	data.ShowUpdateDate(&db, episode.ShowID)
 	// Set Status BotVideo to Updated
 	data.SetBotVideoUpdated(&db, episode.Video)
+	
+	DeleteCached(episode.ShowID)
 
 	message := fmt.Sprintf(`Save Episode <a href="/watch/%d/0">%d : %s</a> Successful`, episode.ID, episode.ID, episode.Title)
 	printFlash(c.Writer, "info", message)
+}
+
+// DeleteCached by ShowID
+func DeleteCached(showID int) {
+	utils.DeleteListCached("API_RECENTLY")
+	utils.DeleteListCached(fmt.Sprintf("API_SHOW:%d", showID))
 }

@@ -2,10 +2,11 @@ package data
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/youtube"
 	"log"
 	"sync"
+
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/code-mobi/tvthailand.me/youtube"
 )
 
 type YoutubePlaylist struct {
