@@ -74,19 +74,22 @@ func runServer() {
 		routerAjax.GET("/show/:show_id/episodes", AjaxShowHandler)
 	}
 
-	routerAuthorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
+	authorized := router.Group("/admin")
+	authorized.Use(gin.BasicAuth(gin.Accounts{
 		"saly":    "admin888",
 		"lucifer": "gundamman",
 	}))
-	routerAuthorized.GET("/", admin.IndexHandler)
-	routerAuthorized.GET("/encrypt_episode", admin.EncryptEpisodeHandler)
-	routerAuthorized.GET("/encrypt_episode/:episodeID", admin.EncryptEpisodeHandler)
-	routerAuthorized.POST("/mthai_embed", admin.AddEmbedMThaiHandler)
-	routerAuthorized.GET("/analytic", admin.AnalyticHandler)
-	routerAuthorized.POST("/analytic", admin.AnalyticProcessHandler)
-	routerAuthorized.GET("/flush", admin.FlushHandler)
-	routerAuthorized.GET("/episode", admin.GetEpisodeHandler)
-	routerAuthorized.POST("/episode", admin.SaveEpisodeHandler)
+	{
+		authorized.GET("/", admin.IndexHandler)
+		authorized.GET("/encrypt_episode", admin.EncryptEpisodeHandler)
+		authorized.GET("/encrypt_episode/:episodeID", admin.EncryptEpisodeHandler)
+		authorized.POST("/mthai_embed", admin.AddEmbedMThaiHandler)
+		authorized.GET("/analytic", admin.AnalyticHandler)
+		authorized.POST("/analytic", admin.AnalyticProcessHandler)
+		authorized.GET("/flush", admin.FlushHandler)
+		authorized.GET("/episode", admin.GetEpisodeHandler)
+		authorized.POST("/episode", admin.SaveEpisodeHandler)
+	}
 
 	router.NoRoute(notFoundHandler)
 	router.Run(":" + port)
