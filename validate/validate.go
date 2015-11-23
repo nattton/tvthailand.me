@@ -30,7 +30,7 @@ func URL(url string) (bool, error) {
 
 // RunWebURL Validate Web URL 
 func RunWebURL(db *gorm.DB, start int, limit int, delay time.Duration) {
-	episodes, _ := EpisodeGoogleDrive(db, start, limit)
+	episodes, _ := EpisodeWebURL(db, start, limit)
 	for _, episode := range episodes {
 		videos := strings.Split(episode.Video, ",")
 		for _, video := range videos {
