@@ -49,6 +49,6 @@ func processCommand(cmd CommandParam) {
 	case "mthaithumbnail":
 		data.CreateEpisodeMThaiThumbnail(&db, cmd.Start)
 	case "validate_url":
-		validate.RunWebURL(&db, cmd.Start, -1, 500*time.Microsecond)
+		validate.RunWebURL(&db, cmd.Start, -1, time.Second)
 	}
 }
