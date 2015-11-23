@@ -1,0 +1,35 @@
+{{ define "content" }}
+<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+  <h1 class="page-header">Shows</h1>
+  <form action="/admin/shows/search" method="get">
+    <div class="input-group">
+      <input type="text" name="q" class="form-control" placeholder="Search for..." />
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Search</button>
+      </span>
+    </div>
+    <!-- /input-group -->
+  </form>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range $index, $show := .shows }}
+      <tr>
+        <th scope="row">{{ add $index 1 }}</th>
+        <td>{{ $show.Title }}</td>
+        <td><a href="/admin/show/{{ $show.ID }}/edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
+{{ end }}
+
+{{ define "script" }}
+{{ end }}
