@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
+	"github.com/code-mobi/tvthailand.me/validate"
 )
 
 // CommandParam store flag variables
@@ -46,5 +48,7 @@ func processCommand(cmd CommandParam) {
 		data.MigrateUsernameToChannelID(&db)
 	case "mthaithumbnail":
 		data.CreateEpisodeMThaiThumbnail(&db, cmd.Start)
+	case "validate_url":
+		validate.RunWebURL(&db, cmd.Start, -1, time.Second)
 	}
 }

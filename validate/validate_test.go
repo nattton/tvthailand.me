@@ -3,6 +3,7 @@ package validate
 import (
 	"testing"
 
+	"github.com/code-mobi/tvthailand.me/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,4 +29,9 @@ func TestURL(t *testing.T) {
 	assert.NoError(err, url)
 	assert.True(isValid, url)
 
+}
+
+func TestRunWebURL(t *testing.T) {
+	db, _ := utils.OpenDB()
+	RunWebURL(&db, 0, 5, 0)
 }
