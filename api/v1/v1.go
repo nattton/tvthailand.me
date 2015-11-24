@@ -50,7 +50,8 @@ func CategoryHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.ShowsCategory(&db, c.Param("id"), start)
+	id, _ := strconv.Atoi(c.Param("id"))
+	shows, err := data.ShowsCategory(&db, id, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -75,7 +76,8 @@ func ChannelHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.ShowsChannel(&db, c.Param("id"), start)
+	id, _ := strconv.Atoi(c.Param("id"))
+	shows, err := data.ShowsChannel(&db, id, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
