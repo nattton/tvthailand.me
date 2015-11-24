@@ -16,6 +16,8 @@ type YoutubePlaylist struct {
 	PlaylistID string
 	BotEnabled bool
 	BotLimit   int
+
+	Selected bool `sql:"-" json:"-"`
 }
 
 func BotEnabledPlaylists(db *gorm.DB) (playlists []YoutubePlaylist, err error) {
@@ -62,4 +64,17 @@ func (p YoutubePlaylist) RunBot(db *gorm.DB, continuous bool, nextToken string) 
 	if continuous && youtubePlaylist.NextPageToken != "" {
 		p.RunBot(db, continuous, youtubePlaylist.NextPageToken)
 	}
+}
+
+func YoutubePlaylistOptions(db *gorm.DB, selectedID string) (playlists []YoutubePlaylist) {
+	db.Find(&playlists)
+	if selectedID != "" {
+		for index := range playlists {
+			if playlists[index].PlaylistID == selectedID {
+				playlists[index].Selected = true
+				return
+			}
+		}
+	}
+	return
 }

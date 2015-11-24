@@ -92,6 +92,7 @@ func runServer() {
 		authorized.POST("/shows/new", admin.ShowUpdateHandler)
 		authorized.GET("/show/:id/edit", admin.ShowEditHandler)
 		authorized.POST("/show/:id/edit", admin.ShowUpdateHandler)
+		authorized.GET("/youtube_playlist", admin.YoutubePlaylistHandler)
 		authorized.GET("/episode", admin.GetEpisodeHandler)
 		authorized.POST("/episode", admin.SaveEpisodeHandler)
 	}

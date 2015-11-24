@@ -3,16 +3,19 @@ package youtube
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
 )
 
 const YoutubePlaylistItemsAPIURL = "https://www.googleapis.com/youtube/v3/playlistItems?key=%s&playlistId=%s&part=snippet&fields=prevPageToken,nextPageToken,pageInfo,items(id,snippet(title,publishedAt,channelTitle,resourceId(videoId)))&maxResults=%d&pageToken=%s"
 
-func (y *Youtube) GetVideoJsonByPlaylistID(playlistID string, botLimit int, pageToken string) (api YoutubePlaylist, err error) {
-	apiURL := fmt.Sprintf(YoutubePlaylistItemsAPIURL, y.apiKey, playlistID, botLimit, pageToken)
+const exYoutubePlaylistItemsAPIURL = "http://kruasuanrimnambyaoywaan.com:9000/admin/youtube.playlistItems?playlistId=%s&maxResults=%d&pageToken=%s"
+
+func (y *Youtube) GetVideoJsonByPlaylistID(playlistID string, maxResults int, pageToken string) (api YoutubePlaylist, err error) {
+	apiURL := fmt.Sprintf(YoutubePlaylistItemsAPIURL, y.apiKey, playlistID, maxResults, pageToken)
 	fmt.Println(apiURL)
 	client := &http.Client{
 		Transport: &httpcontrol.Transport{
@@ -37,8 +40,8 @@ func (y *Youtube) GetVideoJsonByPlaylistID(playlistID string, botLimit int, page
 	return
 }
 
-func (y *Youtube) GetVideoByPlaylistID(channelId string, playlistID string, botLimit int, pageToken string) (totalResults int, youtubeVideos []*YoutubeVideo, prevPageToken string, nextPageToken string) {
-	api, err := y.GetVideoJsonByPlaylistID(playlistID, botLimit, pageToken)
+func (y *Youtube) GetVideoByPlaylistID(channelId string, playlistID string, maxResults int, pageToken string) (totalResults int, youtubeVideos []*YoutubeVideo, prevPageToken string, nextPageToken string) {
+	api, err := y.GetVideoJsonByPlaylistID(playlistID, maxResults, pageToken)
 	if err != nil {
 		panic(err)
 	}
@@ -51,5 +54,31 @@ func (y *Youtube) GetVideoByPlaylistID(channelId string, playlistID string, botL
 		}
 	}
 	totalResults = api.PageInfo.TotalResults
+	return
+}
+
+func (y *Youtube) GetExVideoByPlaylistID(playlistID string, maxResults int, pageToken string) (api YoutubePlaylist, err error) {
+	apiURL := fmt.Sprintf(exYoutubePlaylistItemsAPIURL, playlistID, maxResults, pageToken)
+	fmt.Println(apiURL)
+	client := &http.Client{
+		Transport: &httpcontrol.Transport{
+			RequestTimeout: time.Minute,
+			MaxTries:       3,
+		},
+	}
+	resp, err := client.Get(apiURL)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	err = json.Unmarshal(body, &api)
+	if err != nil {
+		fmt.Println("### Json Parser Error ", apiURL, " ###")
+	}
 	return
 }

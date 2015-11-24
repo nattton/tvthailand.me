@@ -1,0 +1,121 @@
+{{ define "content" }}
+<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+  <h1 class="page-header">Youtube Playlist</h1>
+  <div id="form_playlist"></div>
+  <form class="form-group" method="GET" action="/admin/youtube_playlist">
+    <div class="form-inline">
+      <div class="form-group">
+        <label for="InputPlaylist">Playlist</label>
+      <select name="playlistId" class="form-control" id="InputPlaylist" >
+        {{range .playlistOptions}}
+        <option value="{{.PlaylistID}}" {{if .Selected}}selected{{end}}>{{.Title}}</option>
+        {{end}}
+      </select>
+      </div>
+      <div class="form-group">
+          <label for="InputMaxResults">Max Results</label>
+          <input type="text" name="maxResults" value="{{.form.MaxResults}}" class="form-control" id="InputMaxResults" placeholder="Max Results" />
+      </div>
+      <div class="form-group">
+        <label for="InputPageToken">Page Token</label>
+        <input type="text" name="pageToken" value="{{.form.PageToken}}" class="form-control" id="InputPageToken" placeholder="Page Token" />
+      </div>
+    </div>
+    
+    <button class="btn btn-default" type="submit" id="btn_search">{{if eq "" .form.PageToken}}Search{{else}}Next{{end}}</button>
+    <button class="btn btn-default" type="button" id="btn_clear">Clear</button>
+  </form>
+  <div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Date</th>
+        <th>Video</th>
+      </tr>
+    </thead>
+      {{ range .items }}
+      <tr>
+        <td>{{ .Snippet.Title }}</td>
+        <td>{{ .Snippet.PublishedAt }}</td>
+        <td>{{ .Snippet.ResourceID.VideoID }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  </div>
+</div>
+{{ end }}
+
+{{ define "script" }}
+<script>
+$(function(){
+  $('#btn_clear').click(function(){
+    $("input[name='pageToken']").val("");
+    $("#btn_search").text("Search");
+  });
+});
+</script>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+<script type="text/babel">
+ var VideoItem = React.createClass({
+    render: function(){
+        return (
+          <tr className="table-strip">
+            <td>{this.props.data.snippet.title}</td>
+            <td>{this.props.data.snippet.publishedAt}</td>
+            <td>{this.props.data.snippet.resourceId.videoId}</td>
+          </tr>
+        );
+    }
+ });
+ 
+ var VideoList = React.createClass({
+  render: function() {
+    return (
+      <tr className="table-strip">
+        {this.props.items.map(function(item){
+          return <VideoItem key={item.id} data={item} />;
+        })}
+       </tr>
+    );
+  }
+ });
+ 
+ var renderVideoList = function(data){
+  $('#video_list').html('');
+  $('input[name="pageToken"]').val(data.nextPageToken);
+  ReactDOM.render(<VideoList items={data.items} />, document.getElementById('video_list'));
+ };
+ 
+ $(function(){
+  $("input[name='playlistId']").on('change', function(){
+    $("input[name='pageToken']").val("");
+  });
+  $("input[name='pageToken']").on('change', function(){
+    var token = $(this).val();
+    if (token == "") {
+      $('#btn_search').text("Search");
+    } else {
+      $('#btn_search').text("Next");
+    }
+  });
+  $('#btn_search').click(function(){
+    var formData = $('form').serialize();
+    $.ajax({
+      url: 'http://kruasuanrimnambyaoywaan.com:9000/admin/youtube.playlistItems',
+      data: formData,
+      dataType: 'jsonp',
+      success: function(data) {
+        console.log(data);
+        renderVideoList(data);
+      },
+      error: function(xhr, status, err) {
+      console.error(this.props.url, status, err.toString());
+    }
+    });
+  });
+ });
+ </script>
+{{ end }}
