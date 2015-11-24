@@ -70,6 +70,7 @@ func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 		{"marshal": marshal},
 		{"html": templateHTML},
 		{"metaDescription": metaDescription},
+		{"fmtTime": fmtTime},
 	}
 	templates := template.New("")
 	for i := range funcMaps {

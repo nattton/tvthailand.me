@@ -1,9 +1,13 @@
 {{ define "content" }}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+  <div class="pull-right">
+  <a href="/admin/shows/new" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</a>
+  </div>
+  
   <h1 class="page-header">Shows</h1>
-  <form action="/admin/shows/search" method="get">
+  <form action="/admin/shows" method="get">
     <div class="input-group">
-      <input type="text" name="q" class="form-control" placeholder="Search for..." />
+      <input type="text" name="q" class="form-control" placeholder="Search for..." value="{{ .q }}"/>
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit">Search</button>
       </span>

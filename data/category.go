@@ -5,15 +5,16 @@ import (
 	"encoding/base64"
 	"encoding/gob"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"github.com/code-mobi/tvthailand.me/utils"
-	"log"
-	"time"
 )
 
 type Category struct {
-	ID           string `gorm:"primary_key"`
+	ID           int `gorm:"primary_key"`
 	Title        string
 	Titleize     string
 	Description  string
@@ -24,6 +25,8 @@ type Category struct {
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
 	DeletedAt *time.Time `json:"-"`
+
+	Selected bool `sql:"-" json:"-"`
 }
 
 func (s Category) ToGOB64() string {
@@ -76,6 +79,24 @@ func CategoriesFromGOB64(str string) (s []Category) {
 	return
 }
 
+func Categories(db *gorm.DB) (categories []Category, err error) {
+	cachedKey := fmt.Sprintf("Categories")
+	redisClient := utils.OpenRedis()
+	result, err := redisClient.Get(cachedKey).Result()
+	if err != nil || err == redis.Nil {
+		err = db.Find(&categories).Error
+		if err == nil {
+			for i := range categories {
+				categories[i].Thumbnail = ThumbnailURLCategory + categories[i].Thumbnail
+			}
+			redisClient.Set(cachedKey, CategoriesToGOB64(categories), 0)
+		}
+	} else {
+		categories = CategoriesFromGOB64(result)
+	}
+	return
+}
+
 func CategoriesActive(db *gorm.DB) (categories []Category, err error) {
 	cachedKey := fmt.Sprintf("CategoriesActive")
 	redisClient := utils.OpenRedis()
@@ -106,6 +127,19 @@ func CategoryTitleze(db *gorm.DB, titlize string) (category Category, err error)
 		}
 	} else {
 		category.FromGOB64(result)
+	}
+	return
+}
+
+func CategoryOptions(db *gorm.DB, selectedID int) (categories []Category) {
+	categories, _ = Categories(db)
+	if selectedID > 0 {
+		for index := range categories {
+			if categories[index].ID == selectedID {
+				categories[index].Selected = true
+				return
+			}
+		}
 	}
 	return
 }

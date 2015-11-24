@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"time"
 )
 
 func add(a, b int) int {
@@ -40,4 +41,18 @@ func metaDescription(a interface{}) string {
 	} else {
 		return "TV Thailand | Watch Free Thailand Show Online | ดูรายการทีวีย้อนหลัง"
 	}
+}
+
+func fmtTime(fmt string, a interface{}) string {
+	switch a.(type) {
+	case time.Time:
+		return a.(time.Time).Format(fmt)
+	case string:
+		tStr := a.(string)
+		if tStr == "" {
+			return time.Now().Format(fmt)
+		}
+		return a.(string)
+	}
+	return ""
 }

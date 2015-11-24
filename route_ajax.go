@@ -38,7 +38,8 @@ func AjaxCategoryHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
-	shows, err := data.ShowsCategory(&db, c.Param("id"), offset)
+	id, _ := strconv.Atoi(c.Param("id"))
+	shows, err := data.ShowsCategory(&db, id, offset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -63,7 +64,8 @@ func AjaxChannelHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
-	shows, err := data.ShowsChannel(&db, c.Param("id"), offset)
+	id, _ := strconv.Atoi(c.Param("id"))
+	shows, err := data.ShowsChannel(&db, id, offset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}

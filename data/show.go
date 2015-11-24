@@ -153,8 +153,8 @@ func ShowsPopular(db *gorm.DB, offset int) (shows []Show, err error) {
 	return
 }
 
-func ShowsCategory(db *gorm.DB, id string, offset int) (shows []Show, err error) {
-	cachedKey := fmt.Sprintf("ShowsCategory/id=%s/offset=%d", id, offset)
+func ShowsCategory(db *gorm.DB, id int, offset int) (shows []Show, err error) {
+	cachedKey := fmt.Sprintf("ShowsCategory/id=%d/offset=%d", id, offset)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
 	if err != nil || err == redis.Nil {
@@ -171,7 +171,7 @@ func ShowsCategory(db *gorm.DB, id string, offset int) (shows []Show, err error)
 	return
 }
 
-func ShowsCategoryPopular(db *gorm.DB, id string) (shows []Show, err error) {
+func ShowsCategoryPopular(db *gorm.DB, id int) (shows []Show, err error) {
 	err = db.Scopes(ShowScope).Where("category_id = ?", id).Order("view_count desc").Limit(20).Find(&shows).Error
 	for i := range shows {
 		shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
@@ -179,8 +179,8 @@ func ShowsCategoryPopular(db *gorm.DB, id string) (shows []Show, err error) {
 	return
 }
 
-func ShowsChannel(db *gorm.DB, id string, offset int) (shows []Show, err error) {
-	cachedKey := fmt.Sprintf("ShowsChannel/id=%s/offset=%d", id, offset)
+func ShowsChannel(db *gorm.DB, id int, offset int) (shows []Show, err error) {
+	cachedKey := fmt.Sprintf("ShowsChannel/id=%d/offset=%d", id, offset)
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
 	if err != nil || err == redis.Nil {

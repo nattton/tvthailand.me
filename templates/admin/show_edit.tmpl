@@ -1,90 +1,152 @@
 {{ define "content" }}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
-  <h1 class="page-header">Show {{ .show.ID }} : {{ .show.Title }}</h1>
-  <form>
+  <div class="pull-right">
+  <a href="/admin/shows/new" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</a>
+  {{ if .show.ID }}
+  <a href="/show/{{ .show.ID }}" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>
+  {{ end }}
+  </div>
+  <h1 class="page-header">{{ if .show.ID }}Edit {{ .show.ID }} : {{ .show.Title }}{{ else }}New{{ end }}</h1>
+  {{ if .show.ID }}
+  <form method="POST" action="/admin/show/{{ .show.ID }}/edit">
+  {{ else }}
+  <form method="POST" action="/admin/shows/new">
+  {{ end }}
+    <input type="hidden" name="id" value="{{ .show.ID }}" />
+    <div class="form-group">
+      <label for="InputCategory">Category</label>
+    <select name="category_id" class="form-control" id="InputCategory" >
+      {{range .categoryOptions}}
+      <option value="{{.ID}}" {{if .Selected}}selected{{end}}>{{.Title}}</option>
+      {{end}}
+    </select>
+    </div>
+    <div class="form-group">
+      <label for="InputChannel">Channel</label>
+    <select name="channel_id" class="form-control" id="InputChannel" >
+      {{range .channelOptions}}
+      <option value="{{.ID}}" {{if .Selected}}selected{{end}}>{{.Title}}</option>
+      {{end}}
+    </select>
+    </div>
     <div class="form-group">
       <label for="InputTitle">Title</label>
-      <input type="text" value="{{ .show.Title }}" class="form-control" id="InputTitle" placeholder="Title" />
+      <input type="text" name="title" value="{{ .show.Title }}" class="form-control" id="InputTitle" placeholder="Title" />
     </div>
     <div class="form-group">
       <label for="InputDescription">Description</label>
-      <input type="text" value="{{ .show.Description }}" class="form-control" id="InputDescription" placeholder="Description" />
+      <input type="text" name="description" value="{{ .show.Description }}" class="form-control" id="InputDescription" placeholder="Description" />
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ช่อง ">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Social Clips">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Dailymotion">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์เกาหลี">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์อินเตอร์">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์ญี่ปุ่น">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์จีน/ไต้หวัน">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="การ์ตูน [บรรยายไทย]">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ละครเก่า (ช่อง )">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="รายการเก่า (ช่อง )">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Music Video">
+      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Live Show">
     </div>
     <div class="form-group">
       <label for="InputThumbnail">Thumbnail</label>
-      <input type="text" value="{{ .show.Thumbnail }}" class="form-control" id="InputThumbnail" placeholder="Thumbnail" />
+      <input type="text" name="thumbnail" value="{{ .show.Thumbnail }}" class="form-control" id="InputThumbnail" placeholder="Thumbnail" />
     </div>
     <div class="form-group">
-      <label for="InputThumbnail">Poster</label>
-      <input type="text" value="{{ .show.Poster }}" class="form-control" id="InputPoster" placeholder="Poster" />
+      <label for="InputCoverPhoto">Cover Photo</label>
+      <input type="text" name="cover_photo" value="{{ .show.CoverPhoto }}" class="form-control" id="InputCoverPhoto" placeholder="Cover Photo" />
+    </div>
+    <div class="form-group">
+      <label for="InputPoster">Poster</label>
+      <input type="text" name="poster" value="{{ .show.Poster }}" class="form-control" id="InputPoster" placeholder="Poster" />
     </div>
     <div class="form-group">
       <label for="InputDetail">Detail</label>
-      <textarea rows="5" class="form-control" id="InputDetail" placeholder="Detail">{{ .show.Detail }}</textarea>
+      <textarea rows="5" name="detail" class="form-control" id="InputDetail" placeholder="Detail">{{ .show.Detail }}</textarea>
     </div>
     <div class="form-group">
       <label for="InputUpdateDate">Update Date</label>
       <div class="input-group">
-        <input type="text" value="{{ .show.UpdateDate }}" class="form-control" id="InputUpdateDate" placeholder="Update Date">
+        <input type="text" name="update_date" value='{{ fmtTime "2006-01-02 15:04:05" .show.UpdateDate }}' class="form-control" id="InputUpdateDate" placeholder="Update Date">
         <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">Current Date</button>
+                <button class="btn btn-default" type="button" id="CurrentTime">Current Time</button>
          </span>
       </div>
     </div>
     <div class="form-group">
       <label for="InputOtvID">Otv ID</label>
-      <input type="text" value="{{ .show.OtvID }}" class="form-control" id="InputOtvID" placeholder="Otv ID" />
+      <input type="text" name="otv_id" value="{{ .show.OtvID }}" class="form-control" id="InputOtvID" placeholder="Otv ID" />
+    </div>
+    <div class="form-group">
+      <label for="InputOtvLogo">Otv Logo</label>
+      <input type="text" name="otv_logo" value="{{ .show.OtvLogo }}" class="form-control" id="InputOtvLogo" placeholder="Otv Logo" />
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> Is Otv
+        <input type="checkbox" name="is_otv" value="1" {{if .show.IsOtv}}checked="checked"{{end}}> Otv
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> Active
+        <input type="checkbox" name="is_active" value="1" {{if .show.IsActive}}checked="checked"{{end}}> Active
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> Online
+        <input type="checkbox" name="is_online" value="1" {{if .show.IsOnline}}checked="checked"{{end}}> Online
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> iOS
+        <input type="checkbox" name="ios" value="1" {{if .show.Ios}}checked="checked"{{end}}> iOS
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> Android
+        <input type="checkbox" name="android" value="1" {{if .show.Android}}checked="checked"{{end}}> Android
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> Windows Phone
+        <input type="checkbox" name="wp" value="1" {{if .show.Wp}}checked="checked" {{end}}> Windows Phone
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> S40
+        <input type="checkbox" name="s40" value="1" {{if .show.S40}}checked="checked" {{end}}> S40
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> Thailand Only
+        <input type="checkbox" name="th_restrict" value="1" {{if .show.ThRestrict}}checked="checked" {{end}}> Thailand Only
       </label>
     </div>
     <div class="checkbox">
       <label>
-        <input type="checkbox"> V3
+        <input type="checkbox" name="v3" value="1" {{if .show.V3}}checked="checked" {{end}}> V3
       </label>
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <div class="form-group">
+      <label for="InputOtvID">Owner</label>
+      <input type="text" name="owner" value="{{ .show.Owner }}" class="form-control" id="InputOwner" placeholder="Owner" />
+    </div>
+    <button type="submit" class="btn btn-success">{{if .show.ID}}<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save{{else}}Create Show{{end}}</button>
   </form>
   </table>
 </div>
 {{ end }}
 
 {{ define "script" }}
+<script src="/bower_components/moment/min/moment.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+  $('.ButtonSelectDescription').click(function(){
+    $('input[name="description"]').val($(this).val());
+  });
+  $('#CurrentTime').click(function(){
+		$('#InputUpdateDate').val(moment().format('YYYY-MM-DD HH:mm:ss'));
+	});
+});
+</script>
 {{ end }}

@@ -88,8 +88,10 @@ func runServer() {
 		authorized.POST("/analytic", admin.AnalyticProcessHandler)
 		authorized.GET("/flush", admin.FlushHandler)
 		authorized.GET("/shows", admin.ShowsHandler)
-		authorized.GET("/shows/search", admin.SearchShowsHandler)
+		authorized.GET("/shows/new", admin.ShowNewHandler)
+		authorized.POST("/shows/new", admin.ShowUpdateHandler)
 		authorized.GET("/show/:id/edit", admin.ShowEditHandler)
+		authorized.POST("/show/:id/edit", admin.ShowUpdateHandler)
 		authorized.GET("/episode", admin.GetEpisodeHandler)
 		authorized.POST("/episode", admin.SaveEpisodeHandler)
 	}
