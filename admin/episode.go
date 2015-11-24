@@ -40,12 +40,13 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	episodeID, _ := strconv.Atoi(c.Param("episodeID"))
-	if episodeID > 0 {
+	if episodeID == 0 {
 		data.EncryptAllEpisodes(&db)
 	} else {
 		episode, err := data.GetEpisode(&db, episodeID)
 		if err != nil {
 			printFlash(c.Writer, "danger", "Not Found Episode")
+			return
 		}
 		data.EncryptEpisode(&db, &episode)
 	}
@@ -113,7 +114,7 @@ func SaveEpisodeHandler(c *gin.Context) {
 	data.ShowUpdateDate(&db, episode.ShowID)
 	// Set Status BotVideo to Updated
 	data.SetBotVideoUpdated(&db, episode.Video)
-	
+
 	DeleteCached(episode.ShowID)
 
 	message := fmt.Sprintf(`Save Episode <a href="/watch/%d/0">%d : %s</a> Successful`, episode.ID, episode.ID, episode.Title)

@@ -90,7 +90,7 @@ type Source struct {
 
 func EncryptAllEpisodes(db *gorm.DB) {
 	var episodes []Episode
-	db.Where("hash_id = ?", "").Order("id desc").Find(&episodes)
+	db.Where("hash_id = ? OR video_encrypt = ?", "", "").Order("id desc").Find(&episodes)
 	for _, episode := range episodes {
 		EncryptEpisode(db, &episode)
 	}
