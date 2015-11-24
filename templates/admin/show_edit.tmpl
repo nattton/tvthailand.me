@@ -36,30 +36,48 @@
     <div class="form-group">
       <label for="InputDescription">Description</label>
       <input type="text" name="description" value="{{ .show.Description }}" class="form-control" id="InputDescription" placeholder="Description" />
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ช่อง ">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Social Clips">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Dailymotion">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์เกาหลี">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์อินเตอร์">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์ญี่ปุ่น">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ซีรีย์จีน/ไต้หวัน">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="การ์ตูน [บรรยายไทย]">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="ละครเก่า (ช่อง )">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="รายการเก่า (ช่อง )">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Music Video">
-      <input type="button"  class="btn btn-default ButtonSelectDescription" value="Live Show">
+      <input type="button"  class="btn btn-default btn-select-description" value="ช่อง ">
+      <input type="button"  class="btn btn-default btn-select-description" value="Social Clips">
+      <input type="button"  class="btn btn-default btn-select-description" value="Dailymotion">
+      <input type="button"  class="btn btn-default btn-select-description" value="ซีรีย์เกาหลี">
+      <input type="button"  class="btn btn-default btn-select-description" value="ซีรีย์อินเตอร์">
+      <input type="button"  class="btn btn-default btn-select-description" value="ซีรีย์ญี่ปุ่น">
+      <input type="button"  class="btn btn-default btn-select-description" value="ซีรีย์จีน/ไต้หวัน">
+      <input type="button"  class="btn btn-default btn-select-description" value="การ์ตูน [บรรยายไทย]">
+      <input type="button"  class="btn btn-default btn-select-description" value="ละครเก่า (ช่อง )">
+      <input type="button"  class="btn btn-default btn-select-description" value="รายการเก่า (ช่อง )">
+      <input type="button"  class="btn btn-default btn-select-description" value="Music Video">
+      <input type="button"  class="btn btn-default btn-select-description" value="Live Show">
     </div>
     <div class="form-group">
       <label for="InputThumbnail">Thumbnail</label>
-      <input type="text" name="thumbnail" value="{{ .show.Thumbnail }}" class="form-control" id="InputThumbnail" placeholder="Thumbnail" />
+      <div class="input-group">
+        <input type="text" name="thumbnail" value="{{ .show.Thumbnail }}" class="form-control" id="InputThumbnail" placeholder="Thumbnail" />
+        <span class="input-group-btn">
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputThumbnail">.jpg</button>
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputThumbnail">.png</button>
+         </span>
+      </div>
     </div>
     <div class="form-group">
       <label for="InputCoverPhoto">Cover Photo</label>
-      <input type="text" name="cover_photo" value="{{ .show.CoverPhoto }}" class="form-control" id="InputCoverPhoto" placeholder="Cover Photo" />
+      <div class="input-group">
+        <input type="text" name="cover_photo" value="{{ .show.CoverPhoto }}" class="form-control" id="InputCoverPhoto" placeholder="Cover Photo" />
+        <span class="input-group-btn">
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputCoverPhoto">.jpg</button>
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputCoverPhoto">.png</button>
+         </span>
+      </div>
     </div>
     <div class="form-group">
       <label for="InputPoster">Poster</label>
-      <input type="text" name="poster" value="{{ .show.Poster }}" class="form-control" id="InputPoster" placeholder="Poster" />
+      <div class="input-group">
+        <input type="text" name="poster" value="{{ .show.Poster }}" class="form-control" id="InputPoster" placeholder="Poster" />
+        <span class="input-group-btn">
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputPoster">.jpg</button>
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputPoster">.png</button>
+         </span>
+      </div>
     </div>
     <div class="form-group">
       <label for="InputDetail">Detail</label>
@@ -70,7 +88,7 @@
       <div class="input-group">
         <input type="text" name="update_date" value='{{ fmtTime "2006-01-02 15:04:05" .show.UpdateDate }}' class="form-control" id="InputUpdateDate" placeholder="Update Date">
         <span class="input-group-btn">
-                <button class="btn btn-default" type="button" id="CurrentTime">Current Time</button>
+                <button class="btn btn-default" type="button" id="btn-current-time">Current Time</button>
          </span>
       </div>
     </div>
@@ -80,7 +98,13 @@
     </div>
     <div class="form-group">
       <label for="InputOtvLogo">Otv Logo</label>
-      <input type="text" name="otv_logo" value="{{ .show.OtvLogo }}" class="form-control" id="InputOtvLogo" placeholder="Otv Logo" />
+      <div class="input-group">
+        <input type="text" name="otv_logo" value="{{ .show.OtvLogo }}" class="form-control" id="InputOtvLogo" placeholder="Otv Logo" />
+        <span class="input-group-btn">
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputOtvLogo">.jpg</button>
+                <button class="btn btn-default btn-thumbnail-ext" type="button" for="InputOtvLogo">.png</button>
+         </span>
+      </div>
     </div>
     <div class="checkbox">
       <label>
@@ -141,10 +165,16 @@
 <script src="/bower_components/moment/min/moment.min.js" type="text/javascript"></script>
 <script>
 $(function(){
-  $('.ButtonSelectDescription').click(function(){
+  $('.btn-select-description').click(function(){
     $('input[name="description"]').val($(this).val());
   });
-  $('#CurrentTime').click(function(){
+  $('.btn-thumbnail-ext').click(function(){
+    var text = $(this).text()
+    var forInput = $(this).attr("for");
+    var $input = $('#' + forInput)
+    $input.val($input.val() + text);
+  });
+  $('#btn-current-time').click(function(){
 		$('#InputUpdateDate').val(moment().format('YYYY-MM-DD HH:mm:ss'));
 	});
 });
