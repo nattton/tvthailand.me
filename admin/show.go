@@ -84,7 +84,7 @@ func ShowsHandler(c *gin.Context) {
 		"q": q,
 		"shows": shows,
 	}
-	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/show")
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/show_list")
 }
 
 func ShowNewHandler(c *gin.Context) {
