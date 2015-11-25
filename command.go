@@ -50,5 +50,7 @@ func processCommand(cmd CommandParam) {
 		data.CreateEpisodeMThaiThumbnail(&db, cmd.Start)
 	case "validate_url":
 		validate.RunWebURL(&db, cmd.Start, -1, time.Second)
+	case "del_youtube_user":
+		data.DeleteYoutubeUser(&db)
 	}
 }

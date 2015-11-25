@@ -51,6 +51,16 @@ func CheckActiveUser(db *gorm.DB) {
 	}
 }
 
+func DeleteYoutubeUser(db *gorm.DB)  {
+	var users []YoutubeUser
+	db.Unscoped().Where("deleted_at > ?", "0000-00-00 00:00:00").Find(&users)
+	for _, user := range users {
+		fmt.Println(user)
+		db.Where("channel_id = ?", user.ChannelID).Delete(&BotVideo{})
+		db.Unscoped().Delete(&user)
+	}
+}
+
 func BotEnabledUsers(db *gorm.DB) (users []YoutubeUser, err error) {
 	err = db.Where("bot_enabled = ?", true).Find(&users).Error
 	return
