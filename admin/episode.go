@@ -43,9 +43,10 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	if episodeID == 0 {
 		data.EncryptAllEpisodes(&db)
 	} else {
-		episode, err := data.GetEpisode(&db, episodeID)
+		var episode data.Episode
+		err := db.First(&episode, episodeID).Error
 		if err != nil {
-			printFlash(c.Writer, "danger", "Not Found Episode")
+			printFlash(c.Writer, "danger", err.Error())
 			return
 		}
 		data.EncryptEpisode(&db, &episode)
