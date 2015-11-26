@@ -1,9 +1,10 @@
 {{ define "content" }}
+{{ $s3url := "https://s3-ap-southeast-1.amazonaws.com/tvthailand-apps"}}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
   <h1 class="page-header">iOS App Store</h1>
   <div class="row placeholders">
     <div class="col-xs-12 col-sm-3 placeholder">
-      <a href="https://itunes.apple.com/th/app/tv-thailand/id458429827" target="_tab"><img class="cm-img" src="http://thumbnail.instardara.com/images/app_store.png" width="250"></a>
+      <a href="https://itunes.apple.com/th/app/tv-thailand/id458429827" target="_tab"><img class="cm-img" src="{{ $s3url }}/static/images/app_store.png" width="250"></a>
     </div>
     <div class="clearfix visible-xs-block"></div>
   </div>
@@ -11,15 +12,22 @@
   <h1 class="page-header">Windows 8, 10 &amp; Windows Phone Store</h1>
   <div class="row placeholders">
     <div class="col-xs-12 col-sm-3 placeholder">
-      <a href="https://www.microsoft.com/en-us/store/apps/tv-thailand/9nblgggz3msx" target="_tab"><img class="cm-img" src="http://thumbnail.instardara.com/images/windows_store.png" width="250"></a>
+      <a href="https://www.microsoft.com/en-us/store/apps/tv-thailand/9nblgggz3msx" target="_tab"><img class="cm-img" src="{{ $s3url }}/static/images/windows_store.png" width="250"></a>
     </div>
     <div class="col-xs-12 col-sm-3 placeholder">
-      <a href="http://www.windowsphone.com/en-us/store/app/tv-thailand/b407ffa2-5c80-4802-a93f-467eafb6402c" target="_tab"><img class="cm-img" src="http://thumbnail.instardara.com/images/windowsphone_store.jpg" width="250"></a>
+      <a href="http://www.windowsphone.com/en-us/store/app/tv-thailand/b407ffa2-5c80-4802-a93f-467eafb6402c" target="_tab"><img class="cm-img" src="{{ $s3url }}/static/images/windowsphone_store.jpg" width="250"></a>
     </div>
     <div class="clearfix visible-xs-block"></div>
   </div>
 
   <h1 class="page-header">Android Download</h1>
+  <div class="row placeholders">
+    <div class="col-xs-12 col-sm-3 placeholder">
+      <a href="{{ $s3url }}/apk/tvthailandplus-lastest.apk" target="_tab"><img class="cm-img" src="{{ $s3url }}/static/images/apk_download.png" width="250" alt="Android APK Download"></a>
+    </div>
+    <div class="clearfix visible-xs-block"></div>
+  </div>
+  
   <div class="tumblr-post" data-href="https://embed.tumblr.com/embed/post/beh5g0syyMqJmMglgSSlSA/131153973257" data-did="78f31a0ed88b131fac7e6b02c9bc7ba59be695bd"><a href="http://tvthailand.tumblr.com/post/131153973257/install-tv-thailand-apk">http://tvthailand.tumblr.com/post/131153973257/install-tv-thailand-apk</a></div><script async src="https://secure.assets.tumblr.com/post.js"></script>
 
 </div>
