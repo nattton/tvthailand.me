@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -81,8 +80,12 @@ func ShowsHandler(c *gin.Context) {
 	}
 
 	renderData := map[string]interface{}{
-		"q": q,
+		"q":     q,
 		"shows": shows,
+	}
+	flash, exist := c.Get("flash")
+	if exist {
+		renderData["flash"] = flash
 	}
 	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/show_list")
 }
@@ -133,21 +136,10 @@ func ShowEditHandler(c *gin.Context) {
 }
 
 func ShowUpdateHandler(c *gin.Context) {
-	showSaveError := func(c *gin.Context, id int, err error) {
-		flash := map[string]string{"danger": strings.Replace(err.Error(), "\n", "<br/>", -1)}
-		c.Set("flash", flash)
-		if id > 0 {
-			ShowEditHandler(c)
-		} else {
-			ShowNewHandler(c)
-		}
-	}
-
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	var form showForm
 	err := c.Bind(&form)
-	log.Println(form)
 	if err != nil {
 		showSaveError(c, id, err)
 		return
@@ -208,4 +200,32 @@ func ShowUpdateHandler(c *gin.Context) {
 		"channelOptions":  data.ChannelOptions(&db, show.ChannelID),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/show_edit")
+}
+
+func ShowToggleActivateHandler(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	
+	db, _ := utils.OpenDB()
+	var show Show
+	err := db.First(&show, id).Error
+	if err != nil {
+		showSaveError(c, show.ID, err)
+		return
+	}
+	
+	show.IsActive = !show.IsActive
+	db.Save(&show)
+	flash := map[string]string{"info": "Update Successful"}
+	c.Set("flash", flash)
+	ShowsHandler(c)
+}
+
+func showSaveError(c *gin.Context, id int, err error) {
+	flash := map[string]string{"danger": strings.Replace(err.Error(), "\n", "<br/>", -1)}
+	c.Set("flash", flash)
+	if id > 0 {
+		ShowEditHandler(c)
+	} else {
+		ShowNewHandler(c)
+	}
 }
