@@ -1,12 +1,27 @@
 {{ define "content" }}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
-  <div class="pull-right">
-  <a href="/admin/shows/new" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</a>
-  {{ if .show.ID }}
-  <a href="/show/{{ .show.ID }}" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>
-  {{ end }}
+  <div class="row">
+    <h1 class="page-header">Shows</h1>
+    <form action="/admin/shows" method="get">
+      <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search for..." value="{{ .q }}"/>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit">Search</button>
+        </span>
+      </div>
+      <!-- /input-group -->
+    </form>
   </div>
+ 
   <h1 class="page-header">{{ if .show.ID }}Edit {{ .show.ID }} : {{ .show.Title }}{{ else }}New{{ end }}</h1>
+  <div class="row">
+    <div class="pull-right">
+    <a href="/admin/shows/new" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</a>
+    {{ if .show.ID }}
+    <a href="/show/{{ .show.ID }}" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>
+    {{ end }}
+    </div>
+  </div>
   {{ if .show.ID }}
   <form method="POST" action="/admin/show/{{ .show.ID }}/edit">
   {{ else }}
