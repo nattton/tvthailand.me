@@ -35,7 +35,7 @@ func GetEpisodeHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/index")
 }
 
-// EncryptEpisodeHandler GET /encrypt_episode/:episodeID
+// EncryptEpisodeHandler GET /encrypt_episode/:episodeID?show_id={show_id}
 func EncryptEpisodeHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
@@ -51,6 +51,12 @@ func EncryptEpisodeHandler(c *gin.Context) {
 		}
 		data.EncryptEpisode(&db, &episode)
 	}
+
+	showID, err := strconv.Atoi(c.Query("show_id"))
+	if err == nil {
+		DeleteCached(showID)
+	}
+
 	flash := map[string]string{
 		"info": "Encrypt Successfully",
 	}
