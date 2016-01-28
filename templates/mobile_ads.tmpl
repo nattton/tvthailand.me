@@ -1,11 +1,7 @@
 {{ define "mobile_ads" }}
 <div class="row ads-section">
-    
 {{ if .isMobile }}
-
-{{ end }}
-
-<script>
+    <script>
       window.fbAsyncInit = function() {
         FB.Event.subscribe(
           'ad.loaded',
@@ -29,6 +25,6 @@
       }(document, 'script', 'facebook-jssdk'));
     </script>
     <fb:ad placementid="202355306578303_599501943530302" format="300x250" testmode="false"></fb:ad>
+{{ end }}
 </div>
-
 {{ end }}
