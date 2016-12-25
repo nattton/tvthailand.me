@@ -72,7 +72,7 @@ func ShowsHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	var shows []Show
-	q := c.Query("q")
+	q := strings.TrimSpace(c.Query("q"))
 	if q != "" {
 		db.Where("title LIKE ?", "%"+q+"%").Order("title asc").Limit(20).Find(&shows)
 	} else {
@@ -204,7 +204,7 @@ func ShowUpdateHandler(c *gin.Context) {
 
 func ShowToggleActivateHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	
+
 	db, _ := utils.OpenDB()
 	var show Show
 	err := db.First(&show, id).Error
@@ -212,7 +212,7 @@ func ShowToggleActivateHandler(c *gin.Context) {
 		showSaveError(c, show.ID, err)
 		return
 	}
-	
+
 	show.IsActive = !show.IsActive
 	db.Save(&show)
 	flash := map[string]string{"info": "Update Successful"}
