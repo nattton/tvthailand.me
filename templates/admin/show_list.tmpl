@@ -28,7 +28,7 @@
     <tbody>
       {{ range $index, $show := .shows }}
       <tr>
-        <th scope="row">{{ add $index 1 }}</th>
+        <th scope="row">{{ $show.ID }}</th>
         <td>{{ $show.Title }}</td>
         <td>
             {{ if $show.IsOtv }}

@@ -74,7 +74,7 @@ func ShowsHandler(c *gin.Context) {
 	var shows []Show
 	q := strings.TrimSpace(c.Query("q"))
 	if q != "" {
-		db.Where("title LIKE ?", "%"+q+"%").Order("title asc").Limit(20).Find(&shows)
+		db.Where("id = ? OR title LIKE ?", q, "%"+q+"%").Order("title asc").Limit(20).Find(&shows)
 	} else {
 		db.Order("id desc").Limit(20).Find(&shows)
 	}
