@@ -5,8 +5,8 @@ var ShowItem = React.createClass({
         <div className="thumbnail">
         <a href={'/show/' + this.props.data.id + '/' + this.props.data.title}>
         <img src={this.props.data.thumbnail} className="img-responsive" />
-        </a>
         <div className="caption"><h4>{this.props.data.title}</h4></div>
+        </a>
         </div>
       </div>
     );

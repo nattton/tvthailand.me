@@ -9,15 +9,15 @@ var ShowItem = React.createClass({
         React.createElement(
           "a",
           { href: '/show/' + this.props.data.id + '/' + this.props.data.title },
-          React.createElement("img", { src: this.props.data.thumbnail, className: "img-responsive" })
-        ),
-        React.createElement(
-          "div",
-          { className: "caption" },
+          React.createElement("img", { src: this.props.data.thumbnail, className: "img-responsive" }),
           React.createElement(
-            "h4",
-            null,
-            this.props.data.title
+            "div",
+            { className: "caption" },
+            React.createElement(
+              "h4",
+              null,
+              this.props.data.title
+            )
           )
         )
       )
