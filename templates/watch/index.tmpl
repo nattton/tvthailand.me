@@ -91,8 +91,9 @@
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      var player;
       function onYouTubeIframeAPIReady() {
-        var player = new YT.Player('player', {
+        player = new YT.Player('player', {
           height: '390',
           width: '640',
           videoId: {{ .playlistItem.VideoID }},
@@ -119,6 +120,9 @@
           event.target.playVideo();
           done = true;
         }
+      }
+      function stopVideo() {
+        player.stopVideo();
       }
     </script>
     {{ end }}

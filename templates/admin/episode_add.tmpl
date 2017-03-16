@@ -1,0 +1,374 @@
+{{ define "content" }}
+<div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+  <h1 class="page-header">Add Episode</h1>
+  <div class="row">
+
+
+
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Bookmark TV</title>
+    <style type="text/css">
+    .tb_program_latest, .tb_program_latest td
+    {
+    	border: 1px solid #999;
+
+    }
+    </style>
+
+    <link rel="stylesheet" href="chosen/chosen.css" />
+
+    <script src="js/jquery-1.6.2.min.js" type="text/javascript" ></script>
+    <script src="chosen/chosen.jquery.js" type="text/javascript"></script>
+    <script type="text/javascript"> $(".chzn-select").chosen(); $(".chzn-select-deselect").chosen({allow_single_deselect:true}); </script>
+    <script type="text/javascript">
+    	function zeroPad(num, places) {
+    		var zero = places - num.toString().length + 1;
+    		return Array(+(zero > 0 && zero)).join("0") + num;
+    	}
+
+    	function dateOutput(d) {
+    		return d.getFullYear() + "-" + zeroPad(d.getMonth()+1, 2) + "-" + zeroPad(d.getDate(), 2)
+    	}
+
+    $(function(){
+
+    	$('#btnShowSQL').click(function(){
+    		$('#frmBook').attr('action','http://tv-cms.makathon.com/bookmarkencrypt.php');
+    		$('#frmBook').submit();
+    		return false;
+    	});
+
+    	$('form').submit(function(){
+    		$(':submit').attr("disabled", "disabled");
+    	});
+
+    	$('.fill_part').click(function(){
+    		var part = $(this).val();
+    		$('#part_total').val(part);
+    	});
+    	$('.fill_epname').click(function(){
+    		$inputEpname = $('#programlist_epname');
+    		var epname = $(this).val();
+    		if ($inputEpname.val().length > 0) {
+    			$inputEpname.val($inputEpname.val() + ' - ')
+    		}
+    		$inputEpname.val($inputEpname.val() + epname);
+
+    	});
+
+    	$('#btn_add_date').click(function(){
+    		var $inputDate = $('#programlist_date');
+    		var dsplit = $inputDate.val().split("-");
+    		console.log(dsplit[0]);
+    		var d = new Date(dsplit[0], parseInt(dsplit[1]) - 1, dsplit[2], 0, 0, 0, 0);
+    		d.setDate(d.getDate() + 1);
+    		$inputDate.val(dateOutput(d));
+    	});
+    	$('#btn_add7_date').click(function(){
+    		var $inputDate = $('#programlist_date');
+    		var dsplit = $inputDate.val().split("-");
+    		console.log(dsplit[0]);
+    		var d = new Date(dsplit[0], parseInt(dsplit[1]) - 1, dsplit[2], 0, 0, 0, 0);
+    		d.setDate(d.getDate() + 7);
+    		$inputDate.val(dateOutput(d));
+    	});
+    	$('#btn_subtract_date').click(function(){
+    		var $inputDate = $('#programlist_date');
+    		var dsplit = $inputDate.val().split("-");
+    		var d = new Date(dsplit[0], parseInt(dsplit[1]) - 1 , dsplit[2], 0, 0, 0, 0);
+    		d.setDate(d.getDate() - 1);
+    		$inputDate.val(dateOutput(d));
+    	});
+    	$('#btn_cutname').click(function(){
+    		$inputEpname = $('#programlist_epname');
+    		var epname = $inputEpname.val()
+    		var nsplit = epname.split("|");
+    		if(nsplit.length > 1) {
+    			$inputEpname.val(nsplit[1].trim())
+    		} else {
+    			var collonIndex = epname.indexOf(":");
+    			if(collonIndex > -1) {
+    				var prIndex = epname.lastIndexOf("(");
+    				if(prIndex > -1) {
+    					$inputEpname.val(epname.substring(collonIndex+1, prIndex).trim());
+    				} else {
+    					$inputEpname.val(epname.substring(collonIndex+1).trim());
+    				}
+    			}
+    		}
+    	});
+    	$('#btn_cutcartoon').click(function(){
+    		$inputEpname = $('#programlist_epname');
+    		var epname = $inputEpname.val()
+
+    		var ep = epname.substring(epname.indexOf("EP")+3, epname.indexOf("ตอน")).trim();
+    		$('#programlist_ep').val(ep);
+
+    		var epname = epname.substring(epname.indexOf("ตอน")+3, epname.lastIndexOf("P")).trim();
+    		$('#programlist_epname').val(epname);
+    	});
+
+    	var eeee = $('#programlist_epname').val().replace(/\"/g, '\\"').replace(/\'/g, "\\'");
+    	console.log(eeee);
+    	$('#programlist_epname').val(eeee);
+    });
+
+    </script>
+
+    </head>
+    <body>
+    <form id="frmMain" name="frmMain" method="post" action="">
+    <p>Drag [<a
+    	href="javascript:var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='http://tv-cms.makathon.com/bookmarktv.php',l=d.location,e=encodeURIComponent,u=f+'?url='+e(l.href);a=function(){if(!w.open(u,'t','toolbar=0,resizable=1,scrollbars=1,status=1,width=900,height=700'))l.href=u;};if (/Firefox/.test(navigator.userAgent)) setTimeout(a, 0); else a();void(0);">Bookmark TV</a>] to Bookmark</p>
+    <p id="frmMain"><label for="url">URL :</label> <input type="text"
+    	name="url" id="url" value="" size="120" />
+    	<br/><input type="submit" name="extract" id="extract" value="Submit" /></p>
+    </form>
+    <table border="1"></table></br><input type="text" id="result_title" value="" size="100" /><fieldset><legend>Bookmark TV</legend>
+    <form id="frmBook" name="frmBook" method="post" action="/bookmark.php">
+    <p><label for="programlist_youtube">Youtube ID :</label> <input
+    	type="text" name="programlist_youtube" id="programlist_youtube"
+    	value="" size="120" /></p>
+
+    <div id="dvLatest">
+    	<table id="tb_program_latest" class="tb_program_latest">
+    		<tr><td>replace</td><td>id</td><td>ep</td><td>name</td><td>youtube</td><td>src_type</td><td>password</td><td>user</td><td>date</td><td>views</td><td>count</td><td>banned</td><td>del</td></tr>
+    	</table>
+    	<input id="next-programlist" type="button" value="Next" />
+    </div>
+
+    <p><label for="program_id">Program ID :</label>
+
+    <script type="text/javascript">
+
+    $(function(){
+    	$.getJSON('http://tv-cms.makathon.com/api/getActiveProgram?callback=?', function(data) {
+    	  var items = [];
+    	  var pr_title = "";
+    	  $.each(data, function(key, val) {
+    	    	items.push('<option  class="program_id" value="' + val.id + '" txt="'+ val.title + ' => '+ val.id +'"  val="' + val.id + '">' + val.title + ' => '+ val.id + '</option>');
+    	  });
+    	  $('#txt_program_id').remove();
+    	  $('<select/>', {
+    	    'name': 'program_id',
+    	    'id': 'program_id',
+    	    'data-placeholder' : 'Choose a Program...',
+    	    'class': 'chzn-select',
+    	    'style': 'width:350px;',
+    	    'tabindex': '2',
+    	    html: items.join('')
+    	  }).appendTo('#span_program_id');
+
+    	if (1 <= $('.program_id[txt^="' + pr_title + '"]').length) {
+    		$('.program_id[txt^="' + pr_title + '"]').attr('selected','selected');
+    	}
+    	else {
+
+
+    		var program_title = '';
+
+    		var matchTitle = "";
+    		var matchLength = 0;
+    		$.each(data, function(key, val) {
+    			var tempMatchTitle = program_title.match(val.title.toLowerCase());
+    			if (tempMatchTitle != null) {
+    				if(tempMatchTitle[0].length > matchLength) {
+    					matchTitle = val.title;
+    					matchLength = tempMatchTitle[0].length;
+    				}
+    			}
+    		});
+
+    		$('.program_id[txt^="' + matchTitle + '"]').attr('selected','selected');
+
+
+
+    			}
+    	$(".chzn-select").chosen();
+    	loadProgramLatest();
+    	});
+
+    	$('#btnLoadProgramlist').click(function(){
+    		loadProgramLatest();
+    		return false;
+    	});
+
+    	$('#next-programlist').click(ajaxProgramlist);
+
+    	$('#btn_clear_epname').click(function(){
+    		$('#programlist_epname').val('');
+    		return false;
+    	});
+
+    	$('#program_id').live('change', function(){
+    		loadProgramLatest();
+    	});
+
+    	$('.edit_ep').live('click', function(){
+    		$('#programlist_ep').val($(this).text());
+    	});
+    	$('.edit_epname').live('click', function(){
+    		$('#programlist_epname').val($(this).text());
+    	});
+    	$('.edit_user').live('click', function(){
+    		$('#programlist_user').val($(this).text());
+    	});
+    	$('.edit_date').live('click', function(){
+    		$('#programlist_date').val($(this).text());
+    	});
+    	$('.edit_youtube').live('click', function(){
+    		var edit_youtube = $(this).text();
+    		var $youtube = $('#programlist_youtube');
+    		$youtube.val(edit_youtube + ',' + $youtube.val());
+    	});
+
+    });
+
+
+    function ajaxProgramlist()
+    {
+    	$.getJSON('http://tv-cms.makathon.com/api/getProgramlist/' + $('#program_id').val() +'/' + $('.programlist_item').length +'/6?callback=?', function(data) {
+    		  var items = [];
+    		  $.each(data, function(key, val) {
+    		  		var src_type;
+    		  		if (val.src_type == 0) {
+    		  			src_type = 'Youtube';
+    		  		}
+    		  		else if (val.src_type == 1) {
+    		  			src_type = 'DailyMotion';
+    		  		}
+    		  		else if (val.src_type == 2) {
+    		  			src_type = 'MThai';
+    		  		}
+    		  		else if (val.src_type == 11) {
+    		  			src_type = 'URL';
+    		  		}
+    		  		else if (val.src_type == 12) {
+    		  			src_type = 'URL Video';
+    		  		}
+    		  		else if (val.src_type == 13) {
+    		  			src_type = 'MThai ID';
+    		  		}
+    		  		else if (val.src_type == 14) {
+    		  			src_type = 'MThai Locked';
+    		  		}
+    		  		else if (val.src_type == 15) {
+    		  			src_type = 'MThai Password';
+    		  		}
+    		  		else
+    		  		{
+    		  			src_type = val.src_type;
+    		  		}
+
+    			    items.push('<tr class="programlist_item"><td align="center"><input type="checkbox" name="replace_ep_id[]" value="' + val.id + '"></td><td><a href="http://tv.makathon.com/view/viewProgramlist/' + val.id + '" target="_blank">' + val.id + '</a></td><td><a href="#" class="edit_ep">' + val.ep + '</a></td><td><a href="#" class="edit_epname">' + val.title + '</a></td><td><a href="#" class="edit_youtube">' + val.video + '</a></td><td>' + src_type + '</td><td>' + val.password + '</td><td><a href="#" class="edit_user">' + val.user + '</a></td><td><a href="#" class="edit_date">' + val.date + '</a></td><td>' + val.view_count + '</td><td>' + val.video.split(',').length + '</td><td>' + val.banned + '</td><td><a href="http://tv-cms.makathon.com/bookmarktv/delProgramlist/' + val.id +'"  target="_blank">X</a></td></tr>');
+
+
+
+    			  });
+    		   $('#tb_program_latest').append(items.join(''));
+
+    		});
+    }
+
+    function loadProgramLatest() {
+    	$('.programlist_item').remove();
+    	ajaxProgramlist();
+    }
+    </script>
+    <span id="span_program_id"><input type="text" name="program_id" id="txt_program_id" value="" size="5" /></span>
+    <a id="btnLoadProgramlist" href="#">ดูล่าสุด</a>
+    </p>
+    <p><label for="programlist_ep">EP :</label> <input type="text"
+    	name="programlist_ep" id="programlist_ep" size="20" autocomplete="off"
+    	value='' />
+
+    &nbsp;&nbsp;&nbsp;
+    <label for="programlist_date">Date :</label> <input type="text"
+    	name="programlist_date" id="programlist_date" size="20"
+    	value="2015-11-18" />
+    		<input type="button" id="btn_subtract_date" value="-" />
+    		<input type="button" id="btn_add_date" value="+" />
+    		<input type="button" id="btn_add7_date" value="+7" />
+
+
+    <label for="part_total">Part Total :</label> <input type="text"
+    	name="part_total" id="part_total" size="2"
+    	value="" />
+    	<input type="button" class="fill_part" value="4" />
+    	<input type="button" class="fill_part" value="5" />
+    	<input type="button" class="fill_part" value="9" />
+    </p>
+
+
+    <p><label for="programlist_epname">EP Name :</label>
+    <input type="text"
+    	name="programlist_epname"
+    	id="programlist_epname"
+    	size="120" value="" size="50" /></p>
+    <p>
+    	<input type="button" id="btn_clear_epname" value="Clear" />
+    	<input type="button" id="btn_cutname" value="Cut Name" />
+    	<input type="button" id="btn_cutcartoon" value="Cut Cartoon" />
+    </p>
+    <p><label>Src Type :</label>
+    <input type="radio" name="programlist_src_type" value="0" checked="checked"> Youtube
+    <input type="radio" name="programlist_src_type" value="1" > DailyMotion
+    <input type="radio" name="programlist_src_type" value="14" > MThai Locked
+    <input type="radio" name="programlist_src_type" value="15" > MThai Password
+    <input type="radio" name="programlist_src_type" value="3" > Viemo
+    <input type="radio" name="programlist_src_type" value="11" > URL
+    <input type="radio" name="programlist_src_type" value="12" > URL (mp4, m3u8)
+    </p>
+    <p>
+    	<label for="programlist_password">Password :</label>
+    	<input type="text" name="programlist_password" id="programlist_password" size="20" value="" />
+    </p>
+    <p>
+    	<label for="programlist_user">User :</label>
+    	<input type="text" name="programlist_user" id="programlist_user" size="20" value="" />
+    </p>
+
+    <input type="button" class="fill_epname" value="ยังไม่ครบ" />
+    <input type="button" class="fill_epname" value="Youtube" />
+    <input type="button" class="fill_epname" value="DailyMotion" />
+    <input type="button" class="fill_epname" value="ตอนจบ" />
+    <input type="button" class="fill_epname" value="(แก้ไข)" />
+    <input type="button" class="fill_epname" value="(Official)" />
+    <input type="button" class="fill_epname" value="(พากษ์ไทย)" />
+    <input type="button" class="fill_epname" value="(บรรยายไทย)" />
+    <input type="button" class="fill_epname" value="[TV3 official]" />
+    <input type="button" class="fill_epname" value="Full" />
+
+    <br />
+
+    <input type="button" class="fill_epname" value="(สำรอง)" />
+    <input type="button" class="fill_epname" value="(สำรอง 2)" />
+    <input type="button" class="fill_epname" value="(สำรอง 3)" />
+    <input type="button" class="fill_epname" value="(สำรอง 4)" />
+    <input type="button" class="fill_epname" value="(สำรอง 5)" />
+
+    <!--a id="btnShowSQL" href="#" >Show SQL</a-->
+    <a href="http://tv-cms.makathon.com/api/shortAllUrl/" title="Short Url" target="_blank">Short Url</a>
+    <a href="http://tv.makathon.com/api/clearCache/" title="Clear Cache" target="_blank">Clear Cache</a>
+
+    <p><input type="submit" name="savebookmark" id="savebookmark" value="Submit" /></p>
+    <input type="hidden" name="method" value="insertProgramlist" /></form>
+    </fieldset>
+
+
+    	</body>
+    </html>
+
+
+
+
+
+  </div>
+</div>
+{{ end }}
+
+{{ define "script" }}
+{{ end }}
