@@ -1,0 +1,15 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Launch tvthailand.me",
+			"type": "go",
+			"request": "launch",
+			"program": "server.go",
+			"stopOnEntry": false,
+			"env": {},
+			"args": [],
+			"cwd": "."
+		}
+	]
+}

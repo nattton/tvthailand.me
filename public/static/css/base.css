@@ -72,21 +72,28 @@ footer {
   padding-bottom: 10px;
 }
 
-.thumbnail {
+.show-thumbnail {
   height:100%;
   max-height: 186px;
 }
 
-.thumbnail img {
+.show-thumbnail img {
   max-width:238px;
   max-height:134px;
-  width: 100%
+  width: 100%;
 }
 
-.thumbnail .caption {
+.caption {
     padding: 4px;
+    height: 60px;
     text-align:center;
-    height:58px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 16px;     /* fallback */
+    max-height: 60px;      /* fallback */
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
 }
 
 .title {
@@ -149,4 +156,9 @@ height: 195px;
 
 .otv-iframe {
   padding-top: 20px;
+}
+
+.banner-728 {
+  width: 728px;
+  border: 1px solid #DDD;
 }
