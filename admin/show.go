@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 type Show struct {
@@ -108,8 +108,8 @@ func ShowNewHandler(c *gin.Context) {
 	}
 	renderData := map[string]interface{}{
 		"show":            form,
-		"categoryOptions": data.CategoryOptions(&db, form.CategoryID),
-		"channelOptions":  data.ChannelOptions(&db, form.ChannelID),
+		"categoryOptions": data.CategoryOptions(db, form.CategoryID),
+		"channelOptions":  data.ChannelOptions(db, form.ChannelID),
 	}
 	flash, exist := c.Get("flash")
 	if exist {
@@ -125,8 +125,8 @@ func ShowEditHandler(c *gin.Context) {
 	db.First(&show, c.Param("id"))
 	renderData := map[string]interface{}{
 		"show":            show,
-		"categoryOptions": data.CategoryOptions(&db, show.CategoryID),
-		"channelOptions":  data.ChannelOptions(&db, show.ChannelID),
+		"categoryOptions": data.CategoryOptions(db, show.CategoryID),
+		"channelOptions":  data.ChannelOptions(db, show.ChannelID),
 	}
 	flash, exist := c.Get("flash")
 	if exist {
@@ -196,8 +196,8 @@ func ShowUpdateHandler(c *gin.Context) {
 	renderData := map[string]interface{}{
 		"flash":           flash,
 		"show":            show,
-		"categoryOptions": data.CategoryOptions(&db, show.CategoryID),
-		"channelOptions":  data.ChannelOptions(&db, show.ChannelID),
+		"categoryOptions": data.CategoryOptions(db, show.CategoryID),
+		"channelOptions":  data.ChannelOptions(db, show.ChannelID),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/show_edit")
 }

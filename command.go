@@ -30,27 +30,27 @@ func processCommand(cmd CommandParam) {
 	switch cmd.Command {
 	case "runbotch":
 		if commandParam.Channel != "" {
-			data.RunBotChannel(&db, commandParam.Channel, commandParam.Query)
+			data.RunBotChannel(db, commandParam.Channel, commandParam.Query)
 		} else {
-			data.RunBotChannels(&db)
+			data.RunBotChannels(db)
 		}
 	case "runbotpl":
 		if commandParam.Playlist != "" {
-			data.RunBotPlaylist(&db, commandParam.Playlist)
+			data.RunBotPlaylist(db, commandParam.Playlist)
 		} else {
-			data.RunBotPlaylists(&db)
+			data.RunBotPlaylists(db)
 		}
 	case "updateuser":
-		data.UpdateUserChannel(&db)
+		data.UpdateUserChannel(db)
 	case "checkuser":
-		data.CheckActiveUser(&db)
+		data.CheckActiveUser(db)
 	case "migrate_botvideo":
-		data.MigrateUsernameToChannelID(&db)
+		data.MigrateUsernameToChannelID(db)
 	case "mthaithumbnail":
-		data.CreateEpisodeMThaiThumbnail(&db, cmd.Start)
+		data.CreateEpisodeMThaiThumbnail(db, cmd.Start)
 	case "validate_url":
-		validate.RunWebURL(&db, cmd.Start, -1, time.Second)
+		validate.RunWebURL(db, cmd.Start, -1, time.Second)
 	case "del_youtube_user":
-		data.DeleteYoutubeUser(&db)
+		data.DeleteYoutubeUser(db)
 	}
 }

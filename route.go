@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/data"
-	"github.com/code-mobi/tvthailand.me/utils"
 	"html"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 // flashType : danger, warning, info
@@ -30,11 +31,11 @@ func indexHandler(c *gin.Context) {
 	recents := make(chan []data.Show)
 	populars := make(chan []data.Show)
 	go func() {
-		shows, _ := data.ShowsRecently(&db, 0)
+		shows, _ := data.ShowsRecently(db, 0)
 		recents <- shows
 	}()
 	go func() {
-		shows, _ := data.ShowsPopular(&db, 0)
+		shows, _ := data.ShowsPopular(db, 0)
 		populars <- shows
 	}()
 	renderData := map[string]interface{}{
@@ -65,7 +66,7 @@ func goNotFound(c *gin.Context) {
 func recentlyHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	shows, _ := data.ShowsRecently(&db, 0)
+	shows, _ := data.ShowsRecently(db, 0)
 	renderData := map[string]interface{}{
 		"Title":       "รายการล่าสุด",
 		"Description": "รายการล่าสุด",
@@ -80,7 +81,7 @@ func recentlyHandler(c *gin.Context) {
 func popularHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	shows, _ := data.ShowsPopular(&db, 0)
+	shows, _ := data.ShowsPopular(db, 0)
 	renderData := map[string]interface{}{
 		"Title":       "Popular",
 		"Description": "รายการยอดนิยม",
@@ -95,7 +96,7 @@ func popularHandler(c *gin.Context) {
 func categoriesHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	categories, _ := data.CategoriesActive(&db)
+	categories, _ := data.CategoriesActive(db)
 	renderData := map[string]interface{}{
 		"Title":       "หมวด",
 		"Description": "หมวดทั้งหมด",
@@ -110,12 +111,12 @@ func categoryShowHandler(c *gin.Context) {
 	titlize := c.Param("titlize")
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	category, err := data.CategoryTitleze(&db, titlize)
+	category, err := data.CategoryTitleze(db, titlize)
 	if err != nil {
 		goNotFound(c)
 		return
 	}
-	shows, _ := data.ShowsCategory(&db, category.ID, 0)
+	shows, _ := data.ShowsCategory(db, category.ID, 0)
 
 	renderData := map[string]interface{}{
 		"Title":       category.Title,
@@ -133,7 +134,7 @@ func categoryShowHandler(c *gin.Context) {
 func channelsHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	channels, _ := data.ChannelsActive(&db)
+	channels, _ := data.ChannelsActive(db)
 	renderData := map[string]interface{}{
 		"Title":       "ช่องทีวี / Live",
 		"Description": "ดูทีวี / Live / รายการสด",
@@ -148,8 +149,8 @@ func channelShowHandler(c *gin.Context) {
 	id := c.Param("id")
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	channel, _ := data.GetChannel(&db, id)
-	shows, _ := data.ShowsChannel(&db, channel.ID, 0)
+	channel, _ := data.GetChannel(db, id)
+	shows, _ := data.ShowsChannel(db, channel.ID, 0)
 	renderData := map[string]interface{}{
 		"Title":       channel.Title,
 		"Description": channel.Description,
@@ -177,11 +178,11 @@ func searchShowHandler(c *gin.Context) {
 		renderData["Title"] = header
 		renderData["header"] = header
 		go func() {
-			shows, _ := data.ShowsSearch(&db, keyword)
+			shows, _ := data.ShowsSearch(db, keyword)
 			chShows <- shows
 		}()
 		go func() {
-			episodes, _ := data.GetEpisodesBySearch(&db, keyword)
+			episodes, _ := data.GetEpisodesBySearch(db, keyword)
 			chEpisodes <- episodes
 		}()
 
@@ -198,7 +199,7 @@ func showHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
-	show, err := data.GetShow(&db, showID)
+	show, err := data.GetShow(db, showID)
 	if err != nil {
 		log.Println(err)
 		goNotFound(c)
@@ -215,7 +216,7 @@ func showTvHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
-	show, _ := data.GetShow(&db, showID)
+	show, _ := data.GetShow(db, showID)
 	renderShow(c, show)
 }
 
@@ -223,7 +224,7 @@ func showOtvHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	otvID, _ := strconv.Atoi(c.Param("id"))
-	show, _ := data.ShowWithOtv(&db, otvID)
+	show, _ := data.ShowWithOtv(db, otvID)
 	if show.ID == 0 {
 		goNotFound(c)
 		return
@@ -239,7 +240,7 @@ func renderShow(c *gin.Context, show data.Show) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
-	episodes, pageInfo, _ := data.EpisodesAndPageInfo(&db, show.ID, int32(page))
+	episodes, pageInfo, _ := data.EpisodesAndPageInfo(db, show.ID, int32(page))
 	title := fmt.Sprintf("ดู %s ย้อนหลัง", show.Title)
 	description := fmt.Sprintf("%s | %s", show.Title, show.Description)
 	renderData := map[string]interface{}{
@@ -293,12 +294,12 @@ func watchHandler(c *gin.Context) {
 	defer db.Close()
 	watchID, _ := strconv.Atoi(c.Param("watchID"))
 	playIndex, _ := strconv.Atoi(c.Param("playIndex"))
-	episode, err := data.GetEpisode(&db, watchID)
+	episode, err := data.GetEpisode(db, watchID)
 	if err != nil {
 		goNotFound(c)
 		return
 	}
-	show, err := data.GetShow(&db, episode.ShowID)
+	show, err := data.GetShow(db, episode.ShowID)
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
 		playIndex = maxIndex
 	}
@@ -317,7 +318,7 @@ func watchHandler(c *gin.Context) {
 		}
 	}
 
-	episodes, _ := data.GetEpisodes(&db, show.ID, 0)
+	episodes, _ := data.GetEpisodes(db, show.ID, 0)
 	title := fmt.Sprintf("%s | %s", show.Title, episode.Title)
 	renderData := map[string]interface{}{
 		"Title":        title,
@@ -367,7 +368,7 @@ func watchOtvHandler(c *gin.Context) {
 	partItem.IframeHTML = r.Replace(partItem.IframeHTML)
 
 	otvID, _ := strconv.Atoi(otvEpisodePlay.SeasonDetail.ContentSeasonID)
-	show, _ := data.ShowWithOtv(&db, otvID)
+	show, _ := data.ShowWithOtv(db, otvID)
 	page, _ := strconv.Atoi(c.Query("page"))
 	var offset int
 	if page <= 1 {

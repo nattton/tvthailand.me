@@ -8,9 +8,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
 	"github.com/code-mobi/tvthailand.me/utils"
+	"github.com/jinzhu/gorm"
+	"gopkg.in/redis.v3"
 )
 
 type Category struct {

@@ -1,18 +1,19 @@
 package main
 
 import (
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/data"
-	"github.com/code-mobi/tvthailand.me/utils"
 	"net/http"
 	"strconv"
+
+	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func AjaxRecentlyHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
-	shows, err := data.ShowsRecently(&db, offset)
+	shows, err := data.ShowsRecently(db, offset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -25,7 +26,7 @@ func AjaxPopularHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
-	shows, err := data.ShowsPopular(&db, offset)
+	shows, err := data.ShowsPopular(db, offset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -39,7 +40,7 @@ func AjaxCategoryHandler(c *gin.Context) {
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	id, _ := strconv.Atoi(c.Param("id"))
-	shows, err := data.ShowsCategory(&db, id, offset)
+	shows, err := data.ShowsCategory(db, id, offset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -51,7 +52,7 @@ func AjaxCategoryHandler(c *gin.Context) {
 func AjaxChannelsHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	categories, err := data.ChannelsActive(&db)
+	categories, err := data.ChannelsActive(db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -65,7 +66,7 @@ func AjaxChannelHandler(c *gin.Context) {
 	defer db.Close()
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	id, _ := strconv.Atoi(c.Param("id"))
-	shows, err := data.ShowsChannel(&db, id, offset)
+	shows, err := data.ShowsChannel(db, id, offset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -79,7 +80,7 @@ func AjaxShowHandler(c *gin.Context) {
 	defer db.Close()
 	page, _ := strconv.Atoi(c.Query("page"))
 	showID, _ := strconv.Atoi(c.Param("show_id"))
-	episodes, pageInfo, err := data.EpisodesAndPageInfo(&db, showID, int32(page))
+	episodes, pageInfo, err := data.EpisodesAndPageInfo(db, showID, int32(page))
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}

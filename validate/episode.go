@@ -1,8 +1,8 @@
 package validate
 
 import (
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/jinzhu/gorm"
 )
 
 func EpisodeWebURL(db *gorm.DB, start int, limit int) (episodes []data.Episode, err error) {

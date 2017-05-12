@@ -3,14 +3,15 @@ package data
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
-	"github.com/code-mobi/tvthailand.me/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/code-mobi/tvthailand.me/utils"
+	"github.com/facebookgo/httpcontrol"
+	"gopkg.in/redis.v3"
 )
 
 const (

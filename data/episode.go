@@ -2,11 +2,12 @@ package data
 
 import (
 	"encoding/base64"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"math"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type EpisodePage struct {

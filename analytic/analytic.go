@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/data"
 	"log"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/jinzhu/gorm"
 )
 
 const MaxConcurrency = 4

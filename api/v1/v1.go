@@ -1,17 +1,18 @@
 package v1
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
-	"net/http"
-	"strconv"
 )
 
 func CategoriesHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	categories, err := data.CategoriesActive(&db)
+	categories, err := data.CategoriesActive(db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -24,7 +25,7 @@ func RecentlyHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.ShowsRecently(&db, start)
+	shows, err := data.ShowsRecently(db, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -37,7 +38,7 @@ func PopularHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
-	shows, err := data.ShowsPopular(&db, start)
+	shows, err := data.ShowsPopular(db, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -51,7 +52,7 @@ func CategoryHandler(c *gin.Context) {
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	id, _ := strconv.Atoi(c.Param("id"))
-	shows, err := data.ShowsCategory(&db, id, start)
+	shows, err := data.ShowsCategory(db, id, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -63,7 +64,7 @@ func CategoryHandler(c *gin.Context) {
 func ChannelsHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	categories, err := data.ChannelsActive(&db)
+	categories, err := data.ChannelsActive(db)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -77,7 +78,7 @@ func ChannelHandler(c *gin.Context) {
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	id, _ := strconv.Atoi(c.Param("id"))
-	shows, err := data.ShowsChannel(&db, id, start)
+	shows, err := data.ShowsChannel(db, id, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -91,11 +92,11 @@ func ShowHandler(c *gin.Context) {
 	defer db.Close()
 	start, _ := strconv.Atoi(c.Param("start"))
 	showID, _ := strconv.Atoi(c.Param("show_id"))
-	show, err := data.GetShow(&db, showID)
+	show, err := data.GetShow(db, showID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
-	episodes, err := data.GetEpisodes(&db, show.ID, start)
+	episodes, err := data.GetEpisodes(db, show.ID, start)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -108,11 +109,11 @@ func ShowHandler(c *gin.Context) {
 func WatchHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
-	episode, err := data.GetVideoList(&db, c.Param("hashID"))
+	episode, err := data.GetVideoList(db, c.Param("hashID"))
 	if err != nil {
 		c.JSON(http.StatusNotFound, episode)
 	}
-	show, _ := data.GetShow(&db, episode.ShowID)
+	show, _ := data.GetShow(db, episode.ShowID)
 	c.JSON(200, map[string]interface{}{
 		"Show":    show,
 		"Episode": episode,

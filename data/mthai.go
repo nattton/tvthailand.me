@@ -2,11 +2,12 @@ package data
 
 import (
 	"fmt"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/PuerkitoBio/goquery"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"html"
 	"log"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/jinzhu/gorm"
 )
 
 const (

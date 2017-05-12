@@ -6,9 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/facebookgo/httpcontrol"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
+	"github.com/facebookgo/httpcontrol"
+	"github.com/jinzhu/gorm"
 )
+
 // URL check URL isValid
 func URL(url string) (bool, error) {
 	client := &http.Client{
@@ -28,7 +29,7 @@ func URL(url string) (bool, error) {
 	return true, nil
 }
 
-// RunWebURL Validate Web URL 
+// RunWebURL Validate Web URL
 func RunWebURL(db *gorm.DB, start int, limit int, delay time.Duration) {
 	episodes, _ := EpisodeWebURL(db, start, limit)
 	for _, episode := range episodes {

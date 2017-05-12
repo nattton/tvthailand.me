@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/youtube"
+	"github.com/jinzhu/gorm"
 )
 
 type YoutubeUser struct {
@@ -51,7 +51,7 @@ func CheckActiveUser(db *gorm.DB) {
 	}
 }
 
-func DeleteYoutubeUser(db *gorm.DB)  {
+func DeleteYoutubeUser(db *gorm.DB) {
 	var users []YoutubeUser
 	db.Unscoped().Where("deleted_at > ?", "0000-00-00 00:00:00").Find(&users)
 	for _, user := range users {

@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
 	"github.com/code-mobi/tvthailand.me/youtube"
+	"github.com/jinzhu/gorm"
 )
 
 type BotVideo struct {

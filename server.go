@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"os"
+	"gopkg.in/gin-gonic/gin.v1"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/admin"
 )
 

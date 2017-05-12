@@ -1,13 +1,14 @@
 package admin
 
 import (
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	"github.com/code-mobi/tvthailand.me/analytic"
-	"github.com/code-mobi/tvthailand.me/data"
-	"github.com/code-mobi/tvthailand.me/utils"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"github.com/code-mobi/tvthailand.me/analytic"
+	"github.com/code-mobi/tvthailand.me/data"
+	"github.com/code-mobi/tvthailand.me/utils"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func printFlash(writer http.ResponseWriter, flashType, message string) {
@@ -28,7 +29,7 @@ func AddEmbedMThaiHandler(c *gin.Context) {
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Request.FormValue("show_id"))
-	data.InsertMThaiEmbedVideos(&db, showID)
+	data.InsertMThaiEmbedVideos(db, showID)
 	flash := map[string]string{"info": "Insert MThai Embed Videos Successfully"}
 	utils.GenerateHTML(c.Writer, map[string]interface{}{
 		"flash": flash,
@@ -68,7 +69,7 @@ func AnalyticProcessHandler(c *gin.Context) {
 		fnPleaseChooseFile()
 		return
 	}
-	shows := analytic.UpdateView(&db, dataFile)
+	shows := analytic.UpdateView(db, dataFile)
 	flash := map[string]string{
 		"info": "Update View Count Successfully",
 	}

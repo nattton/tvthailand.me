@@ -33,5 +33,5 @@ func TestURL(t *testing.T) {
 
 func TestRunWebURL(t *testing.T) {
 	db, _ := utils.OpenDB()
-	RunWebURL(&db, 0, 5, 0)
+	RunWebURL(db, 0, 5, 0)
 }

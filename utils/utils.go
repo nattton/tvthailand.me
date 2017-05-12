@@ -8,14 +8,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
-	_ "github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/go-sql-driver/mysql"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/jinzhu/gorm"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/mssola/user_agent"
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/gopkg.in/redis.v3"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
+	"github.com/mssola/user_agent"
+	"gopkg.in/gin-gonic/gin.v1"
+	"gopkg.in/redis.v3"
 )
 
-func OpenDB() (gorm.DB, error) {
+func OpenDB() (*gorm.DB, error) {
 	db, err := gorm.Open("mysql", os.Getenv("DATABASE_DSN"))
 	if err != nil {
 		log.Fatal(err)

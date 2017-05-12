@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 const (
@@ -41,7 +41,7 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	defer db.Close()
 	episodeID, _ := strconv.Atoi(c.Param("episodeID"))
 	if episodeID == 0 {
-		data.EncryptAllEpisodes(&db)
+		data.EncryptAllEpisodes(db)
 	} else {
 		var episode data.Episode
 		err := db.First(&episode, episodeID).Error
@@ -49,7 +49,7 @@ func EncryptEpisodeHandler(c *gin.Context) {
 			printFlash(c.Writer, "danger", err.Error())
 			return
 		}
-		data.EncryptEpisode(&db, &episode)
+		data.EncryptEpisode(db, &episode)
 	}
 
 	showID, err := strconv.Atoi(c.Query("show_id"))
@@ -80,7 +80,7 @@ func SaveEpisodeHandler(c *gin.Context) {
 	log.Println(form)
 	var episode data.Episode
 	if form.ID > 0 {
-		episode, _ = data.GetEpisode(&db, form.ID)
+		episode, _ = data.GetEpisode(db, form.ID)
 	}
 
 	episode.Title = form.Title
@@ -116,11 +116,11 @@ func SaveEpisodeHandler(c *gin.Context) {
 	episode.Password = form.Password
 	episode.User = form.User
 	db.Save(&episode)
-	data.EncryptEpisode(&db, &episode)
+	data.EncryptEpisode(db, &episode)
 	// Set Show UpdateDate
-	data.ShowUpdateDate(&db, episode.ShowID)
+	data.ShowUpdateDate(db, episode.ShowID)
 	// Set Status BotVideo to Updated
-	data.SetBotVideoUpdated(&db, episode.Video)
+	data.SetBotVideoUpdated(db, episode.Video)
 
 	DeleteCached(episode.ShowID)
 

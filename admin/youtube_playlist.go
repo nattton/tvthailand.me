@@ -3,10 +3,10 @@ package admin
 import (
 	"log"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"github.com/code-mobi/tvthailand.me/youtube"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 type playlistSearchForm struct {
@@ -22,7 +22,7 @@ func YoutubePlaylistHandler(c *gin.Context) {
 	var form playlistSearchForm
 	c.Bind(&form)
 
-	playlistOptions := data.YoutubePlaylistOptions(&db, form.PlaylistID)
+	playlistOptions := data.YoutubePlaylistOptions(db, form.PlaylistID)
 	if form.MaxResults == 0 {
 		form.MaxResults = 40
 	}
