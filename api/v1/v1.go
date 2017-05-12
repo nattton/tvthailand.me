@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/code-mobi/tvthailand.me/Godeps/_workspace/src/github.com/gin-gonic/gin"
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func CategoriesHandler(c *gin.Context) {
