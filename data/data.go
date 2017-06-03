@@ -14,11 +14,11 @@ const (
 )
 
 const (
-	ThumbnailURLCategory = "http://thumbnail.instardara.com/category/"
-	ThumbnailURLChannel  = "http://thumbnail.instardara.com/channel/"
-	ThumbnailURLRadio    = "http://thumbnail.instardara.com/radio/"
-	ThumbnailURLTv       = "http://thumbnail.instardara.com/tv/"
-	ThumbnailURLPoster   = "http://thumbnail.instardara.com/poster/"
+	ThumbnailURLCategory = "https://thumbnail.tvthailand.me/category/"
+	ThumbnailURLChannel  = "https://thumbnail.tvthailand.me/channel/"
+	ThumbnailURLRadio    = "https://thumbnail.tvthailand.me/radio/"
+	ThumbnailURLTv       = "https://thumbnail.tvthailand.me/tv/"
+	ThumbnailURLPoster   = "https://thumbnail.tvthailand.me/poster/"
 )
 
 const SECRET_SALT = "Cod3M0b!"

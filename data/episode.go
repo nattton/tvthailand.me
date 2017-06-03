@@ -133,7 +133,7 @@ func CreateThumbnail(episode *Episode) {
 			episode.Thumbnail = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
 		}
 	default:
-		episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
+		episode.Thumbnail = "https://thumbnail.tvthailand.me/chrome.jpg"
 	}
 }
 
@@ -232,8 +232,8 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 			episode.IsURL = true
 		default:
 			episode.IsURL = true
-			playlist.Image = "http://thumbnail.instardara.com/chrome.jpg"
-			episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
+			playlist.Image = "https://thumbnail.tvthailand.me/chrome.jpg"
+			episode.Thumbnail = "https://thumbnail.tvthailand.me/chrome.jpg"
 			source.File = videoID
 		}
 		playlist.VideoID = videoID
