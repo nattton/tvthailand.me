@@ -14,7 +14,7 @@
       <a href="/show/{{ .ID }}/{{ urlEsc .Title }}">
       <img src="{{ .Thumbnail }}" class="img-responsive" alt="{{ .Title }}">
       </a>
-      <div class="caption"><h4>{{ .Title }}</h4></div>
+      <div class="caption">{{ .Title }}</div>
       </div>
     </div>
     <div class="clearfix visible-xs-block"></div>
@@ -34,7 +34,7 @@
     <a href="/show/{{ .ID }}/{{ urlEsc .Title }}">
       <img src="{{ .Thumbnail }}" class="img-responsive" alt="{{ .Title }}">
     </a>
-    <div class="caption"><h4>{{ .Title }}</h4></div>
+    <div class="caption">{{ .Title }}</div>
     </div>
   </div>
   <div class="clearfix visible-xs-block"></div>
@@ -51,17 +51,15 @@
 </div>
 
 <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-  <div class="sidebar-module sidebar-module-inset" style="margin-top:80px;">
-    <div class="row" style="margin-bottom:30px;">
-      <script type="text/javascript" src="//mds.nipa.co.th/f.php?aid=AID17051701"></script>
-      <!--<img class="thumbnail" src="{{ $s3url }}/static/images/ads_300x250.png" >-->
+  <div class="sidebar-module sidebar-module-inset" style="margin-top:50px;">
+  {{ range .categories }}
+    <div class="row category-home-item">
+      <a href="/category/{{ .Titleize }}">
+        <img src="{{ .Thumbnail }}" class="category-home-thumb" alt="{{ .Title }}">
+        {{ .Title }}
+      </a>
     </div>
-    <div class="row" style="margin-bottom:30px;">
-      <script type="text/javascript" src="//mds.nipa.co.th/f.php?aid=AID17051701"></script>
-    </div>
-    <div class="row" style="margin-bottom:30px;">
-      <script type="text/javascript" src="//mds.nipa.co.th/f.php?aid=AID17051701"></script>
-    </div>
+  {{ end }}
   </div>
 </div>
 {{ end }}

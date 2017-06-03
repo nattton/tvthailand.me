@@ -23,6 +23,16 @@ footer {
   height: 50px;
 }
 
+.category-home-item {
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.category-home-thumb {
+  width: 48px;
+  height: 48px;
+}
+
 .channel-section img {
   margin-left: auto;
   margin-right: auto;
@@ -84,13 +94,14 @@ footer {
 }
 
 .caption {
+    font-size: 1.1em;
     padding: 4px;
     height: 60px;
     text-align:center;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    line-height: 16px;     /* fallback */
+    line-height: 20px;     /* fallback */
     max-height: 60px;      /* fallback */
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
@@ -162,3 +173,4 @@ height: 195px;
   width: 728px;
   border: 1px solid #DDD;
 }
+

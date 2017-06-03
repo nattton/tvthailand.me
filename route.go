@@ -38,10 +38,12 @@ func indexHandler(c *gin.Context) {
 		shows, _ := data.ShowsPopular(db, 0)
 		populars <- shows
 	}()
+	categories, _ := data.CategoriesActive(db)
 	renderData := map[string]interface{}{
 		"Description":  "ดูรายการทีวี ละครย้อนหลัง",
 		"showRecents":  <-recents,
 		"showPopulars": <-populars,
+		"categories":   categories,
 		"isMobile":     utils.IsMobileNotPad(c.Request.UserAgent()),
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
