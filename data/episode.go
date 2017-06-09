@@ -214,8 +214,8 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 			playlist.Image = "https://i.ytimg.com/vi/" + videoID + "/0.jpg"
 			source.File = "https://www.youtube.com/watch?v=" + videoID
 		case 1:
-			playlist.Image = "http://www.dailymotion.com/thumbnail/video/" + videoID
-			source.File = "http://www.dailymotion.com/embed/video/" + videoID
+			playlist.Image = "https://www.dailymotion.com/thumbnail/video/" + videoID
+			source.File = "https://www.dailymotion.com/embed/video/" + videoID
 		case 14:
 			SetMThaiThumbnail(episode, &playlist, videoID)
 			if embedVideo := GetEmbedVideo(db, videoID); embedVideo.EmbedURL != "" {
