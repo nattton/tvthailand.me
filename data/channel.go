@@ -18,6 +18,7 @@ type Channel struct {
 	Title       string
 	Description string
 	Thumbnail   string
+	IframeURL   string
 	URL         string
 	HasShow     bool
 	IsOnline    bool `json:"-"`

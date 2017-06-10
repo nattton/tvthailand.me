@@ -11,9 +11,13 @@
             <h2 style="color:#000;">Live TV</h4>
             <link rel="stylesheet" href="//releases.flowplayer.org/6.0.3/skin/functional.css">
             <div class="player">
+              {{ if .channel.IframeURL }}
+              <iframe style="border:0;height:340px;overflow:hidden;width:100%" class="embed-responsive-item" src="{{ .channel.IframeURL }}" allowfullscreen="" scrolling="no"></iframe>
+              {{ else if .channel.URL }}
                <video>
                   <source type="application/x-mpegurl"  src="{{ .channel.URL }}">
                </video>
+               {{ end }}
             </div>
           </div>
         </div>
@@ -54,8 +58,12 @@
 {{ end }}
 
 {{ define "script" }}
-  {{ if .channel.URL }}
-    <script src="//releases.flowplayer.org/6.0.3/flowplayer.min.js"></script>
+  {{ if .channel.IframeURL }}
+
+  {{ else if .channel.URL }}
+    <link rel="stylesheet" href="//releases.flowplayer.org/7.0.4/skin/skin.css">
+  <script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="//releases.flowplayer.org/7.0.4/flowplayer.min.js"></script>
     <script>
     $(function () {
        $(".player").flowplayer({
