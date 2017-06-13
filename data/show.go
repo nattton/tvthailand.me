@@ -122,7 +122,7 @@ func ShowsRecently(db *gorm.DB, offset int) (shows []Show, err error) {
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
 	if err != nil || err == redis.Nil {
-		err = db.Scopes(ShowScope).Order("update_date desc").Offset(offset).Limit(20).Find(&shows).Error
+		err = db.Scopes(ShowScope).Order("update_date desc").Offset(offset).Limit(24).Find(&shows).Error
 		if err == nil {
 			for i := range shows {
 				shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail
@@ -140,7 +140,7 @@ func ShowsPopular(db *gorm.DB, offset int) (shows []Show, err error) {
 	redisClient := utils.OpenRedis()
 	result, err := redisClient.Get(cachedKey).Result()
 	if err != nil || err == redis.Nil {
-		err = db.Scopes(ShowScope).Order("view_count desc").Offset(offset).Limit(20).Find(&shows).Error
+		err = db.Scopes(ShowScope).Order("view_count desc").Offset(offset).Limit(24).Find(&shows).Error
 		if err == nil {
 			for i := range shows {
 				shows[i].Thumbnail = ThumbnailURLTv + shows[i].Thumbnail

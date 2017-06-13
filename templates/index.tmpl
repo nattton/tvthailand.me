@@ -20,13 +20,13 @@
     <div class="clearfix visible-xs-block"></div>
   {{ end }}
   </div>
+  <div class="page-more"><a href="/recently">เพิ่มเติม <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a></div>
 {{ end }}
 
 {{ template "mobile_ads" . }}
 
 {{ if .showPopulars }}
 <h1 class="page-header"><a href="/popular">Popular</a></h1>
-{{ end }}
 <div class="row placeholders">
 {{ range .showPopulars }}
   <div class="col-xs-12 col-sm-4 placeholder">
@@ -40,6 +40,8 @@
   <div class="clearfix visible-xs-block"></div>
 {{ end }}
 </div>
+<div class="page-more"><a href="/popular">เพิ่มเติม <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a></div>
+{{ end }}
 
 <div class="table-responsive">
 </div>
