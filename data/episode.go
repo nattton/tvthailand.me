@@ -16,20 +16,21 @@ type EpisodePage struct {
 }
 
 type Episode struct {
-	ID           int `gorm:"primary_key"`
-	HashID       string
-	ShowID       int
-	Ep           int
-	Title        string
-	Video        string
-	VideoEncrypt string
-	SrcType      int
-	Date         time.Time
-	ViewCount    int
-	Parts        string
-	Password     string
-	Thumbnail    string
-	User         string
+	ID               int `gorm:"primary_key"`
+	HashID           string
+	ShowID           int
+	Ep               int
+	Title            string
+	Video            string
+	VideoEncrypt     string
+	VideoPathEncrypt string
+	SrcType          int
+	Date             time.Time
+	ViewCount        int
+	Parts            string
+	Password         string
+	Thumbnail        string
+	User             string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -91,13 +92,29 @@ type Source struct {
 
 func EncryptAllEpisodes(db *gorm.DB) {
 	var episodes []Episode
-	db.Where("hash_id = ? OR video_encrypt = ?", "", "").Order("id desc").Find(&episodes)
+	db.Where("hash_id = ? OR video_encrypt = ? OR video_path_encrypt = ?", "", "", "").Order("id desc").Find(&episodes)
+	for _, episode := range episodes {
+		EncryptEpisode(db, &episode)
+	}
+}
+
+func ReEncryptAllEpisodes(db *gorm.DB) {
+	var episodes []Episode
+	db.Order("id desc").Find(&episodes)
 	for _, episode := range episodes {
 		EncryptEpisode(db, &episode)
 	}
 }
 
 func EncryptEpisode(db *gorm.DB, episode *Episode) {
+	episode.VideoEncrypt = EncryptVideo(episode.Video)
+	if episode.SrcType == 0 {
+		videoArray := strings.Split(episode.Video, ",")
+		videoPath := YoutubeViewURL + "," + strings.Join(videoArray, ","+YoutubeViewURL)
+		episode.VideoPathEncrypt = EncryptVideo(videoPath)
+	} else {
+		episode.VideoPathEncrypt = episode.VideoEncrypt
+	}
 	episode.HashID = Encrypt(strconv.Itoa(episode.ID))
 	CreateThumbnail(episode)
 	db.Save(&episode)
@@ -133,7 +150,7 @@ func CreateThumbnail(episode *Episode) {
 			episode.Thumbnail = "http://video.mthai.com/thumbnail/" + videoID + ".jpg"
 		}
 	default:
-		episode.Thumbnail = "https://thumbnail.tvthailand.me/chrome.jpg"
+		episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
 	}
 }
 
@@ -232,8 +249,8 @@ func SetVideoList(db *gorm.DB, episode *Episode) {
 			episode.IsURL = true
 		default:
 			episode.IsURL = true
-			playlist.Image = "https://thumbnail.tvthailand.me/chrome.jpg"
-			episode.Thumbnail = "https://thumbnail.tvthailand.me/chrome.jpg"
+			playlist.Image = "http://thumbnail.instardara.com/chrome.jpg"
+			episode.Thumbnail = "http://thumbnail.instardara.com/chrome.jpg"
 			source.File = videoID
 		}
 		playlist.VideoID = videoID

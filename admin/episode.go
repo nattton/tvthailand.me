@@ -66,6 +66,22 @@ func EncryptEpisodeHandler(c *gin.Context) {
 	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
 }
 
+// ReEncryptEpisodeHandler GET /reencrypt_episode
+func ReEncryptEpisodeHandler(c *gin.Context) {
+	db, _ := utils.OpenDB()
+	defer db.Close()
+
+	data.ReEncryptAllEpisodes(db)
+
+	flash := map[string]string{
+		"info": "ReEncrypt Successfully",
+	}
+	renderData := map[string]interface{}{
+		"flash": flash,
+	}
+	utils.GenerateHTML(c.Writer, renderData, "admin/layout", "admin/index")
+}
+
 // SaveEpisodeHandler POST /admin/episode
 func SaveEpisodeHandler(c *gin.Context) {
 	var form episodeForm

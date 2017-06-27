@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"os"
+
 	"gopkg.in/gin-gonic/gin.v1"
 
 	"github.com/code-mobi/tvthailand.me/admin"
@@ -83,6 +84,7 @@ func runServer() {
 		authorized.GET("/", admin.IndexHandler)
 		authorized.GET("/encrypt_episode", admin.EncryptEpisodeHandler)
 		authorized.GET("/encrypt_episode/:episodeID", admin.EncryptEpisodeHandler)
+		authorized.GET("/reencrypt_episode", admin.ReEncryptEpisodeHandler)
 		authorized.POST("/mthai_embed", admin.AddEmbedMThaiHandler)
 		authorized.GET("/analytic", admin.AnalyticHandler)
 		authorized.POST("/analytic", admin.AnalyticProcessHandler)
