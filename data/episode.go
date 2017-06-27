@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -112,9 +114,10 @@ func EncryptEpisode(db *gorm.DB, episode *Episode) {
 	episode.VideoEncryptPath = episode.VideoEncrypt
 	if episode.SrcType == 0 {
 		videoArray := strings.Split(episode.Video, ",")
-		videoPath := YoutubeViewURL + "," + strings.Join(videoArray, ","+YoutubeViewURL)
+		videoPath := YoutubeViewURL + strings.Join(videoArray, ","+YoutubeViewURL)
+		fmt.Println(videoPath)
 		episode.VideoEncryptPath = EncryptVideo(videoPath)
-		episode.SrcType = 11
+		episode.SrcTypePath = 11
 	}
 
 	episode.HashID = Encrypt(strconv.Itoa(episode.ID))
