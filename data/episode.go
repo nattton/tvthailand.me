@@ -23,8 +23,9 @@ type Episode struct {
 	Title            string
 	Video            string
 	VideoEncrypt     string
-	VideoPathEncrypt string
+	VideoEncryptPath string
 	SrcType          int
+	SrcTypePath      int
 	Date             time.Time
 	ViewCount        int
 	Parts            string
@@ -92,7 +93,7 @@ type Source struct {
 
 func EncryptAllEpisodes(db *gorm.DB) {
 	var episodes []Episode
-	db.Where("hash_id = ? OR video_encrypt = ? OR video_path_encrypt = ?", "", "", "").Order("id desc").Find(&episodes)
+	db.Where("hash_id = ? OR video_encrypt = ? OR video_encrypt_path = ?", "", "", "").Order("id desc").Find(&episodes)
 	for _, episode := range episodes {
 		EncryptEpisode(db, &episode)
 	}
@@ -108,13 +109,14 @@ func ReEncryptAllEpisodes(db *gorm.DB) {
 
 func EncryptEpisode(db *gorm.DB, episode *Episode) {
 	episode.VideoEncrypt = EncryptVideo(episode.Video)
+	episode.VideoEncryptPath = episode.VideoEncrypt
 	if episode.SrcType == 0 {
 		videoArray := strings.Split(episode.Video, ",")
 		videoPath := YoutubeViewURL + "," + strings.Join(videoArray, ","+YoutubeViewURL)
-		episode.VideoPathEncrypt = EncryptVideo(videoPath)
-	} else {
-		episode.VideoPathEncrypt = episode.VideoEncrypt
+		episode.VideoEncryptPath = EncryptVideo(videoPath)
+		episode.SrcType = 11
 	}
+
 	episode.HashID = Encrypt(strconv.Itoa(episode.ID))
 	CreateThumbnail(episode)
 	db.Save(&episode)
