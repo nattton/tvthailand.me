@@ -111,13 +111,16 @@ func ReEncryptAllEpisodes(db *gorm.DB) {
 
 func EncryptEpisode(db *gorm.DB, episode *Episode) {
 	episode.VideoEncrypt = EncryptVideo(episode.Video)
-	episode.VideoEncryptPath = episode.VideoEncrypt
+
 	if episode.SrcType == 0 {
 		videoArray := strings.Split(episode.Video, ",")
 		videoPath := YoutubeViewURL + strings.Join(videoArray, ","+YoutubeViewURL)
 		fmt.Println(videoPath)
 		episode.VideoEncryptPath = EncryptVideo(videoPath)
 		episode.SrcTypePath = 11
+	} else {
+		episode.VideoEncryptPath = episode.VideoEncrypt
+		episode.SrcTypePath = episode.SrcType
 	}
 
 	episode.HashID = Encrypt(strconv.Itoa(episode.ID))
