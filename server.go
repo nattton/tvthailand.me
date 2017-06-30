@@ -44,7 +44,6 @@ func runServer() {
 	router.StaticFile("/robot.txt", "./public/robot.txt")
 
 	router.GET("/", indexHandler)
-	router.GET("/music", musicHandler)
 	router.GET("/recently", recentlyHandler)
 	router.GET("/popular", popularHandler)
 	router.GET("/categories", categoriesHandler)

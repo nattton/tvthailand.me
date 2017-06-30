@@ -1,10 +1,13 @@
 {{ define "content" }}
 {{ $s3url := "https://s3-ap-southeast-1.amazonaws.com/tvthailand-apps"}}
-<div class="row text-center">
-  <script type="text/javascript" src="//mds.nipa.co.th/f.php?aid=AID17051702"></script>
-    <!--<img class="banner-728" style="width:728px;" src="{{ $s3url }}/static/images/ads_728x90.png" >-->
-</div>
 <div class="col-sm-8 main">
+
+{{ if .isOMU }}
+  <script id="form-iframe-js" app_id=75 src="http://otv.co.th/OMU/otv_iframe.js" type="text/javascript" theme_color="4d4d4d"></script>
+{{ else }}
+  <script class="omu-front-page generateIsDone0" src="http://otv.co.th/OMU/omu_index.js" theme_color="4d4d4d" home_url="http://{{ .host }}/?name=omu" app_id="75" type="text/javascript"></script>
+{{ end }}
+
 {{ if .showRecents }}
   <h1 class="page-header"><a href="/recently">รายการล่าสุด</a></h1>
   <div class="row placeholders">
@@ -23,7 +26,10 @@
   <div class="page-more"><a href="/recently">เพิ่มเติม <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a></div>
 {{ end }}
 
-<script class="omu-front-page generateIsDone0" src="http://otv.co.th/OMU/omu_index.js" theme_color="4d4d4d" home_url="http://www.tvthailand.me/music" app_id="75" type="text/javascript"></script>
+<div class="row text-center" style="margin-top:40px;">
+  <script type="text/javascript" src="//mds.nipa.co.th/f.php?aid=AID17051702"></script>
+    <!--<img class="banner-728" style="width:728px;" src="{{ $s3url }}/static/images/ads_728x90.png" >-->
+</div>
 
 {{ template "mobile_ads" . }}
 
@@ -44,6 +50,10 @@
 </div>
 <div class="page-more"><a href="/popular">เพิ่มเติม <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a></div>
 {{ end }}
+
+<div class="row text-center" style="margin-top:40px;">
+  <script type="text/javascript" src="//mds.nipa.co.th/f.php?aid=AID17051702"></script>
+</div>
 
 <div class="table-responsive">
 </div>

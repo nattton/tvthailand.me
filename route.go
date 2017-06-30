@@ -26,6 +26,7 @@ func printFlash(writer http.ResponseWriter, flashType, message string) {
 }
 
 func indexHandler(c *gin.Context) {
+	fmt.Println(c.Request.Host)
 	db, _ := utils.OpenDB()
 	defer db.Close()
 	recents := make(chan []data.Show)
@@ -40,13 +41,18 @@ func indexHandler(c *gin.Context) {
 	}()
 	categories, _ := data.CategoriesActive(db)
 	channels, _ := data.ChannelsActive(db)
+
+	name, _ := c.GetQuery("name")
+	fmt.Println("name :", name)
 	renderData := map[string]interface{}{
+		"host":         c.Request.Host,
 		"Description":  "ดูรายการทีวี ละครย้อนหลัง",
 		"showRecents":  <-recents,
 		"showPopulars": <-populars,
 		"categories":   categories,
 		"channels":     channels,
 		"isMobile":     utils.IsMobileNotPad(c.Request.UserAgent()),
+		"isOMU":        name == "omu",
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
 }
@@ -415,13 +421,4 @@ func watchOtvHandler(c *gin.Context) {
 func OPlayHandler(c *gin.Context) {
 	responseBody, _, _ := data.GetOTVEpisodePlay(c.Param("watchID"), false)
 	fmt.Fprintf(c.Writer, string(responseBody))
-}
-
-func musicHandler(c *gin.Context) {
-	renderData := map[string]interface{}{
-		"Title":       "Music",
-		"Description": "Music",
-		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
-	}
-	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "music")
 }
