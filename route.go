@@ -416,3 +416,12 @@ func OPlayHandler(c *gin.Context) {
 	responseBody, _, _ := data.GetOTVEpisodePlay(c.Param("watchID"), false)
 	fmt.Fprintf(c.Writer, string(responseBody))
 }
+
+func musicHandler(c *gin.Context) {
+	renderData := map[string]interface{}{
+		"Title":       "Music",
+		"Description": "Music",
+		"isMobile":    utils.IsMobileNotPad(c.Request.UserAgent()),
+	}
+	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "music")
+}
