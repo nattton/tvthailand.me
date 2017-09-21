@@ -1,7 +1,93 @@
 {
 	"comment": "",
+	"heroku": {
+		"goVersion": "go1.9",
+		"install": [
+			"./..."
+		]
+	},
 	"ignore": "test",
 	"package": [
+		{
+			"path": "appengine/cloudsql",
+			"revision": ""
+		},
+		{
+			"path": "bufio",
+			"revision": ""
+		},
+		{
+			"path": "bytes",
+			"revision": ""
+		},
+		{
+			"path": "context",
+			"revision": ""
+		},
+		{
+			"path": "crypto/sha1",
+			"revision": ""
+		},
+		{
+			"path": "crypto/subtle",
+			"revision": ""
+		},
+		{
+			"path": "crypto/tls",
+			"revision": ""
+		},
+		{
+			"path": "database/sql",
+			"revision": ""
+		},
+		{
+			"path": "database/sql/driver",
+			"revision": ""
+		},
+		{
+			"path": "encoding",
+			"revision": ""
+		},
+		{
+			"path": "encoding/base64",
+			"revision": ""
+		},
+		{
+			"path": "encoding/binary",
+			"revision": ""
+		},
+		{
+			"path": "encoding/csv",
+			"revision": ""
+		},
+		{
+			"path": "encoding/gob",
+			"revision": ""
+		},
+		{
+			"path": "encoding/hex",
+			"revision": ""
+		},
+		{
+			"path": "encoding/json",
+			"revision": ""
+		},
+		{
+			"path": "encoding/xml",
+			"revision": ""
+		},
+		{
+			"path": "errors",
+			"revision": ""
+		},
+		{
+			"path": "flag",
+			"revision": ""
+		},
+		{
+			"path": "fmt",
+			"revision": ""
+		},
 		{
 			"checksumSHA1": "wJJ1dqFYclMAr+7um4GKKgRbOIg=",
 			"path": "github.com/PuerkitoBio/goquery",
@@ -13,6 +99,38 @@
 			"path": "github.com/andybalholm/cascadia",
 			"revision": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48",
 			"revisionTime": "2015-07-30T17:44:59Z"
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/admin",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/analytic",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/api/v1",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/data",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/utils",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/validate",
+			"revision": ""
+		},
+		{
+			"path": "github.com/code-mobi/tvthailand.me/youtube",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "5rPfda8jFccr3A6heL+JAmi9K9g=",
@@ -27,34 +145,46 @@
 			"revisionTime": "2015-07-08T23:40:01Z"
 		},
 		{
-			"checksumSHA1": "UsILDoIB2S7ra+w2fMdb85mX3HM=",
+			"checksumSHA1": "QeKwBtN2df+j+4stw3bQJ6yO4EY=",
+			"path": "github.com/gin-contrib/sse",
+			"revision": "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae",
+			"revisionTime": "2017-01-09T09:34:21Z"
+		},
+		{
+			"checksumSHA1": "ll8C4xWrYruQeGDfndcT9BcNJFU=",
 			"path": "github.com/gin-gonic/gin/binding",
-			"revision": "d5b353c5d5a560322e6d96121c814115562501f7",
-			"revisionTime": "2017-04-28T10:59:23Z"
+			"revision": "5afc5b19730118c9b8324fe9dd995d44ec65c81a",
+			"revisionTime": "2017-09-11T14:33:19Z"
 		},
 		{
-			"checksumSHA1": "PHv9FNb7YavJWtAHcY6ZgXmkmHs=",
+			"checksumSHA1": "YOwO5bkv3ei+GTVZqeEVB30kXDM=",
+			"path": "github.com/gin-gonic/gin/json",
+			"revision": "5afc5b19730118c9b8324fe9dd995d44ec65c81a",
+			"revisionTime": "2017-09-11T14:33:19Z"
+		},
+		{
+			"checksumSHA1": "BKtrc+GGYJT9NOPmiZ/OAqZNMps=",
 			"path": "github.com/gin-gonic/gin/render",
-			"revision": "d5b353c5d5a560322e6d96121c814115562501f7",
-			"revisionTime": "2017-04-28T10:59:23Z"
+			"revision": "5afc5b19730118c9b8324fe9dd995d44ec65c81a",
+			"revisionTime": "2017-09-11T14:33:19Z"
 		},
 		{
-			"checksumSHA1": "/A5P2s8crcwfDyqHKCh16Yt9jd4=",
+			"checksumSHA1": "OYNL3sIBglUoPIDpx3STL9lNTNo=",
 			"path": "github.com/go-sql-driver/mysql",
-			"revision": "382e13d099fcf5f5994290892ab258fbebbdc5e3",
-			"revisionTime": "2017-05-12T15:29:33Z"
+			"revision": "3dd7008ac1529aca1bcd8a9db75228a71ba23cac",
+			"revisionTime": "2015-08-07T02:25:32Z"
 		},
 		{
-			"checksumSHA1": "kBeNcaKk56FguvPSUCEaH6AxpRc=",
+			"checksumSHA1": "yqF125xVSkmfLpIVGrLlfE05IUk=",
 			"path": "github.com/golang/protobuf/proto",
-			"revision": "fec3b39b059c0f88fa6b20f5ed012b1aa203a8b4",
-			"revisionTime": "2017-05-12T17:16:34Z"
+			"revision": "130e6b02ab059e7b717a096f397c5b60111cae74",
+			"revisionTime": "2017-09-20T22:06:47Z"
 		},
 		{
-			"checksumSHA1": "hA3pKaCPscFk4oqNUPUTYJrm14w=",
+			"checksumSHA1": "eljaapCfm6h09IEjd97AM9Pdeuo=",
 			"path": "github.com/jinzhu/gorm",
-			"revision": "9acaa33324bbcc78239a1c913d4f1292c12177b9",
-			"revisionTime": "2017-05-04T14:08:37Z"
+			"revision": "b1885a643b4977c9089d77eb07c0fd96591f94b8",
+			"revisionTime": "2017-09-04T14:39:19Z"
 		},
 		{
 			"checksumSHA1": "VIp1lZm6joWhlNdwhady8u//qRw=",
@@ -75,10 +205,10 @@
 			"revisionTime": "2017-03-22T23:44:13Z"
 		},
 		{
-			"checksumSHA1": "HoN1IrpPpbocYo5z2McrI7rHEoc=",
+			"checksumSHA1": "6IFqsY8nzRzcaluSehwWoAq4ygw=",
 			"path": "github.com/mssola/user_agent",
-			"revision": "07efe2b857fb8c02d2dd85c12d0145f58554ec7c",
-			"revisionTime": "2017-01-01T15:44:15Z"
+			"revision": "a2f39d5a9b15ecc1fa1005b6aae73cd83da240ef",
+			"revisionTime": "2017-09-06T15:25:53Z"
 		},
 		{
 			"checksumSHA1": "zKKp5SZ3d3ycKe4EKMNT0BqAWBw=",
@@ -87,28 +217,42 @@
 			"revisionTime": "2015-10-28T09:42:44Z"
 		},
 		{
-			"checksumSHA1": "jjiJTHlgyh2bRFHYqfs0aNUehN4=",
+			"checksumSHA1": "mGbTYZ8dHVTiPTTJu3ktp+84pPI=",
 			"path": "github.com/stretchr/testify/assert",
-			"revision": "d797d25e0fa6d53be3b1a216d24e868d6a1912ef",
-			"revisionTime": "2015-11-22T02:54:01Z"
+			"revision": "890a5c3458b43e6104ff5da8dfa139d013d77544",
+			"revisionTime": "2017-07-05T02:17:15Z"
 		},
 		{
-			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"checksumSHA1": "iG2B2A82ztGrpp3VVNyR5/Xzp0w=",
+			"path": "github.com/ugorji/go/codec",
+			"revision": "54210f4e076c57f351166f0ed60e67d3fca57a36",
+			"revisionTime": "2017-09-18T22:25:52Z"
+		},
+		{
+			"path": "go/ast",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
 			"path": "golang.org/x/net/context",
-			"revision": "c9b681d35165f1995d6f3034e61f8761d4b90c99",
-			"revisionTime": "2017-05-10T00:04:54Z"
+			"revision": "db8e4de5b2d6653f66aea53094624468caad15d2",
+			"revisionTime": "2015-08-24T16:07:02Z"
 		},
 		{
 			"checksumSHA1": "vqc3a+oTUGX8PmD0TS+qQ7gmN8I=",
 			"path": "golang.org/x/net/html",
-			"revision": "c9b681d35165f1995d6f3034e61f8761d4b90c99",
-			"revisionTime": "2017-05-10T00:04:54Z"
+			"revision": "db8e4de5b2d6653f66aea53094624468caad15d2",
+			"revisionTime": "2015-08-24T16:07:02Z"
 		},
 		{
-			"checksumSHA1": "00eQaGynDYrv3tL+C7l9xH0IDZg=",
+			"checksumSHA1": "z79z5msRzgU48FCZxSuxfU8b4rs=",
 			"path": "golang.org/x/net/html/atom",
-			"revision": "c9b681d35165f1995d6f3034e61f8761d4b90c99",
-			"revisionTime": "2017-05-10T00:04:54Z"
+			"revision": "db8e4de5b2d6653f66aea53094624468caad15d2",
+			"revisionTime": "2015-08-24T16:07:02Z"
+		},
+		{
+			"path": "golang.org/x/sys/unix",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "+4r0PnLwwyhO5/jvU5R/TEJb4kA=",
@@ -117,16 +261,16 @@
 			"revisionTime": "2016-02-20T15:49:07Z"
 		},
 		{
-			"checksumSHA1": "hT+7DPyl8tQ96kUXW3Sr5o0Pcj0=",
+			"checksumSHA1": "lqXx4OhLBZFV5p4+I0OvpNabF4A=",
 			"path": "gopkg.in/gin-gonic/gin.v1",
-			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
-			"revisionTime": "2016-12-04T22:13:08Z"
+			"revision": "d459835d2b077e44f7c9b453505ee29881d5d12d",
+			"revisionTime": "2017-07-02T09:28:26Z"
 		},
 		{
-			"checksumSHA1": "39V1idWER42Lmcmg2Uy40wMzOlo=",
+			"checksumSHA1": "P/k5ZGf0lEBgpKgkwy++F7K1PSg=",
 			"path": "gopkg.in/go-playground/validator.v8",
-			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
-			"revisionTime": "2016-07-18T13:41:25Z"
+			"revision": "5f1438d3fca68893a817e4a66806cea46a9e4ebf",
+			"revisionTime": "2017-07-30T05:02:35Z"
 		},
 		{
 			"checksumSHA1": "/EL/UuzIPObHgESjkBMaD4gaXOw=",
@@ -159,15 +303,131 @@
 			"revisionTime": "2016-06-27T09:56:34Z"
 		},
 		{
-			"checksumSHA1": "fALlQNY1fM99NesfLJ50KguWsio=",
+			"checksumSHA1": "RDJpJQwkF012L6m/2BJizyOksNw=",
 			"path": "gopkg.in/yaml.v2",
-			"revision": "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b",
-			"revisionTime": "2017-04-07T17:21:22Z"
+			"revision": "eb3733d160e74a9c7e442f435eb3bea458e1d19f",
+			"revisionTime": "2017-08-12T16:00:11Z"
+		},
+		{
+			"path": "hash/crc32",
+			"revision": ""
+		},
+		{
+			"path": "html",
+			"revision": ""
+		},
+		{
+			"path": "html/template",
+			"revision": ""
+		},
+		{
+			"path": "io",
+			"revision": ""
+		},
+		{
+			"path": "io/ioutil",
+			"revision": ""
+		},
+		{
+			"path": "log",
+			"revision": ""
+		},
+		{
+			"path": "math",
+			"revision": ""
+		},
+		{
+			"path": "math/rand",
+			"revision": ""
+		},
+		{
+			"path": "net",
+			"revision": ""
+		},
+		{
+			"path": "net/http",
+			"revision": ""
+		},
+		{
+			"path": "net/http/httptest",
+			"revision": ""
+		},
+		{
+			"path": "net/http/httputil",
+			"revision": ""
+		},
+		{
+			"path": "net/url",
+			"revision": ""
+		},
+		{
+			"path": "os",
+			"revision": ""
+		},
+		{
+			"path": "path",
+			"revision": ""
+		},
+		{
+			"path": "reflect",
+			"revision": ""
+		},
+		{
+			"path": "regexp",
+			"revision": ""
+		},
+		{
+			"path": "runtime",
+			"revision": ""
+		},
+		{
+			"path": "sort",
+			"revision": ""
+		},
+		{
+			"path": "strconv",
+			"revision": ""
+		},
+		{
+			"path": "strings",
+			"revision": ""
+		},
+		{
+			"path": "sync",
+			"revision": ""
+		},
+		{
+			"path": "sync/atomic",
+			"revision": ""
+		},
+		{
+			"path": "syscall",
+			"revision": ""
+		},
+		{
+			"path": "testing",
+			"revision": ""
+		},
+		{
+			"path": "time",
+			"revision": ""
+		},
+		{
+			"path": "unicode",
+			"revision": ""
+		},
+		{
+			"path": "unicode/utf16",
+			"revision": ""
+		},
+		{
+			"path": "unicode/utf8",
+			"revision": ""
+		},
+		{
+			"path": "unsafe",
+			"revision": ""
 		}
 	],
-	"rootPath": "github.com/code-mobi/tvthailand.me",
-	"heroku": {
-        "install" : [ "./..." ],
-        "goVersion": "go1.8.1"
-         }
+	"rootPath": "github.com/code-mobi/tvthailand.me"
 }
