@@ -27,6 +27,7 @@ type Show struct {
 	IsOtv       bool
 	IsActive    bool
 	IsOnline    bool
+	Web         bool
 	Ios         bool
 	Android     bool
 	Wp          bool
@@ -56,6 +57,7 @@ type showForm struct {
 	IsOtv       bool   `form:"is_otv"`
 	IsActive    bool   `form:"is_active"`
 	IsOnline    bool   `form:"is_online"`
+	Web         bool   `form:"web"`
 	Ios         bool   `form:"ios"`
 	Android     bool   `form:"android"`
 	Wp          bool   `form:"wp"`
@@ -178,6 +180,7 @@ func ShowUpdateHandler(c *gin.Context) {
 
 	show.IsActive = form.IsActive
 	show.IsOnline = form.IsOnline
+	show.Web = form.Web
 	show.Ios = form.Ios
 	show.Android = form.Android
 	show.Wp = form.Wp

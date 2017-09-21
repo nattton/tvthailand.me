@@ -219,7 +219,7 @@ func ShowUpdateDate(db *gorm.DB, id int) {
 }
 
 func ShowScope(db *gorm.DB) *gorm.DB {
-	return db.Where("is_online = ? AND build_max > ?", true, 1000)
+	return db.Where("is_online = ? AND web = ? AND build_max > ?", true, true, 1000)
 }
 
 func ResetShowViewCount(db *gorm.DB) (err error) {
