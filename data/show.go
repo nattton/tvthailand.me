@@ -26,6 +26,7 @@ type Show struct {
 	ViewCount   int       `json:"-"`
 	Rating      float32   `json:"-"`
 	VoteCount   int       `json:"-"`
+	Web         bool
 	IsOtv       bool      `json:"-"`
 	OtvID       string    `json:"-"`
 	UpdateDate  time.Time `json:"-"`

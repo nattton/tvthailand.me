@@ -65,6 +65,7 @@
 </div>
 
 <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+  {{ if .categories }}
   <div class="sidebar-module sidebar-module-inset" style="margin-top:50px;">
     <h3>Categories</h3>
   {{ range .categories }}
@@ -76,7 +77,9 @@
     </div>
   {{ end }}
   </div>
+  {{ end }}
 
+  {{ if .channels }}
   <div class="sidebar-module sidebar-module-inset" style="margin-top:50px;">
     <h3>Channels</h3>
   {{ range .channels }}
@@ -88,6 +91,7 @@
     </div>
   {{ end }}
   </div>
+  {{ end }}
 </div>
 {{ end }}
 

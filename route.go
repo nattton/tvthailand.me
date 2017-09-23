@@ -215,6 +215,11 @@ func showHandler(c *gin.Context) {
 		goNotFound(c)
 		return
 	}
+	if !show.Web {
+		goNotFound(c)
+		return
+	}
+
 	if show.IsOtv && (os.Getenv("WATCH_OTV") == "1" || show.ChannelID == 3) {
 		renderShowOtv(c, show)
 	} else {
@@ -227,6 +232,10 @@ func showTvHandler(c *gin.Context) {
 	defer db.Close()
 	showID, _ := strconv.Atoi(c.Param("id"))
 	show, _ := data.GetShow(db, showID)
+	if !show.Web {
+		goNotFound(c)
+		return
+	}
 	renderShow(c, show)
 }
 
@@ -310,6 +319,11 @@ func watchHandler(c *gin.Context) {
 		return
 	}
 	show, err := data.GetShow(db, episode.ShowID)
+	if !show.Web {
+		goNotFound(c)
+		return
+	}
+
 	if maxIndex := len(episode.Playlists) - 1; maxIndex < playIndex {
 		playIndex = maxIndex
 	}

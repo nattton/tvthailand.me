@@ -179,7 +179,7 @@ func EpisodesAndPageInfo(db *gorm.DB, showID int, page int32) (episodes []Episod
 	page--
 	offset := page * pageInfo.ResultsPerPage
 
-	dbQ := db.Table("episodes").Where("banned = 0 AND show_id = ?", showID).Order("ep desc, id desc")
+	dbQ := db.Table("episodes").Where("banned = ? AND show_id = ?", false, showID).Order("ep desc, id desc")
 	dbQ.Count(&pageInfo.TotalResults)
 
 	maxPage := int32(math.Ceil(float64(pageInfo.TotalResults) / float64(pageInfo.ResultsPerPage)))
