@@ -10,7 +10,7 @@ import (
 
 	"github.com/code-mobi/tvthailand.me/utils"
 	"github.com/jinzhu/gorm"
-	"gopkg.in/redis.v3"
+	redis "gopkg.in/redis.v3"
 )
 
 type Show struct {
@@ -26,7 +26,7 @@ type Show struct {
 	ViewCount   int       `json:"-"`
 	Rating      float32   `json:"-"`
 	VoteCount   int       `json:"-"`
-	Web         bool
+	Web         bool      `json:"-"`
 	IsOtv       bool      `json:"-"`
 	OtvID       string    `json:"-"`
 	UpdateDate  time.Time `json:"-"`
