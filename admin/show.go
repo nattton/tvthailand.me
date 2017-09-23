@@ -3,6 +3,7 @@ package admin
 import (
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/code-mobi/tvthailand.me/data"
@@ -231,4 +232,35 @@ func showSaveError(c *gin.Context, id int, err error) {
 	} else {
 		ShowNewHandler(c)
 	}
+}
+
+const maxConcurrency = 8
+
+func CountEpisodeHandler(c *gin.Context) {
+	db, _ := utils.OpenDB()
+	defer db.Close()
+
+	type Result struct {
+		ID    int
+		Count int
+	}
+
+	var results []Result
+	db.Exec("SET sql_mode = ''")
+	db.Raw("SELECT shows.id id, count(episodes.id) count FROM shows LEFT JOIN episodes ON (shows.id = episodes.show_id) GROUP BY episodes.show_id").Scan(&results)
+	var throttle = make(chan int, maxConcurrency)
+	var wg sync.WaitGroup
+	for index := range results {
+		throttle <- 1
+		wg.Add(1)
+		result := results[index]
+		go func(result Result) {
+			defer wg.Done()
+			db.Table("shows").Where("id = ?", result.ID).UpdateColumn("episodes_count", result.Count)
+			<-throttle
+		}(result)
+	}
+	wg.Wait()
+
+	utils.GenerateHTML(c.Writer, nil, "admin/layout", "admin/index")
 }

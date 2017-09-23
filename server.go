@@ -98,6 +98,7 @@ func runServer() {
 		authorized.GET("/youtube_playlist", admin.YoutubePlaylistHandler)
 		authorized.GET("/episode", admin.GetEpisodeHandler)
 		authorized.POST("/episode", admin.SaveEpisodeHandler)
+		authorized.POST("/count_episode", admin.CountEpisodeHandler)
 	}
 
 	router.NoRoute(notFoundHandler)
