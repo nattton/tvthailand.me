@@ -145,5 +145,5 @@ func CategoryOptions(db *gorm.DB, selectedID int) (categories []Category) {
 }
 
 func CategoryScope(db *gorm.DB) *gorm.DB {
-	return db.Where("is_online = ?", true)
+	return db.Where("is_online = ? AND web = ?", true, true)
 }
