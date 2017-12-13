@@ -6,7 +6,7 @@ import (
 	"github.com/code-mobi/tvthailand.me/data"
 	"github.com/code-mobi/tvthailand.me/utils"
 	"github.com/code-mobi/tvthailand.me/youtube"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 type playlistSearchForm struct {
