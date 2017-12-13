@@ -101,48 +101,6 @@
 			"revisionTime": "2015-07-30T17:44:59Z"
 		},
 		{
-			"checksumSHA1": "F8S3TRoV1SK93EF3zMVCbayzeY4=",
-			"path": "github.com/code-mobi/tvthailand.me",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
-			"checksumSHA1": "ikeem/etrmwZKfCFUweYNjE36Cw=",
-			"path": "github.com/code-mobi/tvthailand.me/admin",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
-			"checksumSHA1": "4FwV+V7SWRNf/gmkAWyS5WyeiTU=",
-			"path": "github.com/code-mobi/tvthailand.me/analytic",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
-			"checksumSHA1": "1dnuNq9tcyKb5AX9mHnNxgXdZ8g=",
-			"path": "github.com/code-mobi/tvthailand.me/data",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
-			"checksumSHA1": "bR6SW2nNCvBehra/imIrCzsvvqk=",
-			"path": "github.com/code-mobi/tvthailand.me/utils",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
-			"checksumSHA1": "j167pqcMRudmGyo8db5p2uNC1Y0=",
-			"path": "github.com/code-mobi/tvthailand.me/validate",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
-			"checksumSHA1": "67Atja2nGdU39/A7PVf3qr5HZ8M=",
-			"path": "github.com/code-mobi/tvthailand.me/youtube",
-			"revision": "993023d13e5bbd7292488655d2a42a4d5f7b667a",
-			"revisionTime": "2017-09-26T08:30:45Z"
-		},
-		{
 			"checksumSHA1": "5rPfda8jFccr3A6heL+JAmi9K9g=",
 			"path": "github.com/davecgh/go-spew/spew",
 			"revision": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d",
