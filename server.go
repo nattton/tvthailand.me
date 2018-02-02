@@ -64,6 +64,7 @@ func runServer() {
 	router.GET("/watch_otv/:watchID/:playIndex/*title", watchOtvHandler)
 	router.GET("/oplay/:watchID/*title", OPlayHandler)
 	router.GET("/mobile_apps", mobileAppsHandler)
+	router.GET("/omu", omuHandler)
 
 	routerAjax := router.Group("/ajax")
 	{

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -42,8 +43,6 @@ func indexHandler(c *gin.Context) {
 	categories, _ := data.CategoriesActive(db)
 	channels, _ := data.ChannelsActive(db)
 
-	name, _ := c.GetQuery("name")
-	fmt.Println("name :", name)
 	renderData := map[string]interface{}{
 		"host":         c.Request.Host,
 		"Description":  "ดูรายการทีวี ละครย้อนหลัง",
@@ -52,7 +51,6 @@ func indexHandler(c *gin.Context) {
 		"categories":   categories,
 		"channels":     channels,
 		"isMobile":     utils.IsMobileNotPad(c.Request.UserAgent()),
-		"isOMU":        name == "omu",
 	}
 	utils.GenerateHTML(c.Writer, renderData, "layout", "mobile_ads", "index")
 }
@@ -435,4 +433,9 @@ func watchOtvHandler(c *gin.Context) {
 func OPlayHandler(c *gin.Context) {
 	responseBody, _, _ := data.GetOTVEpisodePlay(c.Param("watchID"), false)
 	fmt.Fprintf(c.Writer, string(responseBody))
+}
+
+func omuHandler(c *gin.Context) {
+	ts, _ := template.New("").ParseFiles("templates/omu.tmpl")
+	ts.ExecuteTemplate(c.Writer, "layout", nil)
 }

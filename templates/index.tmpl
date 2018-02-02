@@ -2,12 +2,8 @@
 {{ $s3url := "https://s3-ap-southeast-1.amazonaws.com/tvthailand-apps"}}
 <div class="col-sm-8 main">
 
-{{ if .isOMU }}
-  <script id="form-iframe-js" app_id=75 src="http://otv.co.th/OMU/otv_iframe.js" type="text/javascript" theme_color="4d4d4d"></script>
-{{ else }}
-  <script class="omu-front-page generateIsDone0" src="http://otv.co.th/OMU/omu_index.js" theme_color="4d4d4d" home_url="http://{{ .host }}/?name=omu" app_id="75" type="text/javascript"></script>
-{{ end }}
-
+  <iframe style="height: 480px;width: 100%" src="http://www.omumusic.net/#/iframe/1/app_id/75/?partner_url=http://{{ .host }}/omu"></iframe>
+  
 {{ if .showRecents }}
   <h1 class="page-header"><a href="/recently">รายการล่าสุด</a></h1>
   <div class="row placeholders">
